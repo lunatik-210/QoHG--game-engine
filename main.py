@@ -1,6 +1,7 @@
 
 from Tkinter import *
 from MapGenerator import *
+import sys
 
 class Example(Frame):
     def __init__(self, parent, grid, h):
@@ -20,6 +21,8 @@ class Example(Frame):
         tree  = left + (h >> 2)
         print "Rendering map..."
         for x in range(len(grid)):
+            sys.stdout.write(".")
+            sys.stdout.flush()
             for y in range(len(grid[x])):
                 a = 2
                 color = "Blue"
@@ -32,6 +35,7 @@ class Example(Frame):
                 canvas.create_rectangle(a*x, a*y, 2*a*x, 2*a*y, 
                     outline=color, fill=color)          
         canvas.pack(fill=BOTH, expand=1)
+        print ""
         print "Rendering map... - Done"
 
 if __name__ == "__main__":
