@@ -1,91 +1,98 @@
 
+
 from numpy import *
 import random
 
-def is_odd(dsize):
-    return (dsize % 2 == 1)
+class MapGenerator():
+    def __init__(self, size):      
+        if self.isOdd(size) == False:
+            size+=1
+        self.size = self.correctSizeDimension(size)
+        self.grid = self.setupGrid(size)
 
-def correct_as_odd(dsize):
-    if is_odd(dsize) == False:
-        return dsize+1
-    return dsize
+    def clean(self):
+        self.grid = setupGrid()
 
-def correct_dimension_size(dsize):
-    temp_dsize = dsize
-    while True:
-        temp_dsize = (temp_dsize + 1) >> 1
-        if is_odd(temp_dsize) == False:
-            return correct_dimension_size(dsize+2)
-        if temp_dsize <= 3:
-            return dsize
+    def getSize(self):
+        return self.size
 
-def setup_grid(dsize):
-    return zeros((dsize, dsize))
+    def getMap(self):
+        return self.grid
 
-def displace(h):
-    return random.uniform(-h, h)
+    def isOdd(self, dsize):
+        return (dsize % 2 == 1)
 
-def square(grid, dsize, sideLength, displs):
-    halfSide = sideLength >> 1
-    x = 0        
-    while x<dsize-1:
-        y = 0
-        while y<dsize-1:
-            avg = ( grid[x][y] + 
-                grid[x+sideLength][y] + 
-                grid[x][y+sideLength] + 
-                grid[x+sideLength][y+sideLength] )
-            avg *= 0.25
-            avg += displs
-            grid[x+halfSide][y+halfSide] = avg
-            y += sideLength
-        x += sideLength
-    return grid
+    def correctSizeDimension(self, dsize):
+        temp_dsize = dsize
+        while True:
+            temp_dsize = (temp_dsize + 1) >> 1
+            if self.isOdd(temp_dsize) == False:
+                return self.correctSizeDimension(dsize+2)
+            if temp_dsize <= 3:
+                return dsize
 
-def diamond(grid, dsize, sideLength, displs):
-    halfSide = sideLength >> 1
-    x = 0
-    while x<dsize-1:
-        y = (x + halfSide) % sideLength
-        while y<dsize-1:
-            avg = ( grid[(x-halfSide+dsize-1)%(dsize-1)][y] + 
-                    grid[(x+halfSide)%(dsize-1)][y] + 
-                    grid[x][(y-halfSide+dsize-1)%(dsize-1)] + 
-                    grid[x][(y+halfSide)%(dsize-1)] )
-            avg *= 0.25
-            avg += displs
-            grid[x][y] = avg
-            if x == 0:
-                grid[dsize-1][y] = avg
-            if y == 0:
-                grid[x][dsize-1] = avg
-            y += sideLength
-        x+=halfSide    
-    return grid
+    def setupGrid(self, size):
+        return zeros((size, size))
 
-def diamond_square(grid, dsize, h):
-    seed = h
-    random.seed(seed)
+class DiamondSquare(MapGenerator):
+    def __init__(self, size, roughness, seed):
+        MapGenerator.__init__(self, size)
 
-    grid[0][0] = displace(h)
-    grid[0][dsize-1] = displace(h)
-    grid[dsize-1][0] = displace(h)
-    grid[dsize-1][dsize-1] = displace(h)       
+        self.roughness = roughness
+        self.seed = seed
 
-    sideLength = dsize-1
+    def randFromPair(self, x, y):
+        xm7 = x % 7
+        xm13 = x % 13
+        xm1301081 = x % 1301081
+        ym8461 = y % 8461
+        ym105467 = y % 105467
+        ym105943 = y % 105943
+        for i in range(80):
+            xm7 = x % 7
+            xm13 = x % 13
+            xm1301081 = x % 1301081
+            ym8461 = y % 8461
+            ym105467 = y % 105467
+            ym105943 = y % 105943
+            y = x + self.seed
+            x += (xm7 + xm13 + xm1301081 + ym8461 + ym105467 + ym105943)
+        return (xm7 + xm13 + xm1301081 + ym8461 + ym105467 + ym105943) / 1520972.0
 
-    while sideLength >=2:
-        displs = displace(h)
-        grid = square(grid, dsize, sideLength, displs)
-        grid = diamond(grid, dsize, sideLength, displs)
-        sideLength >>= 1
-        h >>= 1
+    def displace(self, v, blockSize, x, y):
+        size = len(self.grid)
+        return (v + (self.randFromPair(x, y) - 0.5) * blockSize * 2 / self.size * self.roughness)
 
-    return grid
+    def value(self, x, y, v = "undef"):
+        size = len(self.grid)
+        if v == "undef":
+            if x <= 0 or x >= size or y <= 0 or y >= size:
+                return 0.0
 
-def generate_map(dsize, h):
-    dsize = correct_as_odd(dsize)
-    dsize = correct_dimension_size(dsize)
-    grid = setup_grid(dsize)
-    grid = diamond_square(grid, dsize, h)
-    return grid, dsize
+            if self.grid[x][y] == 0:
+                base = 1
+                while (((x & base) == 0) and ((y & base) == 0)):
+                    base <<= 1
+                if (((x & base) != 0) and ((y & base) != 0)):
+                    self.squareStep(x, y, base)
+                else:
+                    self.diamondStep(x, y, base)
+            return self.grid[x][y]
+        else:
+            self.grid[x][y] = max(0.0, min(1.0, v))
+
+    def squareStep(self, x, y, blockSize):
+        size = len(self.grid)-1
+        if self.grid[x][y] == 0:
+            self.value(x, y, self.displace((self.value((x-blockSize),(y-blockSize)) + 
+                                            self.value((x+blockSize),(y-blockSize)) + 
+                                            self.value((x-blockSize),(y+blockSize)) + 
+                                            self.value((x+blockSize),(y+blockSize))) / 4, blockSize, x, y))
+        
+    def diamondStep(self, x, y, blockSize):
+        size = len(self.grid)-1
+        if self.grid[x][y] == 0:
+            self.value(x, y, self.displace((self.value((x-blockSize), y) + 
+                                            self.value((x+blockSize), y) + 
+                                            self.value(x, (y-blockSize)) + 
+                                            self.value(x, (y+blockSize))) / 4, blockSize, x, y ))
