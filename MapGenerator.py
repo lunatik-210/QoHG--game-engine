@@ -40,35 +40,17 @@ class DiamondSquare(MapGenerator):
 
         self.roughness = roughness
         self.seed = seed
-
-    def randFromPair(self, x, y):
-        xm7 = x % 7
-        xm13 = x % 13
-        xm1301081 = x % 1301081
-        ym8461 = y % 8461
-        ym105467 = y % 105467
-        ym105943 = y % 105943
-        for i in range(80):
-            xm7 = x % 7
-            xm13 = x % 13
-            xm1301081 = x % 1301081
-            ym8461 = y % 8461
-            ym105467 = y % 105467
-            ym105943 = y % 105943
-            y = x + self.seed
-            x += (xm7 + xm13 + xm1301081 + ym8461 + ym105467 + ym105943)
-        return (xm7 + xm13 + xm1301081 + ym8461 + ym105467 + ym105943) / 1520972.0
+        
+        random.seed(seed)
 
     def displace(self, v, blockSize, x, y):
-        size = len(self.grid)
-        return (v + (self.randFromPair(x, y) - 0.5) * blockSize * 2 / self.size * self.roughness)
+        return (v + (random.gauss(0.5, 0.2) - 0.5) * blockSize * 2 / self.size * self.roughness)
 
     def value(self, x, y, v = "undef"):
         size = len(self.grid)
         if v == "undef":
             if x <= 0 or x >= size or y <= 0 or y >= size:
                 return 0.0
-
             if self.grid[x][y] == 0:
                 base = 1
                 while (((x & base) == 0) and ((y & base) == 0)):
