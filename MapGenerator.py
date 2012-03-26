@@ -8,10 +8,10 @@ class MapGenerator():
         if self.isOdd(size) == False:
             size+=1
         self.size = self.correctSizeDimension(size)
-        self.grid = self.setupGrid(size)
+        self.grid = self.setupGrid(self.size)
 
     def clean(self):
-        self.grid = setupGrid()
+        self.grid = setupGrid(self.size)
 
     def getSize(self):
         return self.size
@@ -40,16 +40,15 @@ class DiamondSquare(MapGenerator):
 
         self.roughness = roughness
         self.seed = seed
-        
+
         random.seed(seed)
 
     def displace(self, v, blockSize, x, y):
         return (v + (random.gauss(0.5, 0.2) - 0.5) * blockSize * 2 / self.size * self.roughness)
 
     def value(self, x, y, v = "undef"):
-        size = len(self.grid)
         if v == "undef":
-            if x <= 0 or x >= size or y <= 0 or y >= size:
+            if x <= 0 or x >= self.size-1 or y <= 0 or y >= self.size-1:
                 return 0.0
             if self.grid[x][y] == 0:
                 base = 1
@@ -64,7 +63,6 @@ class DiamondSquare(MapGenerator):
             self.grid[x][y] = max(0.0, min(1.0, v))
 
     def squareStep(self, x, y, blockSize):
-        size = len(self.grid)-1
         if self.grid[x][y] == 0:
             self.value(x, y, self.displace((self.value((x-blockSize),(y-blockSize)) + 
                                             self.value((x+blockSize),(y-blockSize)) + 
@@ -72,7 +70,6 @@ class DiamondSquare(MapGenerator):
                                             self.value((x+blockSize),(y+blockSize))) / 4, blockSize, x, y))
         
     def diamondStep(self, x, y, blockSize):
-        size = len(self.grid)-1
         if self.grid[x][y] == 0:
             self.value(x, y, self.displace((self.value((x-blockSize), y) + 
                                             self.value((x+blockSize), y) + 

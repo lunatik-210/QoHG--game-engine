@@ -20,7 +20,7 @@ class Example(Frame):
         self.pack(fill=BOTH, expand=1)               
         canvas = Canvas(self)
         a = 2
-        print "Rendering map..."
+        print "Rendering map...", size, "x", size
         for x in range(size):
             sys.stdout.write(".")
             sys.stdout.flush()
@@ -39,10 +39,9 @@ class Example(Frame):
         print ""
         print "Rendering map... - Done", size, "x", size
 
-
 if __name__ == "__main__":
     # the approximate size of the map you want
-    size = 350
+    size = 150
     # (change view) roughness, more biggest value will give more filled map
     roughness = 25.0
     # (change map ) you can think about seed as map number or id
@@ -55,7 +54,7 @@ if __name__ == "__main__":
             
     root = Tk()
     ex = Example(root, size, hight_map, land)
-    root.geometry("500x500+300+300")
+    root.geometry("1000x1000+300+300")
     root.mainloop()
 
 
