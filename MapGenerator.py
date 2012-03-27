@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 from numpy import *
+import sys
 import random
 
 class MapGenerator():
-    def __init__(self, size):      
+    def __init__(self, size, debug = False):      
         if self.isOdd(size) == False:
             size+=1
         self.size = self.correctSizeDimension(size)
         self.grid = self.setupGrid(self.size)
+        self.debug = debug
 
     def clean(self):
         self.grid = setupGrid(self.size)
@@ -34,9 +36,38 @@ class MapGenerator():
     def setupGrid(self, size):
         return zeros((size, size))
 
+    def pregenerate(self):
+        if self.debug == True:
+            print "Pregenerate map...", self.size, "x", self.size
+        for x in range(self.size):
+            for y in range(self.size):
+                self.value(x,y)
+        if self.debug == True:
+            print "Pregenerate map... - Done", self.size, "x", self.size
+        return self.grid
+
+    def getHeightMap(self, heights):
+        if self.debug == True:
+            print "getHeightMap map...", self.size, "x", self.size
+        temp_grid = self.setupGrid(self.size)
+        for x in range(self.size):
+            for y in range(self.size):
+                temp_grid[x][y] = 0
+                val = self.grid[x][y]
+                for i in range(len(heights)-1):
+                    if val >= heights[i] and val <= heights[i+1]:
+                        temp_grid[x][y] = i
+        if self.debug == True:
+            print "getHeightMap map... - Done", self.size, "x", self.size
+        return temp_grid
+
+    # must be defined by children
+    def value(self, x, y):
+        pass
+
 class DiamondSquare(MapGenerator):
-    def __init__(self, size, roughness, seed):
-        MapGenerator.__init__(self, size)
+    def __init__(self, size, roughness, seed, debug = False):
+        MapGenerator.__init__(self, size, debug)
 
         self.roughness = roughness
         self.seed = seed
