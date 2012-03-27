@@ -35,7 +35,7 @@ class Example(Frame):
                     color = "Green"
                 canvas.create_rectangle(a*x, a*y, 2*a*x, 2*a*y, 
                     outline=color, fill=color)          
-        canvas.pack(fill=BOTH, expand=1)
+        canvas.pack(fill=BOTH, expand=1)        
         print ""
         print "Rendering map... - Done", size, "x", size
 
@@ -51,9 +51,10 @@ if __name__ == "__main__":
 
     land = DiamondSquare(size, roughness, seed)
     size = land.getSize()
-            
+
     root = Tk()
     ex = Example(root, size, hight_map, land)
+
     root.geometry("500x500+300+300")
     root.mainloop()
 
