@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import random
 import pygame
 from pygame.locals import *
 from MapGenerator import *
@@ -35,11 +36,14 @@ class Main:
                    1 : yellow,
                    2 : black,
                    3 : green }
-
-        self.displs_x, self.displs_y = 0, 0
         self.block_size = 64
         self.block_size_x = self.width / self.block_size
         self.block_size_y = self.height / self.block_size
+
+        lsize = self.land.getSize() >> 2
+        self.displs_x = abs(int(random.gauss(lsize, lsize)))
+        self.displs_y = abs(int(random.gauss(lsize, lsize)))
+
         speed = self.block_size / 4
 
         self.redraw()
@@ -81,13 +85,13 @@ class Main:
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 4000
+    size = 1024
     # (change view) roughness, more biggest value will give more filled map
-    roughness = 65.0
+    roughness = 15.0
     # (change map ) you can think about seed as map number or id
-    seed = 1
+    seed = 123123
     # 0.0 < sea < 0.44 < sand < 0.50 < ground < 0.85 < forest < 1
-    heights = [0, 0.80, 0.85, 0.98, 1]
+    heights = [0, 0.55, 0.60, 0.93, 1]
 
     land = DiamondSquare(size, roughness, seed, True)
     #grid = land.pregenerate()
