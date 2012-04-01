@@ -21,7 +21,7 @@ class Example(Frame):
         self.parent.title("Colors")        
         self.pack(fill=BOTH, expand=1)               
         canvas = Canvas(self)
-        a = 1
+        a = 2
         print "Rendering map...", size, "x", size
         for x in range(size):
             for y in range(size):
@@ -61,24 +61,24 @@ class PyManMain:
 
 if __name__ == "__main__":
     # the approximate size of the map you want
-    size = 500
+    size = 200
     # (change view) roughness, more biggest value will give more filled map
-    roughness = 25.0
+    roughness = 15.0
     # (change map ) you can think about seed as map number or id
-    seed = 232345345
+    seed = 234
     # 0.0 < sea < 0.44 < sand < 0.50 < ground < 0.85 < forest < 1
     heights = [0, 0.60, 0.70, 0.95, 1]
 
     land = DiamondSquare(size, roughness, seed, True)
     size = land.getSize()
 
-    #MainWindow = PyManMain()
-    #MainWindow.MainLoop()
+    MainWindow = PyManMain()
+    MainWindow.MainLoop()
     grid = land.pregenerate()
     height_map = land.getHeightMap(heights)
 
-    root = Tk()
-    ex = Example(root)
+    #root = Tk()
+    #ex = Example(root)
 
     root.geometry("500x500+300+300")
     root.mainloop()

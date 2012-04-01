@@ -37,17 +37,17 @@ class MapGenerator():
         return zeros((size, size))
 
     def pregenerate(self):
-        if self.debug == True:
+        if self.debug:
             print "Pregenerate map...", self.size, "x", self.size
         for x in range(self.size):
             for y in range(self.size):
                 self.value(x,y)
-        if self.debug == True:
+        if self.debug:
             print "Pregenerate map... - Done", self.size, "x", self.size
         return self.grid
 
     def getHeightMap(self, heights):
-        if self.debug == True:
+        if self.debug:
             print "getHeightMap map...", self.size, "x", self.size
         temp_grid = self.setupGrid(self.size)
         for x in range(self.size):
