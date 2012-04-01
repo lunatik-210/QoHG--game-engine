@@ -79,7 +79,8 @@ class Main:
 
 
 if __name__ == "__main__":
-    # the approximate size of the map you want (should be large than size of screen)
+    # the approximate size of the map you want (should be large than size of main screen)
+    # I will try to think how to fix it later
     size = 4000
     # (change view) roughness, more biggest value will give more filled map
     roughness = 65.0
