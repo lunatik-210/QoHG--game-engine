@@ -7,7 +7,7 @@ from MapGenerator import *
 if not pygame.font: print 'Warning, fonts disabled'
 if not pygame.mixer: print 'Warning, sound disabled'
 
-class PyManMain:
+class Main:
     """The Main PyMan Class - This class handles the main 
     initialization and creating of the Game."""
     
@@ -40,7 +40,7 @@ class PyManMain:
         self.block_size = 64
         self.block_size_x = self.width / self.block_size
         self.block_size_y = self.height / self.block_size
-        speed = 10
+        speed = self.block_size / 4
 
         self.redraw()
 
@@ -48,7 +48,6 @@ class PyManMain:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
                     sys.exit()
-        
                 elif event.type == KEYDOWN:
                     if (event.key == K_RIGHT):
                         self.displs_x += speed
@@ -62,17 +61,15 @@ class PyManMain:
                     elif (event.key == K_DOWN):
                         self.displs_y += speed
                         self.displs_y %= self.land.getSize()
-                    
                     self.redraw()
                 
     def redraw(self):
         for x in range(0,self.block_size):
             for y in range(0,self.block_size):
-                val = self.land.value(x+self.displs_x,y+self.displs_y)
+                val = self.land.value((x+self.displs_x)%size,(y+self.displs_y)%size)
                 color_id = self.get_color_id(val)
                 pygame.draw.rect( self.screen, self.colors[color_id], 
                                   (x*self.block_size_x, y*self.block_size_y, self.block_size_x, self.block_size_y))
-            #print "x = {} y = {}".format(x+self.displs_x, y+self.displs_y)
         pygame.display.flip()
 
     def get_color_id(self, val):
@@ -82,28 +79,21 @@ class PyManMain:
 
 
 if __name__ == "__main__":
-    # the approximate size of the map you want
+    # the approximate size of the map you want (should be large than size of screen)
     size = 4000
     # (change view) roughness, more biggest value will give more filled map
-    roughness = 45.0
+    roughness = 65.0
     # (change map ) you can think about seed as map number or id
-    seed = 234
+    seed = 1
     # 0.0 < sea < 0.44 < sand < 0.50 < ground < 0.85 < forest < 1
-    heights = [0, 0.60, 0.70, 0.95, 1]
+    heights = [0, 0.80, 0.85, 0.98, 1]
 
     land = DiamondSquare(size, roughness, seed, True)
-    size = land.getSize()
-    print size
     #grid = land.pregenerate()
+    #size = land.getSize()
     #height_map = land.getHeightMap(heights)
 
-    MainWindow = PyManMain(land, heights)
+    MainWindow = Main(land, heights)
     MainWindow.MainLoop()
-
-    #root = Tk()
-    #ex = Example(root)
-
-    #root.geometry("500x500+300+300")
-    #root.mainloop()
 
 
