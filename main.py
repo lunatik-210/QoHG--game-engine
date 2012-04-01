@@ -2,6 +2,7 @@
 
 import random
 import pygame
+from pygame.color import THECOLORS
 from pygame.locals import *
 from MapGenerator import *
 
@@ -9,10 +10,12 @@ if not pygame.font: print 'Warning, fonts disabled'
 if not pygame.mixer: print 'Warning, sound disabled'
 
 class Main:
-    """The Main PyMan Class - This class handles the main 
-    initialization and creating of the Game."""
+    """
+    The Main PyMan Class - This class handles the main 
+    initialization and creating of the Game.
+    """
     
-    def __init__(self, land, heights, width=1024,height=768):
+    def __init__(self, land, heights, width=1024, height=768):
         """Initialize"""
         """Initialize PyGame"""
         pygame.init()
@@ -27,15 +30,10 @@ class Main:
     def MainLoop(self):
         """This is the Main Loop of the Game"""
 
-        green = (0, 255, 0)
-        blue = (0, 0, 255)
-        black = (0, 0, 0)
-        yellow = (150, 150, 0)
-
-        self.colors = { 0 : blue,
-                   1 : yellow,
-                   2 : black,
-                   3 : green }
+        self.colors = { 0 : THECOLORS["blue"],
+                        1 : THECOLORS["yellow"],
+                        2 : THECOLORS["black"],
+                        3 : THECOLORS["green"] }
         self.block_size = 64
         self.block_size_x = self.width / self.block_size
         self.block_size_y = self.height / self.block_size
@@ -68,8 +66,8 @@ class Main:
                     self.redraw()
                 
     def redraw(self):
-        for x in range(0,self.block_size):
-            for y in range(0,self.block_size):
+        for x in range(self.block_size):
+            for y in range(self.block_size):
                 val = self.land.value((x+self.displs_x)%size,(y+self.displs_y)%size)
                 color_id = self.get_color_id(val)
                 pygame.draw.rect( self.screen, self.colors[color_id], 
@@ -78,7 +76,7 @@ class Main:
 
     def get_color_id(self, val):
         for i in range(len(self.heights)-1):
-            if val >= self.heights[i] and val <= self.heights[i+1]:
+            if self.heights[i] <= val <= self.heights[i+1]:
                 return i
 
 
@@ -100,5 +98,3 @@ if __name__ == "__main__":
 
     MainWindow = Main(land, heights)
     MainWindow.MainLoop()
-
-
