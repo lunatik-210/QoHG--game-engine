@@ -47,14 +47,14 @@ class Main:
         """This is the Main Loop of the Game"""
 
         img_resources = "./images/"
-        img_ground = pygame.image.load(img_resources + "ground.png").convert()
+        img_sand = pygame.image.load(img_resources + "sand.png").convert()
         img_forest = pygame.image.load(img_resources + "forest.png").convert()
-        img_grace = pygame.image.load(img_resources + "grace.png").convert()
+        img_grass = pygame.image.load(img_resources + "grass.png").convert()
         img_water = pygame.image.load(img_resources + "water.png").convert()
 
         self.img_blocks = { 0 : img_water,
-                            1 : img_grace,
-                            2 : img_ground,
+                            1 : img_sand,
+                            2 : img_grass,
                             3 : img_forest }
         self.block_size = 64
         self.block_size_x = self.width / self.block_size
@@ -113,7 +113,7 @@ class Main:
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 1024
+    size = 1000
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
