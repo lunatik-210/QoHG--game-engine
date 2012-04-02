@@ -3,6 +3,7 @@
 Done:
  - Implemented diamond-square alghoritm for map generation
  - Developed first visualizator based on PyGame engine
+ - Added very funny sprites (thanks sagod ~_~)
  - Added first vision of game architecture (see docs folder)
 
 Plans/Tasks:
