@@ -12,7 +12,7 @@ class LandscapeBlock(pygame.sprite.Sprite):
     """
     Landscape Block sprite
     There are 4 types of it:
-        Water < Ground < Grace < Forest
+        Water < Sand < Grass < Forest
     """
     def __init__(self, parent, x, y, w, h, image):
         self.image = image
@@ -34,16 +34,20 @@ class Main:
         """Initialize"""
         """Initialize PyGame"""
         pygame.init()
-        """Set the window Size"""
         self.land = land
         self.heights = heights
-        self.width = width
-        self.height = height
         """Create the Screen"""
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = pygame.display.set_mode((width, height))
+        self.width, self.height = width, height
 
 
-    def MainLoop(self):
+    def set_full_screen(self):
+        modes = pygame.display.list_modes(32)
+        if modes:
+            pygame.display.set_mode(modes[0], pygame.FULLSCREEN, 32)
+        self.width, self.height = modes[0]        
+
+    def main_loop(self):
         """This is the Main Loop of the Game"""
 
         img_resources = "./images/"
@@ -56,15 +60,18 @@ class Main:
                             1 : img_sand,
                             2 : img_grass,
                             3 : img_forest }
-        self.block_size = 64
-        self.block_size_x = self.width / self.block_size
-        self.block_size_y = self.height / self.block_size
 
-        lsize = self.land.getSize() >> 2
+        self.texture_size = 16
+
+        self.block_size_x = self.width / self.texture_size
+        self.block_size_y = self.height / self.texture_size
+
+        lsize = self.land.get_size() >> 2
         self.displs_x = abs(int(random.gauss(lsize, lsize)))
         self.displs_y = abs(int(random.gauss(lsize, lsize)))
 
-        speed = self.block_size / 4
+        speed_x = self.block_size_x >> 2
+        speed_y = self.block_size_y >> 2
 
         self.redraw()
 
@@ -76,32 +83,31 @@ class Main:
                     if event.key == K_ESCAPE:
                         sys.exit()
                     if event.key == K_RIGHT:
-                        self.displs_x += speed
-                        self.displs_x %= self.land.getSize()
+                        self.displs_x += speed_x
+                        self.displs_x %= self.land.get_size()
                     elif event.key == K_LEFT:
-                        self.displs_x -= speed
-                        self.displs_x %= self.land.getSize()
+                        self.displs_x -= speed_x
+                        self.displs_x %= self.land.get_size()
                     elif event.key == K_UP:
-                        self.displs_y -= speed
-                        self.displs_y %= self.land.getSize()
+                        self.displs_y -= speed_y
+                        self.displs_y %= self.land.get_size()
                     elif event.key == K_DOWN:
-                        self.displs_y += speed
-                        self.displs_y %= self.land.getSize()
+                        self.displs_y += speed_y
+                        self.displs_y %= self.land.get_size()
                     self.redraw()
                 
     def redraw(self):
-        for x in range(self.block_size):
-            for y in range(self.block_size):
+        for x in range(self.block_size_x):
+            for y in range(self.block_size_y):
                 val = self.land.value((x+self.displs_x)%size,(y+self.displs_y)%size)
                 img_block_id = self.get_block_type_id(val)
                 lb = LandscapeBlock(self.screen,
-                                    x*self.block_size_x,
-                                    y*self.block_size_y,
-                                    self.block_size_x,
-                                    self.block_size_y,
+                                    x*self.texture_size,
+                                    y*self.texture_size,
+                                    self.texture_size,
+                                    self.texture_size,
                                     self.img_blocks[img_block_id])
                 lb.draw(self.screen)
-
         pygame.display.flip()
 
     def get_block_type_id(self, val):
@@ -122,9 +128,7 @@ if __name__ == "__main__":
     heights = [0, 0.55, 0.60, 0.93, 1]
 
     land = DiamondSquare(size, roughness, seed, True)
-    #grid = land.pregenerate()
-    #size = land.getSize()
-    #height_map = land.getHeightMap(heights)
 
     MainWindow = Main(land, heights)
-    MainWindow.MainLoop()
+    #MainWindow.set_full_screen()
+    MainWindow.main_loop()

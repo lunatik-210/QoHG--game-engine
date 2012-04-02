@@ -6,34 +6,34 @@ import random
 
 class MapGenerator():
     def __init__(self, size, debug=False):      
-        if not self.isOdd(size):
+        if not self.is_odd(size):
             size += 1
-        self.size = self.correctSizeDimension(size)
-        self.grid = self.setupGrid(self.size)
+        self.size = self.correct_size_dimension(size)
+        self.grid = self.setup_grid(self.size)
         self.debug = debug
 
     def clean(self):
-        self.grid = setupGrid(self.size)
+        self.grid = setup_grid(self.size)
 
-    def getSize(self):
+    def get_size(self):
         return self.size
 
-    def getMap(self):
+    def get_map(self):
         return self.grid
 
-    def isOdd(self, dsize):
+    def is_odd(self, dsize):
         return (dsize % 2 == 1)
 
-    def correctSizeDimension(self, dsize):
+    def correct_size_dimension(self, dsize):
         temp_dsize = dsize
         while True:
             temp_dsize = (temp_dsize + 1) >> 1
-            if not self.isOdd(temp_dsize):
-                return self.correctSizeDimension(dsize+2)
+            if not self.is_odd(temp_dsize):
+                return self.correct_size_dimension(dsize+2)
             if temp_dsize <= 3:
                 return dsize
 
-    def setupGrid(self, size):
+    def setup_grid(self, size):
         return zeros((size, size))
 
     def pregenerate(self):
@@ -46,7 +46,7 @@ class MapGenerator():
             print "Pregenerate map... - Done", self.size, "x", self.size
         return self.grid
 
-    def getHeightMap(self, heights):
+    def get_height_map(self, heights):
         if self.debug:
             print "getHeightMap map...", self.size, "x", self.size
         temp_grid = self.setupGrid(self.size)
@@ -87,21 +87,21 @@ class DiamondSquare(MapGenerator):
                 while (((x & base) == 0) and ((y & base) == 0)):
                     base <<= 1
                 if (((x & base) != 0) and ((y & base) != 0)):
-                    self.squareStep(x, y, base)
+                    self.square_step(x, y, base)
                 else:
-                    self.diamondStep(x, y, base)
+                    self.diamond_step(x, y, base)
             return self.grid[x][y]
         else:
             self.grid[x][y] = max(0.0, min(1.0, v))
 
-    def squareStep(self, x, y, blockSize):
+    def square_step(self, x, y, blockSize):
         if self.grid[x][y] == 0:
             self.value(x, y, self.displace((self.value((x-blockSize),(y-blockSize)) + 
                                             self.value((x+blockSize),(y-blockSize)) + 
                                             self.value((x-blockSize),(y+blockSize)) + 
                                             self.value((x+blockSize),(y+blockSize))) / 4, blockSize, x, y))
         
-    def diamondStep(self, x, y, blockSize):
+    def diamond_step(self, x, y, blockSize):
         if self.grid[x][y] == 0:
             self.value(x, y, self.displace((self.value((x-blockSize), y) + 
                                             self.value((x+blockSize), y) + 
