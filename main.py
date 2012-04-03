@@ -2,7 +2,7 @@
 
 import random
 import sprites
-import MapGenerator 
+import land 
 import sys
 
 import pygame
@@ -94,20 +94,14 @@ class Main:
         for x in range(self.block_size_x):
             for y in range(self.block_size_y):
                 val = self.land.value((x+self.displs_x)%size,(y+self.displs_y)%size)
-                img_block_id = self.get_block_type_id(val)
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,
                                             self.texture_size,
                                             self.texture_size,
-                                            self.img_blocks[img_block_id])
+                                            self.img_blocks[val])
                 lb.draw(self.screen)
         pygame.display.flip()
-
-    def get_block_type_id(self, val):
-        for i in range(len(self.heights)-1):
-            if self.heights[i] <= val <= self.heights[i+1]:
-                return i        
 
 
 if __name__ == "__main__":
@@ -117,11 +111,11 @@ if __name__ == "__main__":
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
-    seed = 123123
+    land_id = 123123
     # 0.0 < sea < 0.44 < sand < 0.50 < ground < 0.85 < forest < 1
     heights = [0, 0.55, 0.60, 0.93, 1]
 
-    land = MapGenerator.DiamondSquare(size, roughness, seed, True)
+    land = land.Land(size, heights, land_id, roughness, True)
 
     MainWindow = Main(land, heights)
     MainWindow.set_full_screen()
