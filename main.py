@@ -61,22 +61,25 @@ class Main:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    sys.exit()
-                if event.key == K_RIGHT:
-                    self.displs_x += speed_x
-                    self.displs_x %= self.land.get_size()
-                elif event.key == K_LEFT:
-                    self.displs_x -= speed_x
-                    self.displs_x %= self.land.get_size()
-                elif event.key == K_UP:
-                    self.displs_y -= speed_y
-                    self.displs_y %= self.land.get_size()
-                elif event.key == K_DOWN:
-                    self.displs_y += speed_y
-                    self.displs_y %= self.land.get_size()
-                self.redraw()        
+
+        key = pygame.key.get_pressed()
+
+        if key[K_ESCAPE]:
+            sys.exit()
+        elif key[K_RIGHT]:
+            self.displs_x += speed_x
+            self.displs_x %= self.land.get_size()
+        elif key[K_LEFT]:
+            self.displs_x -= speed_x
+            self.displs_x %= self.land.get_size()
+        elif key[K_UP]:
+            self.displs_y -= speed_y
+            self.displs_y %= self.land.get_size()
+        elif key[K_DOWN]:
+            self.displs_y += speed_y
+            self.displs_y %= self.land.get_size()
+        
+        self.redraw()
 
     def load_resources(self):
         img_resources = "./images/"

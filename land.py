@@ -2,7 +2,7 @@ import MapGenerator
 import numpy
 
 class Land():
-	def __init__(self, size, heights, land_id = 100, roughness = 15.0, debug = False):
+	def __init__(self, size, heights, land_id=100, roughness=15.0, debug=False):
 		self.heights = heights
 		self.map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, debug)
 		self.lsize = self.map_generator.get_size()
