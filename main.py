@@ -66,16 +66,16 @@ class Main:
 
         if key[K_ESCAPE]:
             sys.exit()
-        elif key[K_RIGHT]:
+        elif key[K_RIGHT] or key[K_d]:
             self.displs_x += speed_x
             self.displs_x %= self.land.get_size()
-        elif key[K_LEFT]:
+        elif key[K_LEFT] or key[K_a]:
             self.displs_x -= speed_x
             self.displs_x %= self.land.get_size()
-        elif key[K_UP]:
+        elif key[K_UP] or key[K_w]:
             self.displs_y -= speed_y
             self.displs_y %= self.land.get_size()
-        elif key[K_DOWN]:
+        elif key[K_DOWN] or key[K_s]:
             self.displs_y += speed_y
             self.displs_y %= self.land.get_size()
         
@@ -86,15 +86,19 @@ class Main:
         '''Print debug inforation to the screen'''
         values = { 'x' : self.displs_x, 'y' : self.displs_y }
         font = pygame.font.Font(None, 30)
-        text = font.render("x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
+        text = font.render("Global: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
         self.screen.blit(text, (0,0))
 
+        pos = pygame.mouse.get_pos()
+        values = { 'x' : pos[0]/16 + self.displs_x, 'y' : pos[1]/16 + self.displs_y }
+        font = pygame.font.Font(None, 30)
+        text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
+        self.screen.blit(text, (0,20))    
+        
         if mouse[0]:
-            pos = pygame.mouse.get_pos()
-            values = { 'x' : pos[0]/16 + self.displs_x, 'y' : pos[1]/16 + self.displs_y }
             font = pygame.font.Font(None, 30)
-            text = font.render("Mouse click: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
-            self.screen.blit(text, (0,20))    
+            text = font.render("Mouse pressed", True, (255, 255, 255), (0,0,0))
+            self.screen.blit(text, (pos[0]-60,pos[1]-10))   
             
         pygame.display.flip()        
 
@@ -123,7 +127,6 @@ class Main:
                                             self.texture_size,
                                             self.img_blocks[val])
                 lb.draw(self.screen)
-
         #pygame.display.flip()
 
 
