@@ -46,8 +46,8 @@ class Main:
         changes = True
 
         while 1:
-            speed_x = self.block_size_x / 16
-            speed_y = self.block_size_y / 14
+            speed_x = self.block_size_x / 16 #why 16?
+            speed_y = self.block_size_y / 14 #FIXME: why 14? int(768/64/14) = 0
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
