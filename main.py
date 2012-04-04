@@ -124,12 +124,16 @@ class Main:
         img_sand = pygame.image.load(img_resources + "sand%d.png" % self.texture_size).convert()
         img_forest = pygame.image.load(img_resources + "tree%d.png" % self.texture_size).convert()
         img_grass = pygame.image.load(img_resources + "grass%d.png" % self.texture_size).convert()
+        img_log = pygame.image.load(img_resources + "log%d.png" % self.texture_size).convert()
+        img_stone = pygame.image.load(img_resources + "stone%d.png" % self.texture_size).convert()
         img_water = pygame.image.load(img_resources + "water%d.png" % self.texture_size).convert()
 
         self.img_blocks = { 0 : img_water,
                             1 : img_sand,
                             2 : img_grass,
-                            3 : img_forest }
+                            3 : img_log,
+                            4 : img_stone,
+                            5 : img_forest }
                 
     def redraw(self):
         for x in range(self.block_size_x):
@@ -154,7 +158,7 @@ if __name__ == "__main__":
     # (change map ) you can think about seed as map number or id
     land_id = 123123
     # 0.0 < sea < 0.44 < sand < 0.50 < ground < 0.85 < forest < 1
-    heights = [0, 0.55, 0.60, 0.95, 1]
+    heights = [0, 0.55, 0.60, 0.948, 0.949,  0.95, 1]
 
     land = land.Land(size, heights, land_id, roughness, True)
 
