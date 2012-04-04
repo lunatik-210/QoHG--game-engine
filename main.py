@@ -96,7 +96,7 @@ class Main:
     def redraw(self):
         for x in range(self.block_size_x):
             for y in range(self.block_size_y):
-                val = self.land.value((x+self.displs_x)%size,(y+self.displs_y)%size)
+                val = self.land.value((x+self.displs_x)%land.get_size(),(y+self.displs_y)%land.get_size())
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,

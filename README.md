@@ -15,3 +15,4 @@
 * Implement first version of class GameEngine with some hash map optimization
 
 > Comment: After some thought i've decided implement hashing in separate class named Land
+> and I'm amazed because it turns out that map hashing gives some performance and it now moves faster across the map
