@@ -169,5 +169,5 @@ if __name__ == "__main__":
     land = land.Land(size, heights, land_id, roughness, True)
 
     MainWindow = Main(land, heights, 1024, 768, True)
-    #MainWindow.set_full_screen()
+    MainWindow.set_full_screen()
     MainWindow.main_loop()
