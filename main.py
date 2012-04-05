@@ -54,7 +54,8 @@ class Main:
         while 1:
             # Make sure game doesn't run at more than 60 frames per second
             clock.tick(60)
-
+            
+            """Process single events"""
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
@@ -62,18 +63,18 @@ class Main:
                     if event.key == K_1:
                         self.set_view_mod(64)
                         changes = True
-                    if event.key == K_2:
+                    elif event.key == K_2:
                         self.set_view_mod(48)
                         changes = True        
-                    if event.key == K_3:
+                    elif event.key == K_3:
                         self.set_view_mod(32)
                         changes = True    
+                    elif event.key == K_ESCAPE:
+                        sys.exit()
 
+            """Process continuous events"""
             key = pygame.key.get_pressed()
-
-            if key[K_ESCAPE]:
-                sys.exit()
-            elif key[K_RIGHT] or key[K_d]:
+            if key[K_RIGHT] or key[K_d]:
                 displs_x += speed_x
                 displs_x %= self.land.get_size()
                 changes = True
@@ -168,5 +169,5 @@ if __name__ == "__main__":
     land = land.Land(size, heights, land_id, roughness, True)
 
     MainWindow = Main(land, heights, 1024, 768, True)
-    MainWindow.set_full_screen()
+    #MainWindow.set_full_screen()
     MainWindow.main_loop()
