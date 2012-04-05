@@ -17,7 +17,7 @@ class Main:
     initialization and creating of the Game.
     """
     
-    def __init__(self, land, heights, width=1024, height=768):
+    def __init__(self, land, heights, width=1024, height=768, debug = False):
         """Initialize"""
         """Initialize PyGame"""
         pygame.init()
@@ -26,12 +26,7 @@ class Main:
         """Create the Screen"""
         self.screen = pygame.display.set_mode((width, height))
         self.width, self.height = width, height
-
-        lsize = self.land.get_size() >> 2
-
-        """Get random x,y starting location"""
-        self.displs_x = abs(int(random.gauss(lsize, lsize)))
-        self.displs_y = abs(int(random.gauss(lsize, lsize)))
+        self.debug = debug
 
     def set_full_screen(self):
         modes = pygame.display.list_modes(32)
@@ -41,13 +36,24 @@ class Main:
 
     def main_loop(self):
         """This is the Main Loop of the Game"""
-        self.set_view_mod(64)
+        self.set_view_mod(32)
+
+        """Get random x,y starting location"""
+        lsize = self.land.get_size() >> 2
+        displs_x = abs(int(random.gauss(lsize, lsize)))
+        displs_y = abs(int(random.gauss(lsize, lsize)))
 
         changes = True
+        
+        # Fixed: 1 is enough =)
+        speed_x = 1
+        speed_y = 1
+
+        clock = pygame.time.Clock()
 
         while 1:
-            speed_x = self.block_size_x / 16 #why 16?
-            speed_y = self.block_size_y / 14 #FIXME: why 14? int(768/64/14) = 0
+            # Make sure game doesn't run at more than 60 frames per second
+            clock.tick(60)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -58,20 +64,20 @@ class Main:
             if key[K_ESCAPE]:
                 sys.exit()
             elif key[K_RIGHT] or key[K_d]:
-                self.displs_x += speed_x
-                self.displs_x %= self.land.get_size()
+                displs_x += speed_x
+                displs_x %= self.land.get_size()
                 changes = True
             elif key[K_LEFT] or key[K_a]:
-                self.displs_x -= speed_x
-                self.displs_x %= self.land.get_size()
+                displs_x -= speed_x
+                displs_x %= self.land.get_size()
                 changes = True
             elif key[K_UP] or key[K_w]:
-                self.displs_y -= speed_y
-                self.displs_y %= self.land.get_size()
+                displs_y -= speed_y
+                displs_y %= self.land.get_size()
                 changes = True
             elif key[K_DOWN] or key[K_s]:
-                self.displs_y += speed_y
-                self.displs_y %= self.land.get_size()
+                displs_y += speed_y
+                displs_y %= self.land.get_size()
                 changes = True
             elif key[K_1]:
                 self.set_view_mod(64)
@@ -80,37 +86,31 @@ class Main:
                 self.set_view_mod(32)
                 changes = True
 
-            mouse = pygame.mouse.get_pressed()
-
             if changes:
-                self.redraw()
+                self.redraw(displs_x, displs_y)
                 changes = False
 
-            '''Print debug inforation to the screen'''
-            values = { 'x' : self.displs_x, 'y' : self.displs_y }
-            font = pygame.font.Font(None, 30)
-            text = font.render("Global: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
-            self.screen.blit(text, (0,0))
-
-            pos = pygame.mouse.get_pos()
-            values = { 'x' : pos[0]/16 + self.displs_x, 'y' : pos[1]/16 + self.displs_y }
-            font = pygame.font.Font(None, 30)
-            text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
-            self.screen.blit(text, (0,20))    
-
-            font = pygame.font.Font(None, 30)
-            text = font.render("Mode: %d (1-2 to switch)" % self.texture_size, True, (255, 255, 255), (0,0,0))
-            self.screen.blit(text, (0,40))    
-            
-            if mouse[0]:
-                font = pygame.font.Font(None, 30)
-                text = font.render("Mouse pressed", True, (255, 255, 255), (0,0,0))
-                self.screen.blit(text, (pos[0]-60,pos[1]-10))   
+            if self.debug:
+                self.draw_debug_window(displs_x, displs_y)                
                 
             pygame.display.flip()        
 
-            '''------------------------------------'''
 
+    def draw_debug_window(self, displs_x, displs_y):
+        values = { 'x' : displs_x, 'y' : displs_y }
+        font = pygame.font.Font(None, 30)
+        text = font.render("Global: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
+        self.screen.blit(text, (0,0))
+
+        pos = pygame.mouse.get_pos()
+        values = { 'x' : pos[0]/16 + displs_x, 'y' : pos[1]/16 + displs_y }
+        font = pygame.font.Font(None, 30)
+        text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
+        self.screen.blit(text, (0,20))    
+
+        font = pygame.font.Font(None, 30)
+        text = font.render("Mode: %d (1-2 to switch)" % self.texture_size, True, (255, 255, 255), (0,0,0))
+        self.screen.blit(text, (0,40)) 
 
     def set_view_mod(self, bit):
         self.texture_size = bit
@@ -119,26 +119,28 @@ class Main:
         self.load_resources()
 
     def load_resources(self):
-        img_resources = "./images/"
-
-        img_sand = pygame.image.load(img_resources + "sand%d.png" % self.texture_size).convert()
-        img_forest = pygame.image.load(img_resources + "tree%d.png" % self.texture_size).convert()
-        img_grass = pygame.image.load(img_resources + "grass%d.png" % self.texture_size).convert()
-        img_log = pygame.image.load(img_resources + "log%d.png" % self.texture_size).convert()
-        img_stone = pygame.image.load(img_resources + "stone%d.png" % self.texture_size).convert()
-        img_water = pygame.image.load(img_resources + "water%d.png" % self.texture_size).convert()
+        img_sand  = self.load_image("sand%d.png" % self.texture_size)
+        img_tree  = self.load_image("tree%d.png" % self.texture_size)
+        img_grass = self.load_image("grass%d.png" % self.texture_size)
+        img_log   = self.load_image("log%d.png" % self.texture_size)
+        img_stone = self.load_image("stone%d.png" % self.texture_size)
+        img_water = self.load_image("water%d.png" % self.texture_size)
 
         self.img_blocks = { 0 : img_water,
                             1 : img_sand,
                             2 : img_grass,
                             3 : img_log,
                             4 : img_stone,
-                            5 : img_forest }
+                            5 : img_tree }
                 
-    def redraw(self):
+    def load_image(self, name):
+        img_resources = "./images/"
+        return pygame.image.load(img_resources + name).convert()
+
+    def redraw(self, displs_x, displs_y):
         for x in range(self.block_size_x):
             for y in range(self.block_size_y):
-                val = self.land.value((x+self.displs_x)%land.get_size(),(y+self.displs_y)%land.get_size())
+                val = self.land.value((x+displs_x)%land.get_size(),(y+displs_y)%land.get_size())
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,
@@ -146,13 +148,12 @@ class Main:
                                             self.texture_size,
                                             self.img_blocks[val])
                 lb.draw(self.screen)
-        #pygame.display.flip()
 
 
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 512
+    size = 256
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
@@ -162,6 +163,6 @@ if __name__ == "__main__":
 
     land = land.Land(size, heights, land_id, roughness, True)
 
-    MainWindow = Main(land, heights)
+    MainWindow = Main(land, heights, 1024, 768, True)
     MainWindow.set_full_screen()
     MainWindow.main_loop()
