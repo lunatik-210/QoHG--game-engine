@@ -17,13 +17,14 @@ class Main:
     initialization and creating of the Game.
     """
     
-    def __init__(self, land, heights, width=1024, height=768, debug = False):
-        """Initialize"""
-        """Initialize PyGame"""
+    def __init__(self, land, heights, width=1024, height=768, debug=False):
+        # Initialize PyGame
         pygame.init()
+
         self.land = land
         self.heights = heights
-        """Create the Screen"""
+        
+        # Create the Screen
         self.screen = pygame.display.set_mode((width, height))
         self.width, self.height = width, height
         self.debug = debug
@@ -35,17 +36,18 @@ class Main:
         self.width, self.height = modes[0]        
 
     def main_loop(self):
-        """This is the Main Loop of the Game"""
+        """
+        This is the Main Loop of the Game
+        """
         self.set_view_mod(48)
 
-        """Get random x,y starting location"""
+        # Get random x,y starting location
         lsize = self.land.get_size() >> 2
         displs_x = abs(int(random.gauss(lsize, lsize)))
         displs_y = abs(int(random.gauss(lsize, lsize)))
 
         changes = True
         
-        # Fixed: 1 is enough =)
         speed_x = 1
         speed_y = 1
 
@@ -96,26 +98,26 @@ class Main:
                 changes = False
 
             if self.debug:
-                self.draw_debug_window(displs_x, displs_y)                
+                self.draw_debug_window(displs_x, displs_y)
                 
-            pygame.display.flip()        
+            pygame.display.flip()
 
 
     def draw_debug_window(self, displs_x, displs_y):
         values = { 'x' : displs_x, 'y' : displs_y }
         font = pygame.font.Font(None, 30)
-        text = font.render("Global: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
+        text = font.render("Global: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0, 0, 0))
         self.screen.blit(text, (0,0))
 
         pos = pygame.mouse.get_pos()
         values = { 'x' : pos[0]/16 + displs_x, 'y' : pos[1]/16 + displs_y }
         font = pygame.font.Font(None, 30)
-        text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0,0,0))
+        text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0, 0, 0))
         self.screen.blit(text, (0,20))    
 
         font = pygame.font.Font(None, 30)
-        text = font.render("Mode: %d (1-3 to switch)" % self.texture_size, True, (255, 255, 255), (0,0,0))
-        self.screen.blit(text, (0,40)) 
+        text = font.render("Mode: %d (1-3 to switch)" % self.texture_size, True, (255, 255, 255), (0, 0, 0))
+        self.screen.blit(text, (0, 40))
 
     def set_view_mod(self, bit):
         self.texture_size = bit
@@ -143,9 +145,13 @@ class Main:
         return pygame.image.load(img_resources + name).convert()
 
     def redraw(self, displs_x, displs_y):
+        """
+        Get necessary image block and
+        redraw matrix of LandscapeBlocks' sprites
+        """
         for x in range(self.block_size_x):
             for y in range(self.block_size_y):
-                val = self.land.value((x+displs_x)%land.get_size(),(y+displs_y)%land.get_size())
+                val = self.land.value((x+displs_x)%land.get_size(), (y+displs_y)%land.get_size())
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,
