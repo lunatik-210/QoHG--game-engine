@@ -163,7 +163,7 @@ if __name__ == "__main__":
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
     land_id = 123123
-    # 0.0 < sea < 0.44 < sand < 0.50 < ground < 0.85 < forest < 1
+    # water, sand, grass, log, stone, tree
     heights = [0, 0.55, 0.60, 0.948, 0.949,  0.95, 1]
 
     land = land.Land(size, heights, land_id, roughness, True)
