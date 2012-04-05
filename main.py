@@ -13,7 +13,7 @@ if not pygame.mixer: print 'Warning, sound disabled'
 
 class Main:
     """
-    The Main PyMan Class - This class handles the main 
+    The Main Class - This class handles the main 
     initialization and creating of the Game.
     """
     
@@ -36,7 +36,7 @@ class Main:
 
     def main_loop(self):
         """This is the Main Loop of the Game"""
-        self.set_view_mod(32)
+        self.set_view_mod(48)
 
         """Get random x,y starting location"""
         lsize = self.land.get_size() >> 2
@@ -58,6 +58,16 @@ class Main:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == K_1:
+                        self.set_view_mod(64)
+                        changes = True
+                    if event.key == K_2:
+                        self.set_view_mod(48)
+                        changes = True        
+                    if event.key == K_3:
+                        self.set_view_mod(32)
+                        changes = True    
 
             key = pygame.key.get_pressed()
 
@@ -78,12 +88,6 @@ class Main:
             elif key[K_DOWN] or key[K_s]:
                 displs_y += speed_y
                 displs_y %= self.land.get_size()
-                changes = True
-            elif key[K_1]:
-                self.set_view_mod(64)
-                changes = True
-            elif key[K_2]:
-                self.set_view_mod(32)
                 changes = True
 
             if changes:
@@ -109,7 +113,7 @@ class Main:
         self.screen.blit(text, (0,20))    
 
         font = pygame.font.Font(None, 30)
-        text = font.render("Mode: %d (1-2 to switch)" % self.texture_size, True, (255, 255, 255), (0,0,0))
+        text = font.render("Mode: %d (1-3 to switch)" % self.texture_size, True, (255, 255, 255), (0,0,0))
         self.screen.blit(text, (0,40)) 
 
     def set_view_mod(self, bit):
