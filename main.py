@@ -33,7 +33,7 @@ class Main:
         modes = pygame.display.list_modes(32)
         if modes:
             pygame.display.set_mode(modes[0], pygame.FULLSCREEN, 32)
-        self.width, self.height = modes[0]        
+        self.width, self.height = modes[0]
 
     def main_loop(self):
         """
