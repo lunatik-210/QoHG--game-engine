@@ -4,6 +4,7 @@ import random
 import sprites
 import land 
 import sys
+import MapGenerator
 
 import pygame
 from pygame.locals import *
@@ -17,12 +18,11 @@ class Main:
     initialization and creating of the Game.
     """
     
-    def __init__(self, land, heights, width=1024, height=768, debug=False):
+    def __init__(self, land, width=1024, height=768, debug=False):
         # Initialize PyGame
         pygame.init()
 
         self.land = land
-        self.heights = heights
         
         # Create the Screen
         self.screen = pygame.display.set_mode((width, height))
@@ -169,11 +169,20 @@ if __name__ == "__main__":
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
     land_id = 123123
+    
+    # water, sand, grass    
+    #land_heights = [0, 0.55, 0.60, 1]
+
+    # log, stone, tree
+    #objects_heights = [0.948, 0.949,  0.95, 1]
+
     # water, sand, grass, log, stone, tree
     heights = [0, 0.55, 0.60, 0.948, 0.949,  0.95, 1]
 
-    land = land.Land(size, heights, land_id, roughness, True)
+    map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
-    MainWindow = Main(land, heights, 1024, 768, True)
+    land = land.Land(heights, map_generator)
+
+    MainWindow = Main(land, 1024, 768, True)
     MainWindow.set_full_screen()
     MainWindow.main_loop()
