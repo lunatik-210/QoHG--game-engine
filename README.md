@@ -30,3 +30,13 @@
 * Start thinking about initial game engine (Player, Buildings, Textures)
 
 > We shouldn't forget about multiplayer
+
+07.04.2012
+----------
+
+###Done:
+* Added monster to the map, and made them to move stochastically (amazing -_-")
+* Tried first sample about TCP in python
+
+###Plans:
+* Made some AI about monsters
