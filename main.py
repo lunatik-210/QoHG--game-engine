@@ -53,6 +53,7 @@ class Main:
 
         clock = pygame.time.Clock()
 
+        # set User event to update Monsters
         pygame.time.set_timer(USEREVENT+1, 700)
 
         while 1:
