@@ -37,6 +37,7 @@
 ###Done:
 * Added monster to the map, and made them to move stochastically (amazing -_-")
 * Tried first sample about TCP in python
+* Added viedo to YouTube http://youtu.be/jfgvRmdfA6w
 
 ###Plans:
 * Made some AI about monsters
