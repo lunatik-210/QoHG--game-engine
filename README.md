@@ -40,3 +40,4 @@
 
 ###Plans:
 * Made some AI about monsters
+* Try to add a Single Player
