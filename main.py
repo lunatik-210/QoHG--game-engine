@@ -100,7 +100,7 @@ class Main:
             if self.debug:
                 self.draw_debug_window(displs_x, displs_y)
                 
-            pygame.display.flip()
+            pygame.display.update()
 
 
     def draw_debug_window(self, displs_x, displs_y):
