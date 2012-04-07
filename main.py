@@ -39,7 +39,7 @@ class Main:
         """
         This is the Main Loop of the Game
         """
-        self.set_view_mod(48)
+        self.set_view_mod(64)
 
         # Get random x,y starting location
         lsize = self.land.get_size() >> 2
@@ -134,24 +134,25 @@ class Main:
         self.load_resources()
 
     def load_resources(self):
-        img_sand  = self.load_image("sand%d.png" % self.texture_size)
-        img_tree  = self.load_image("tree%d.png" % self.texture_size)
-        img_grass = self.load_image("grass%d.png" % self.texture_size)
-        img_log   = self.load_image("log%d.png" % self.texture_size)
-        img_stone = self.load_image("stone%d.png" % self.texture_size)
-        img_water = self.load_image("water%d.png" % self.texture_size)
+        suffix = "_"
+        img_sand  = self.load_image("sand%s%d.png"  % (suffix, self.texture_size))
+        img_tree  = self.load_image("tree%s%d.png"  % (suffix, self.texture_size))
+        img_grass = self.load_image("grass%s%d.png" % (suffix, self.texture_size))
+        img_log   = self.load_image("log%s%d.png"   % (suffix, self.texture_size))
+        img_stone = self.load_image("stone%s%d.png" % (suffix, self.texture_size))
+        img_water = self.load_image("water%s%d.png" % (suffix, self.texture_size))
 
-        img_wolf = self.load_image("wolf%dr.png" % self.texture_size)
+        img_wolf = self.load_image("wolf%s%dr.png"   % (suffix, self.texture_size))
         img_pig = self.load_image("pig%dr.png" % self.texture_size)
         
         self.img_blocks = { heights['water'][1] : img_water,
-                            heights['sand'][1] : img_sand,
+                            heights['sand'][1]  : img_sand,
                             heights['grass'][1] : img_grass,
-                            heights['log'][1] : img_log,
+                            heights['log'][1]   : img_log,
                             heights['stone'][1] : img_stone,
-                            heights['tree'][1] : img_tree,
+                            heights['tree'][1]  : img_tree,
                             monsters['wolf'][0] : img_wolf,
-                            monsters['pig'][0] : img_pig }
+                            monsters['pig'][0]  : img_pig }
                 
     def load_image(self, name):
         img_resources = "./images/"
