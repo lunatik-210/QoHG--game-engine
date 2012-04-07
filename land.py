@@ -1,12 +1,16 @@
 
 import numpy
+import random
 
 class Land:
-    def __init__(self, heights, map_generator):
+    def __init__(self, heights, monsters, grass_area, map_generator):
+        self.grass_area = grass_area
+        self.monsters = monsters
         self.heights = heights
         self.map_generator = map_generator
         self.lsize = self.map_generator.get_size()
         self.land = numpy.empty((self.lsize,self.lsize))
+        self.objects = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
 
     def set_land_id(self, land_id):
@@ -16,16 +20,41 @@ class Land:
         val = self.land[x][y]
         if val != -1:
             return val
-        self.land[x][y] = self.get_block_id(self.heights, self.map_generator.calc(x,y))
+        val = self.map_generator.calc(x,y)
+        self.land[x][y] = self.get_block_id(self.heights, val)
+        '''Make desicion about pig or wolf'''
+        if self.grass_area[0] < val < self.grass_area[1]:
+            who = int(random.uniform(0,len(self.monsters)))
+            name = 'wolf' * (1-who) + 'pig' * (0+who)
+            if self.monsters[name][1] > random.gauss(0.6,0.17):
+                self.land[x][y] = self.monsters[name][0]
         return self.land[x][y]
 
+    def update(self, x1, y1, x2, y2):
+        '''-_______- -_______- -_______- -_______- -_______-'''
+        '''Not understandable code, I have to fix it        '''
+        '''But it really makes monsters move =))))))))))))) '''
+        for x in range(x1, x2):
+            for y in range(y1, y2):
+                for monster in self.monsters:
+                    if self.land[x][y] == self.monsters[monster][0]:
+                        self.land[x][y] = self.heights['grass'][1]
+                        count = 0
+                        while count < 5:
+                            new_x = int(random.uniform(-2,2)) + x
+                            new_y = int(random.uniform(-2,2)) + y
+                            if self.land[new_x][new_y] == self.heights['grass'][1]:
+                                self.land[new_x][new_y] = self.monsters[monster][0]
+                                break
+                            count += 1
+    
     def get_size(self):
         return self.lsize
 
     def get_block_id(self, height_map, val):
-        for i in range(len(height_map)-1):
-            if height_map[i] <= val <= height_map[i+1]:
-                return i
+        for block in height_map:
+            if height_map[block][0][0] <= val <= height_map[block][0][1]:
+                return height_map[block][1]
 
     # Here we should use some data base
     def save(self, name):

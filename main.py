@@ -53,6 +53,8 @@ class Main:
 
         clock = pygame.time.Clock()
 
+        pygame.time.set_timer(USEREVENT+1, 700)
+
         while 1:
             # Make sure game doesn't run at more than 60 frames per second
             clock.tick(60)
@@ -61,6 +63,11 @@ class Main:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+                elif event.type == USEREVENT+1:
+                    self.land.update( displs_x, displs_y, 
+                                     (displs_x+self.block_size_x) % self.land.get_size(), 
+                                     (displs_y+self.block_size_y) % self.land.get_size() )
+                    changes = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == K_1:
                         self.set_view_mod(64)
@@ -110,7 +117,7 @@ class Main:
         self.screen.blit(text, (0,0))
 
         pos = pygame.mouse.get_pos()
-        values = { 'x' : pos[0]/16 + displs_x, 'y' : pos[1]/16 + displs_y }
+        values = { 'x' : pos[0]/self.texture_size + displs_x, 'y' : pos[1]/self.texture_size + displs_y }
         font = pygame.font.Font(None, 30)
         text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0, 0, 0))
         self.screen.blit(text, (0,20))    
@@ -133,12 +140,17 @@ class Main:
         img_stone = self.load_image("stone%d.png" % self.texture_size)
         img_water = self.load_image("water%d.png" % self.texture_size)
 
-        self.img_blocks = { 0 : img_water,
-                            1 : img_sand,
-                            2 : img_grass,
-                            3 : img_log,
-                            4 : img_stone,
-                            5 : img_tree }
+        img_wolf = self.load_image("wolf%dr.png" % self.texture_size)
+        img_pig = self.load_image("pig%dr.png" % self.texture_size)
+        
+        self.img_blocks = { heights['water'][1] : img_water,
+                            heights['sand'][1] : img_sand,
+                            heights['grass'][1] : img_grass,
+                            heights['log'][1] : img_log,
+                            heights['stone'][1] : img_stone,
+                            heights['tree'][1] : img_tree,
+                            monsters['wolf'][0] : img_wolf,
+                            monsters['pig'][0] : img_pig }
                 
     def load_image(self, name):
         img_resources = "./images/"
@@ -151,7 +163,7 @@ class Main:
         """
         for x in range(self.block_size_x):
             for y in range(self.block_size_y):
-                val = self.land.value((x+displs_x)%land.get_size(), (y+displs_y)%land.get_size())
+                val = self.land.value((x+displs_x)%self.land.get_size(), (y+displs_y)%self.land.get_size())
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,
@@ -161,10 +173,11 @@ class Main:
                 lb.draw(self.screen)
 
 
+
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 256
+    size = 500
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
@@ -177,11 +190,27 @@ if __name__ == "__main__":
     #objects_heights = [0.948, 0.949,  0.95, 1]
 
     # water, sand, grass, log, stone, tree
-    heights = [0, 0.55, 0.60, 0.948, 0.949,  0.95, 1]
+    heights = {
+        'water' : [[0, 0.55],     0],
+        'sand'  : [[0.55, 0.60],  1],
+        'grass' : [[0.60, 0.948], 2],
+        'log'   : [[0.948, 0.949],3],
+        'stone' : [[0.949,  0.95],4],
+        'tree'  : [[0.95, 1],     5],
+    }
+    # [monster_id, probability]
+    # wolf, pig
+    monsters = { 
+        'wolf' : [11, 0.2],
+        'pig'  : [12, 0.2]
+    }
+
+    # grass area
+    grass_area = [0.8, 0.9]
 
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
-    land = land.Land(heights, map_generator)
+    land = land.Land(heights, monsters, grass_area, map_generator)
 
     MainWindow = Main(land, 1024, 768, True)
     MainWindow.set_full_screen()
