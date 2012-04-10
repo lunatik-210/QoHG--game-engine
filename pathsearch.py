@@ -90,6 +90,7 @@ def a_star_path_search(start, goal, grid):
                 open.append(neighbor)
     return None
 
+
 ''' Some tests '''
 
 if __name__ == '__main__':
