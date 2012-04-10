@@ -1,110 +1,96 @@
 
 import numpy
 
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+from land import Position 
 
-    def __str__(self):
-        return "(%d, %d)" % (self.x, self.y)
+'''
+    Here I've implemented A* search algorithm for path finding.
+    The idea is to use some heuristic function which is actually
+    the estimation distance to the goal from the current location.
+    So, every time we try to choose the shortest step to get 
+    to the goal, but it doesnt mean that the path is the best one.
+'''
 
-    def __eq__(self, pos):
-        return ( self.x == pos.x and 
-                 self.y == pos.y )
+# Quick Sort: used in A* algorithm
 
-    def __repr__(self):
-        return "(%d,%d)" % (self.x, self.y)
+def quicksort(a, l, r, h):
+    if l >= r:
+        return
+    m = particion(a, l, r, h)
+    quicksort(a, l, m-1, h)
+    quicksort(a, m+1, r, h)
 
-    def left(self):
-        return Position(self.x-1, self.y)
+def particion(a, l, r, h):
+    i = l-1
+    for j in range(l,r+1):
+        if h[a[j].value()] >= h[a[r].value()]:
+            i += 1
+            temp = a[j]
+            a[j] = a[i]
+            a[i] = temp
+    return i
 
-    def right(self):
-        return Position(self.x+1, self.y)
+###################################
 
-    def bottom(self):
-        return Position(self.x, self.y+1)
+def get_path(came_from, pos):
+    if pos.value() in came_from:
+        vector = get_path(came_from, came_from[pos.value()])
+        vector.append(pos)
+        return vector
+    return [pos]
 
-    def top(self):
-        return Position(self.x, self.y-1)
+def is_out_of_range(p, land):
+    return not ( p.x >= 0 and p.x < len(land) and 
+                 p.y >= 0 and p.y < len(land[0]) and 
+                 land[p.x][p.y] == 0)
 
-    def value(self):
-        return (self.x, self.y)
-
-    def get_neighbors(self):
-        return (self.left(), self.top(), self.right(), self.bottom())
+def heuristic(start,goal):
+    return numpy.sqrt((start.x-goal.x)**2 + (start.x-goal.y)**2)
 
 def a_star_path_search(start, goal, grid):
-
-    def particion(a, l, r, h):
-        i = l-1
-        for j in range(l,r+1):
-            if h[a[j].value()] >= h[a[r].value()]:
-                i += 1
-                temp = a[j]
-                a[j] = a[i]
-                a[i] = temp
-        return i
-
-    def quicksort(a, l, r, h):
-        if l >= r:
-            return
-        m = particion(a, l, r, h)
-        quicksort(a, l, m-1, h)
-        quicksort(a, m+1, r, h)
-
-    def is_out_of_range(p):
-        return not ( neighbor.x >= 0 and neighbor.x < len(grid) and 
-                     neighbor.y >= 0 and neighbor.y < len(grid[0]) and 
-                     grid[neighbor.x][neighbor.y] == 0)
-
-    def heuristic(start,goal):
-        return numpy.sqrt((start.x-goal.x)**2 + (start.x-goal.y)**2)
-
-    def get_path(came_from, pos):
-        if pos.value() in came_from:
-            vector = get_path(came_from, came_from[pos.value()])
-            vector.append(pos)
-            return vector
-        return [pos]
-
-    closedset = []
-    openset = [start]
+    closed = []
+    open = [start]
+    
+    # storing actions for every node to retrieve the path
     came_from = {}
 
+    # g - distance from starting location to current
     g = {}
-    h = {}
+
+    # f - g + heuristic
     f = {}
 
     g[start.value()] = 0
-    h[start.value()] = heuristic(start, goal)
-    f[start.value()] = g[start.value()] + h[start.value()]
+    f[start.value()] = g[start.value()] + heuristic(start, goal)
 
-    iteration = 0
+    while open:
 
-    while openset:
-        iteration += 1
-        quicksort(openset, 0, len(openset)-1, f)
-        current_pos = openset.pop()
-        closedset.append(current_pos)
+        # getting the step with the shortest f - value
+        quicksort(open, 0, len(open)-1, f)
+        current_pos = open.pop()
+
+        closed.append(current_pos)
 
         if current_pos == goal:
             return get_path(came_from, current_pos)
 
+        # for every neighbor of the current calculate f - value
+        # and add it to the open list
         for neighbor in current_pos.get_neighbors():
-            if is_out_of_range(neighbor):
+            if is_out_of_range(neighbor, grid):
                 continue
 
-            if neighbor in closedset:
+            if neighbor in closed:
                 continue
 
-            if neighbor not in openset:
-                h[neighbor.value()] = heuristic(neighbor, goal)
+            if neighbor not in open:
                 g[neighbor.value()] = g[current_pos.value()] + 1
-                f[neighbor.value()] = g[neighbor.value()] + h[neighbor.value()]
+                f[neighbor.value()] = g[neighbor.value()] + heuristic(neighbor, goal)
                 came_from[neighbor.value()] = current_pos
-                openset.append(neighbor)
+                open.append(neighbor)
     return None
+
+''' Some tests '''
 
 if __name__ == '__main__':
     grid1 = [[0, 0, 0, 0],
@@ -127,3 +113,5 @@ if __name__ == '__main__':
                a_star_path_search(start2, goal2, grid2))
     
     print results
+
+
