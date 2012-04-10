@@ -16,6 +16,9 @@ class Land:
     def set_land_id(self, land_id):
         self.map_generator.set_seed(land_id)
 
+    def set_value(self, x, y, value):
+        self.land[x][y] = value
+
     def value(self, x,y):
         val = self.land[x][y]
         if val != -1:

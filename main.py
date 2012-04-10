@@ -46,6 +46,8 @@ class Main:
         displs_x = abs(int(random.gauss(lsize, lsize)))
         displs_y = abs(int(random.gauss(lsize, lsize)))
 
+        self.land.set_value(displs_x,displs_y,player_id)
+
         changes = True
         
         speed_x = 1
@@ -134,7 +136,7 @@ class Main:
         self.load_resources()
 
     def load_resources(self):
-        suffix = "_"
+        suffix = ""
         img_sand  = self.load_image("sand%s%d.png"  % (suffix, self.texture_size))
         img_tree  = self.load_image("tree%s%d.png"  % (suffix, self.texture_size))
         img_grass = self.load_image("grass%s%d.png" % (suffix, self.texture_size))
@@ -144,6 +146,7 @@ class Main:
 
         img_wolf = self.load_image("wolf%s%dr.png"   % (suffix, self.texture_size))
         img_pig = self.load_image("pig%dr.png" % self.texture_size)
+        img_player = self.load_image("player%d.png" % self.texture_size)
         
         self.img_blocks = { heights['water'][1] : img_water,
                             heights['sand'][1]  : img_sand,
@@ -152,7 +155,8 @@ class Main:
                             heights['stone'][1] : img_stone,
                             heights['tree'][1]  : img_tree,
                             monsters['wolf'][0] : img_wolf,
-                            monsters['pig'][0]  : img_pig }
+                            monsters['pig'][0]  : img_pig,
+                            player_id : img_player }
                 
     def load_image(self, name):
         img_resources = "./images/"
@@ -206,6 +210,8 @@ if __name__ == "__main__":
         'wolf' : [11, 0.2],
         'pig'  : [12, 0.2]
     }
+
+    player_id = 10
 
     # grass area
     grass_area = [0.8, 0.9]
