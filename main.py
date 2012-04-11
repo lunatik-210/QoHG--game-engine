@@ -198,7 +198,17 @@ class Main:
                 lb.draw(self.screen)
 
     def draw_small_map(self, map, displs_x, displs_y):
-        self.screen.blit(map, (self.width-map.get_width()-20, 20)) 
+        w, h = map.get_width(), map.get_height()
+        s_map = pygame.Surface((w, h))
+        s_map.blit(map, (0,0))
+        dx = displs_x/10-self.block_size_x/2
+        dy = displs_y/10-self.block_size_y/2
+        lines = [(0+dx,0+dy), 
+                 (0+dx,self.block_size_y+dy), 
+                 (self.block_size_x+dx,self.block_size_y+dy), 
+                 (self.block_size_x+dx,0+dy)]
+        pygame.draw.lines(s_map, (255, 0, 0), True, lines, 2)
+        self.screen.blit(s_map, (self.width-w-20, 20)) 
 
 
     def create_small_map(self, size):
@@ -216,7 +226,7 @@ class Main:
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 1000
+    size = 2000
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
@@ -230,8 +240,8 @@ if __name__ == "__main__":
 
     # water, sand, grass, log, stone, tree
     heights = {
-        'water' : [[0, 0.55],     0],
-        'sand'  : [[0.55, 0.60],  1],
+        'water' : [[0, 0.58],     0],
+        'sand'  : [[0.58, 0.60],  1],
         'grass' : [[0.60, 0.948], 2],
         'log'   : [[0.948, 0.949],3],
         'stone' : [[0.949,  0.95],4],
@@ -265,5 +275,5 @@ if __name__ == "__main__":
     land = land.Land(heights, monsters, grass_area, map_generator)
 
     MainWindow = Main(land, 1024, 768, True)
-    #MainWindow.set_full_screen()
+    MainWindow.set_full_screen()
     MainWindow.main_loop()
