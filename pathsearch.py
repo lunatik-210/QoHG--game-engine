@@ -22,7 +22,7 @@ def quicksort(a, l, r, h):
 
 def particion(a, l, r, h):
     i = l-1
-    for j in range(l,r+1):
+    for j in range(l, r+1):
         if h[a[j].value()] >= h[a[r].value()]:
             i += 1
             a[j], a[i] = a[i], a[j]
@@ -38,9 +38,9 @@ def get_path(came_from, pos):
     return [pos]
 
 def is_out_of_range(p, land):
-    return not ( p.x >= 0 and p.x < len(land) and 
-                 p.y >= 0 and p.y < len(land[0]) and 
-                 land[p.x][p.y] == 2)
+    return not ( 0 <= p.x < len(land) and 
+                 0 <= p.y < len(land[0]) and 
+                 land[p.x][p.y] == 0)
 
 def heuristic(start,goal):
     return numpy.sqrt((start.x-goal.x)**2 + (start.x-goal.y)**2)
@@ -91,6 +91,15 @@ def a_star_path_search(start, goal, grid):
 
 ''' Some tests '''
 
+def nice_print(data):
+    for i in data:
+        if i:
+            for j in i[:-1]:
+                print j, "->",
+            print i[-1]
+        else:
+            print None
+
 if __name__ == '__main__':
     grid1 = [[0, 0, 0, 0],
              [0, 1, 0, 0],
@@ -98,7 +107,7 @@ if __name__ == '__main__':
              [0, 1, 1, 0]]
 
     start1 = Position(0,0)
-    goal1  = Position(len(grid1)-1,len(grid1[0])-1)
+    goal1  = Position(len(grid1)-1, len(grid1[0])-1)
 
     grid2 = [[0, 0, 0, 0],
              [0, 1, 0, 1],
@@ -106,9 +115,22 @@ if __name__ == '__main__':
              [0, 1, 1, 0]]
 
     start2 = Position(0,0)
-    goal2  = Position(len(grid2)-1,len(grid2[0])-1)
+    goal2  = Position(len(grid2)-1, len(grid2[0])-1)
+
+    # (0, 0) -> (0, 1) -> (0, 2) -> (0, 3) -> (1, 3) -> (2, 3) -> (3, 3) -> (3, 4) -> (4, 4) is the best path
+    # (0, 0) -> (1, 0) -> (2, 0) -> (3, 0) -> (4, 0) -> (4, 1) -> (4, 2) -> (3, 2) -> (3, 3) -> (3, 4) -> (4, 4) what algo is find
+    #         0  1  2  3  4
+    grid3 = [[0, 0, 0, 0, 0], # 0
+             [0, 1, 1, 0, 0], # 1
+             [0, 1, 1, 0, 1], # 2
+             [0, 1, 0, 0, 0], # 3
+             [0, 0, 0, 1, 0]] # 4
+
+    start3 = Position(0,0)
+    goal3  = Position(len(grid3)-1, len(grid3[0])-1)
 
     results = (a_star_path_search(start1, goal1, grid1), 
-               a_star_path_search(start2, goal2, grid2))
+               a_star_path_search(start2, goal2, grid2),
+               a_star_path_search(start3, goal3, grid3))
     
-    print results
+    nice_print(results)

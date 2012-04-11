@@ -49,7 +49,7 @@ class Main:
         displs_x = abs(int(random.gauss(lsize, lsize)))
         displs_y = abs(int(random.gauss(lsize, lsize)))
 
-        #self.land.set_value(displs_x,displs_y,player_id)
+        self.land.set_value(displs_x, displs_y, player_id)
 
         changes = True
         
@@ -243,8 +243,9 @@ if __name__ == "__main__":
         3 : 'Brown',
         4 : 'Gray',
         5 : 'Green',
+        10: 'Black',
         11 : 'Black',
-        12 : 'Black'
+        12 : 'Black',
     }
     # [monster_id, probability]
     # wolf, pig
