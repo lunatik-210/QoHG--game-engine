@@ -99,7 +99,7 @@ class Main:
                         dx = int(event.pos[0]/self.texture_size + displs_x)
                         dy = int(event.pos[1]/self.texture_size + displs_y)
                         # now you may see debug information about the path
-                        print get_path(Position(mouse_x, mouse_y), Position(dx, dy), self.land.get_land())
+                        print get_path(Position(mouse_x, mouse_y), Position(dx, dy), self.land.get_land(), 2)
 
 
             """Process continuous events"""
@@ -123,7 +123,7 @@ class Main:
 
             if changes:
                 self.redraw(displs_x, displs_y)
-                self.draw_small_map(small_map)
+                self.draw_small_map(small_map, displs_x, displs_y)
                 changes = False
 
             if self.debug:
@@ -197,8 +197,9 @@ class Main:
                                             self.img_blocks[val])
                 lb.draw(self.screen)
 
-    def draw_small_map(self, map):
-        self.screen.blit(map, (self.width-map.get_width()-20, 20))
+    def draw_small_map(self, map, displs_x, displs_y):
+        self.screen.blit(map, (self.width-map.get_width()-20, 20)) 
+
 
     def create_small_map(self, size):
         border = 4
@@ -264,5 +265,5 @@ if __name__ == "__main__":
     land = land.Land(heights, monsters, grass_area, map_generator)
 
     MainWindow = Main(land, 1024, 768, True)
-    MainWindow.set_full_screen()
+    #MainWindow.set_full_screen()
     MainWindow.main_loop()

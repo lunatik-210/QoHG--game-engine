@@ -37,15 +37,15 @@ def get_path(came_from, pos):
         return vector
     return [pos]
 
-def is_out_of_range(p, land):
+def is_out_of_range(p, land, allowed_id):
     return not ( 0 <= p.x < len(land) and 
                  0 <= p.y < len(land[0]) and 
-                 land[p.x][p.y] == 0)
+                 land[p.x][p.y] == allowed_id)
 
 def heuristic(start,goal):
     return numpy.sqrt((start.x-goal.x)**2 + (start.x-goal.y)**2)
 
-def a_star_path_search(start, goal, grid):
+def a_star_path_search(start, goal, grid, allowed_id):
     closed = []
     open = [start]
     
@@ -75,7 +75,7 @@ def a_star_path_search(start, goal, grid):
         # for every neighbor of the current calculate f - value
         # and add it to the open list
         for neighbor in current_pos.get_neighbors():
-            if is_out_of_range(neighbor, grid):
+            if is_out_of_range(neighbor, grid, allowed_id):
                 continue
 
             if neighbor in closed:
@@ -129,8 +129,8 @@ if __name__ == '__main__':
     start3 = Position(0,0)
     goal3  = Position(len(grid3)-1, len(grid3[0])-1)
 
-    results = (a_star_path_search(start1, goal1, grid1), 
-               a_star_path_search(start2, goal2, grid2),
-               a_star_path_search(start3, goal3, grid3))
+    results = (a_star_path_search(start1, goal1, grid1, 0), 
+               a_star_path_search(start2, goal2, grid2, 0),
+               a_star_path_search(start3, goal3, grid3, 0))
     
     nice_print(results)
