@@ -43,12 +43,14 @@
 * Made some AI about monsters
 * Try to add a Single Player
 
-10.04.2012
+12.04.2012
 ----------
 * Implemented A* algorithm to be able move player around the map by optimal path
+* Added small map to right top angle to be able to navigate, enjoy!! =)
 
 ###Plans:
 * Connect all together (A*, Player movement)
 * Tune map generation alghorintm to build cool mountains, forest etc
 * Develop proper random starting point player generator/ Monsters generator
 * Add FOG to the map >_>
+* A lot of Refactoring have to be done, becouse the code now dont understandalbe =(
