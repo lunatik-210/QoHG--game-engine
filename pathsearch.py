@@ -25,9 +25,7 @@ def particion(a, l, r, h):
     for j in range(l,r+1):
         if h[a[j].value()] >= h[a[r].value()]:
             i += 1
-            temp = a[j]
-            a[j] = a[i]
-            a[i] = temp
+            a[j], a[i] = a[i], a[j]
     return i
 
 ###################################

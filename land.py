@@ -50,7 +50,11 @@ class Land:
                                 self.land[new_x][new_y] = self.monsters[monster][0]
                                 break
                             count += 1
-    
+
+    def add_player(self, player_id):
+        self.player = Position(abs(int(random.gauss(lsize, lsize))),abs(int(random.gauss(lsize, lsize))))
+        return self.player
+
     def get_size(self):
         return self.lsize
 
@@ -81,6 +85,9 @@ class Position:
 
     def __repr__(self):
         return "(%d,%d)" % (self.x, self.y)
+
+    def __add__(self,pos):
+        self.x, self.y = pos.x, pos.y
 
     def left(self):
         return Position(self.x-1, self.y)

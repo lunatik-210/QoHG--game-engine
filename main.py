@@ -39,7 +39,7 @@ class Main:
         """
         This is the Main Loop of the Game
         """
-        self.set_view_mod(64)
+        self.set_view_mod(48)
 
         # Get random x,y starting location
         lsize = self.land.get_size() >> 2
@@ -136,7 +136,7 @@ class Main:
         self.load_resources()
 
     def load_resources(self):
-        suffix = ""
+        suffix = "_"
         img_sand  = self.load_image("sand%s%d.png"  % (suffix, self.texture_size))
         img_tree  = self.load_image("tree%s%d.png"  % (suffix, self.texture_size))
         img_grass = self.load_image("grass%s%d.png" % (suffix, self.texture_size))
