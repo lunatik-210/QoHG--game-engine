@@ -40,7 +40,7 @@ def get_path(came_from, pos):
 def is_out_of_range(p, land):
     return not ( p.x >= 0 and p.x < len(land) and 
                  p.y >= 0 and p.y < len(land[0]) and 
-                 land[p.x][p.y] == 0)
+                 land[p.x][p.y] == 2)
 
 def heuristic(start,goal):
     return numpy.sqrt((start.x-goal.x)**2 + (start.x-goal.y)**2)

@@ -3,8 +3,11 @@
 import random
 import sprites
 import land 
+from land import Position
 import sys
 import MapGenerator
+from pathsearch import a_star_path_search as get_path
+
 
 import pygame
 from pygame.locals import *
@@ -46,12 +49,15 @@ class Main:
         displs_x = abs(int(random.gauss(lsize, lsize)))
         displs_y = abs(int(random.gauss(lsize, lsize)))
 
-        self.land.set_value(displs_x,displs_y,player_id)
+        #self.land.set_value(displs_x,displs_y,player_id)
 
         changes = True
         
         speed_x = 1
         speed_y = 1
+
+        mouse_x = 0
+        mouse_y = 0
 
         clock = pygame.time.Clock()
 
@@ -83,6 +89,16 @@ class Main:
                         changes = True    
                     elif event.key == K_ESCAPE:
                         sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        mouse_x = int(event.pos[0]/self.texture_size + displs_x)
+                        mouse_y = int(event.pos[1]/self.texture_size + displs_y)
+                    if event.button == 3:
+                        dx = int(event.pos[0]/self.texture_size + displs_x)
+                        dy = int(event.pos[1]/self.texture_size + displs_y)
+                        # now you may see debug information about the path
+                        print get_path(Position(mouse_x, mouse_y), Position(dx, dy), self.land.get_land())
+
 
             """Process continuous events"""
             key = pygame.key.get_pressed()
@@ -221,5 +237,5 @@ if __name__ == "__main__":
     land = land.Land(heights, monsters, grass_area, map_generator)
 
     MainWindow = Main(land, 1024, 768, True)
-    MainWindow.set_full_screen()
+    #MainWindow.set_full_screen()
     MainWindow.main_loop()

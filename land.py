@@ -19,6 +19,9 @@ class Land:
     def set_value(self, x, y, value):
         self.land[x][y] = value
 
+    def get_land(self):
+        return self.land
+
     def value(self, x,y):
         val = self.land[x][y]
         if val != -1:
