@@ -46,7 +46,7 @@ class Main:
         displs_x = abs(int(random.gauss(lsize, lsize)))
         displs_y = abs(int(random.gauss(lsize, lsize)))
 
-        self.land.set_value(displs_x,displs_y,player_id)
+        self.land.set_value(displs_x, displs_y, player_id)
 
         changes = True
         
