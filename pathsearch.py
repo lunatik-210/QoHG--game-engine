@@ -112,5 +112,3 @@ if __name__ == '__main__':
                a_star_path_search(start2, goal2, grid2))
     
     print results
-
-

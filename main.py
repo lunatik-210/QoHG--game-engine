@@ -61,9 +61,11 @@ class Main:
 
         clock = pygame.time.Clock()
 
+        small_map_size = 200
+        small_map = self.create_small_map(small_map_size)
+
         # set User event to update Monsters
         pygame.time.set_timer(USEREVENT+1, 700)
-
         while 1:
             # Make sure game doesn't run at more than 60 frames per second
             clock.tick(60)
@@ -121,6 +123,7 @@ class Main:
 
             if changes:
                 self.redraw(displs_x, displs_y)
+                self.draw_small_map(small_map)
                 changes = False
 
             if self.debug:
@@ -194,12 +197,25 @@ class Main:
                                             self.img_blocks[val])
                 lb.draw(self.screen)
 
+    def draw_small_map(self, map):
+        self.screen.blit(map, (self.width-map.get_width()-20, 20))
 
+    def create_small_map(self, size):
+        border = 4
+        ds = size / 100
+        d = self.land.get_size() / size
+        map = pygame.Surface((size, size))
+        for x in range(border, size-border, ds):
+            for y in range(border, size-border, ds):
+                dx, dy = x * d, y * d
+                color = pygame.Color(colors[self.land.value(dx, dy)])
+                pygame.draw.rect(map, color, pygame.Rect(x, y, ds, ds))
+        return map
 
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 500
+    size = 1000
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
@@ -220,6 +236,16 @@ if __name__ == "__main__":
         'stone' : [[0.949,  0.95],4],
         'tree'  : [[0.95, 1],     5],
     }
+    colors = {
+        0 : 'Blue',
+        1 : 'Yellow',
+        2 : 'Black',
+        3 : 'Brown',
+        4 : 'Gray',
+        5 : 'Green',
+        11 : 'Black',
+        12 : 'Black'
+    }
     # [monster_id, probability]
     # wolf, pig
     monsters = { 
@@ -237,5 +263,5 @@ if __name__ == "__main__":
     land = land.Land(heights, monsters, grass_area, map_generator)
 
     MainWindow = Main(land, 1024, 768, True)
-    #MainWindow.set_full_screen()
+    MainWindow.set_full_screen()
     MainWindow.main_loop()
