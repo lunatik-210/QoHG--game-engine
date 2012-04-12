@@ -201,8 +201,8 @@ class Main:
         w, h = map.get_width(), map.get_height()
         s_map = pygame.Surface((w, h))
         s_map.blit(map, (0,0))
-        dx = displs_x/10-self.block_size_x/2
-        dy = displs_y/10-self.block_size_y/2
+        dx = displs_x/(self.land.get_size()/w)-self.block_size_x/2
+        dy = displs_y/(self.land.get_size()/h)-self.block_size_y/2
         lines = [(0+dx,0+dy), 
                  (0+dx,self.block_size_y+dy), 
                  (self.block_size_x+dx,self.block_size_y+dy), 
@@ -226,11 +226,11 @@ class Main:
 if __name__ == "__main__":
     # the approximate size of the map you want (should be large than size of main screen)
     # I will try to think how to fix it later
-    size = 2000
+    size = 1000
     # (change view) roughness, more biggest value will give more filled map
     roughness = 15.0
     # (change map ) you can think about seed as map number or id
-    land_id = 123123
+    land_id = 1231123213123
     
     # water, sand, grass    
     #land_heights = [0, 0.55, 0.60, 1]
