@@ -53,8 +53,6 @@ class Main:
         lsize = self.land.get_size() >> 2
         displs = Position(abs(int(random.gauss(lsize, lsize))), 
                           abs(int(random.gauss(lsize, lsize))))
-        #displs_x = abs(int(random.gauss(lsize, lsize)))
-        #displs_y = abs(int(random.gauss(lsize, lsize)))
 
         self.land.set_value(displs, player_id)
         ##################################
@@ -162,8 +160,6 @@ class Main:
         self.texture_size = bit
         self.block_size = Position(self.width / self.texture_size, 
                                    self.height / self.texture_size)
-        #self.block_size_x = self.width / self.texture_size
-        #self.block_size_y = self.height / self.texture_size
         self.load_resources()
 
     def load_resources(self):
@@ -217,11 +213,11 @@ class Main:
         # draw rectangle to show you current location
         dp = self.demo_land.get_local_pos(displs, surface_size)
         # move window to central
-        dp -= Position(self.block_size.x/2, self.block_size.y/2)
-        lines = [(0+dp.x,0+dp.y), 
-                 (0+dp.x,self.block_size.y+dp.y), 
-                 (self.block_size.x+dp.x,self.block_size.y+dp.y), 
-                 (self.block_size.x+dp.x,0+dp.y)]
+        dp -= self.block_size/2
+        lines = [dp.value(), 
+                 (dp + Position(0, self.block_size.y)).value(),
+                 (dp + self.block_size).value(),
+                 (dp + Position(self.block_size.x, 0)).value()]
         pygame.draw.lines(b_surface, (255, 0, 0), True, lines, 2)
         #############################################
 
