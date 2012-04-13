@@ -261,6 +261,9 @@ if __name__ == "__main__":
         'stone' : [[0.949,  0.95],4],
         'tree'  : [[0.95, 1],     5],
     }
+
+    # colors for mini/demo map
+    # id - color
     colors = {
         0 : 'Blue',
         1 : 'Yellow',
@@ -272,6 +275,7 @@ if __name__ == "__main__":
         11 : 'Black',
         12 : 'Black',
     }
+
     # [monster_id, probability]
     # wolf, pig
     monsters = { 
@@ -284,10 +288,15 @@ if __name__ == "__main__":
     # grass area
     grass_area = [0.8, 0.9]
 
+    # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
+    # init land
     land = Land(heights, monsters, grass_area, map_generator)
 
+    # create window
     MainWindow = Main(land, 1024, 768, True)
     MainWindow.set_full_screen()
+
+    # starting the main loop / game
     MainWindow.main_loop()
