@@ -2,6 +2,73 @@
 import numpy
 import random
 
+class Position:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return "(%d, %d)" % (self.x, self.y)
+
+    def __eq__(self, pos):
+        return ( self.x == pos.x and 
+                 self.y == pos.y )
+
+    def __repr__(self):
+        return "(%d,%d)" % (self.x, self.y)
+
+    def __add__(self, pos):
+        return Position(self.x + pos.x, self.y + pos.y)
+
+    def __sub__(self, pos):
+        return Position(self.x - pos.x, self.y - pos.y)
+
+    def left(self):
+        return Position(self.x-1, self.y)
+
+    def right(self):
+        return Position(self.x+1, self.y)
+
+    def bottom(self):
+        return Position(self.x, self.y+1)
+
+    def top(self):
+        return Position(self.x, self.y-1)
+
+    def value(self):
+        return (self.x, self.y)
+
+    def get_neighbors(self):
+        return (self.left(), self.top(), self.right(), self.bottom())
+
+class DemoLand:
+    def __init__(self, land, size, border = 4):
+        self.land = land
+        self.size = size
+        self.border = border
+        self.demo_land = numpy.zeros((self.size,self.size))
+        
+        self.init_demo()        
+
+    def init_demo(self):
+        d = self.land.get_size() / self.size
+        for x in range(self.border, self.size-self.border):
+            for y in range(self.border, self.size-self.border):
+                self.demo_land[x][y] = self.land.value(x * d, y * d)
+
+    def get_demo(self):
+        return self.demo_land
+
+    def get_size(self):
+        return self.size
+
+    def get_border(self):
+        return self.border
+
+    def get_local_pos(self, global_pos, surface_size):
+        return Position( global_pos.x/(self.land.get_size()/surface_size),
+                         global_pos.y/(self.land.get_size()/surface_size))
+
 class Land:
     def __init__(self, heights, monsters, grass_area, map_generator):
         self.grass_area = grass_area
@@ -73,39 +140,3 @@ class Land:
     def load(self, name):
         pass
 
-
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __str__(self):
-        return "(%d, %d)" % (self.x, self.y)
-
-    def __eq__(self, pos):
-        return ( self.x == pos.x and 
-                 self.y == pos.y )
-
-    def __repr__(self):
-        return "(%d,%d)" % (self.x, self.y)
-
-    def __add__(self,pos):
-        self.x, self.y = pos.x, pos.y
-
-    def left(self):
-        return Position(self.x-1, self.y)
-
-    def right(self):
-        return Position(self.x+1, self.y)
-
-    def bottom(self):
-        return Position(self.x, self.y+1)
-
-    def top(self):
-        return Position(self.x, self.y-1)
-
-    def value(self):
-        return (self.x, self.y)
-
-    def get_neighbors(self):
-        return (self.left(), self.top(), self.right(), self.bottom())

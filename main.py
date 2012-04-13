@@ -2,12 +2,15 @@
 
 import random
 import sprites
-import land 
-from land import Position
 import sys
 import MapGenerator
-from pathsearch import a_star_path_search as get_path
 
+from land import Land
+from land import DemoLand
+from land import Position
+from copy import deepcopy
+
+from pathsearch import a_star_path_search as get_path
 
 import pygame
 from pygame.locals import *
@@ -25,8 +28,10 @@ class Main:
         # Initialize PyGame
         pygame.init()
 
+        # init lands
         self.land = land
-        
+        self.demo_land = DemoLand(land, 100)
+
         # Create the Screen
         self.screen = pygame.display.set_mode((width, height))
         self.width, self.height = width, height
@@ -50,7 +55,9 @@ class Main:
         displs_y = abs(int(random.gauss(lsize, lsize)))
 
         self.land.set_value(displs_x, displs_y, player_id)
+        ##################################
 
+        # some local variables
         changes = True
         
         speed_x = 1
@@ -58,17 +65,20 @@ class Main:
 
         mouse_x = 0
         mouse_y = 0
+        ######################
+        
+        # init demo land surface 
+        small_map_size = 200
+        demo_land_surface = self.create_demo_land_surface(small_map_size)
+        ########################
 
         clock = pygame.time.Clock()
-
-        small_map_size = 200
-        small_map = self.create_small_map(small_map_size)
 
         # set User event to update Monsters
         pygame.time.set_timer(USEREVENT+1, 700)
         while 1:
             # Make sure game doesn't run at more than 60 frames per second
-            clock.tick(60)
+            clock.tick(30)
             
             """Process single events"""
             for event in pygame.event.get():
@@ -123,7 +133,7 @@ class Main:
 
             if changes:
                 self.redraw(displs_x, displs_y)
-                self.draw_small_map(small_map, displs_x, displs_y)
+                self.draw_demo_land_surface(demo_land_surface, displs_x, displs_y)
                 changes = False
 
             if self.debug:
@@ -197,30 +207,36 @@ class Main:
                                             self.img_blocks[val])
                 lb.draw(self.screen)
 
-    def draw_small_map(self, map, displs_x, displs_y):
-        w, h = map.get_width(), map.get_height()
-        s_map = pygame.Surface((w, h))
-        s_map.blit(map, (0,0))
-        dx = displs_x/(self.land.get_size()/w)-self.block_size_x/2
-        dy = displs_y/(self.land.get_size()/h)-self.block_size_y/2
-        lines = [(0+dx,0+dy), 
-                 (0+dx,self.block_size_y+dy), 
-                 (self.block_size_x+dx,self.block_size_y+dy), 
-                 (self.block_size_x+dx,0+dy)]
-        pygame.draw.lines(s_map, (255, 0, 0), True, lines, 2)
-        self.screen.blit(s_map, (self.width-w-20, 20)) 
+    def draw_demo_land_surface(self, surface, displs_x, displs_y):
+        surface_size = surface.get_width()
+        b_surface = pygame.Surface((surface_size, surface_size))
+        b_surface.blit(surface,(0,0))
+        
+        # draw rectangle to show you current location
+        dp = self.demo_land.get_local_pos(Position(displs_x,displs_y), surface_size)
+        # move window to central
+        dp -= Position(self.block_size_x/2, self.block_size_y/2)
+        lines = [(0+dp.x,0+dp.y), 
+                 (0+dp.x,self.block_size_y+dp.y), 
+                 (self.block_size_x+dp.x,self.block_size_y+dp.y), 
+                 (self.block_size_x+dp.x,0+dp.y)]
+        pygame.draw.lines(b_surface, (255, 0, 0), True, lines, 2)
+        #############################################
+
+        self.screen.blit(b_surface, (self.width-surface_size-20, 20)) 
 
 
-    def create_small_map(self, size):
-        border = 4
-        ds = size / 100
-        d = self.land.get_size() / size
+    def create_demo_land_surface(self, size):
+        demo = self.demo_land.get_demo()
+        s = self.demo_land.get_size()
+        border = 2
+        ds = size / s
         map = pygame.Surface((size, size))
-        for x in range(border, size-border, ds):
-            for y in range(border, size-border, ds):
-                dx, dy = x * d, y * d
-                color = pygame.Color(colors[self.land.value(dx, dy)])
-                pygame.draw.rect(map, color, pygame.Rect(x, y, ds, ds))
+        # just fill the surface
+        for x in range(border, s-border):
+            for y in range(border, s-border):
+                color = pygame.Color(colors[demo[x][y]])
+                pygame.draw.rect(map, color, pygame.Rect(x * ds, y * ds, ds, ds))
         return map
 
 if __name__ == "__main__":
@@ -272,7 +288,7 @@ if __name__ == "__main__":
 
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
-    land = land.Land(heights, monsters, grass_area, map_generator)
+    land = Land(heights, monsters, grass_area, map_generator)
 
     MainWindow = Main(land, 1024, 768, True)
     MainWindow.set_full_screen()
