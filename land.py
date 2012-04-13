@@ -41,11 +41,24 @@ class Position:
     def top(self):
         return Position(self.x, self.y-1)
 
+    def lefttop(self):
+        return Position(self.x-1, self.y-1)
+
+    def righttop(self):
+        return Position(self.x+1, self.y-1)
+
+    def leftbottom(self):
+        return Position(self.x-1, self.y+1)
+
+    def rightbottom(self):
+        return Position(self.x+1, self.y+1)
+
     def value(self):
         return (self.x, self.y)
 
     def get_neighbors(self):
-        return (self.left(), self.top(), self.right(), self.bottom())
+        return (self.left(), self.top(), self.right(), self.bottom(), 
+                self.lefttop(), self.righttop(), self.leftbottom(), self.rightbottom())
 
 class DemoLand:
     def __init__(self, land, size, border = 4):
@@ -75,14 +88,15 @@ class DemoLand:
         return global_pos / (self.land.get_size()/surface_size)
 
 class Land:
-    def __init__(self, heights, monsters, grass_area, map_generator):
+    def __init__(self, terrains, objects, monsters, def_id, grass_area, map_generator):
         self.grass_area = grass_area
         self.monsters = monsters
-        self.heights = heights
+        self.terrains = terrains
+        self.objects = objects
+        self.def_id = def_id
         self.map_generator = map_generator
         self.lsize = self.map_generator.get_size()
         self.land = numpy.empty((self.lsize,self.lsize))
-        self.objects = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
 
     def set_land_id(self, land_id):
@@ -99,7 +113,9 @@ class Land:
         if val != -1:
             return val
         val = self.map_generator.calc(pos.x,pos.y)
-        self.land[pos.x][pos.y] = self.get_block_id(self.heights, val)
+        self.land[pos.x][pos.y] = self.get_block_id(self.terrains, val)
+        if self.land[pos.x][pos.y] == self.def_id:
+            self.land[pos.x][pos.y] = self.get_block_id(self.objects, val)
         '''Make desicion about pig or wolf'''
         if self.grass_area[0] < val < self.grass_area[1]:
             who = int(random.uniform(0,len(self.monsters)))
@@ -116,12 +132,12 @@ class Land:
             for y in range(p1.y, p2.y):
                 for monster in self.monsters:
                     if self.land[x][y] == self.monsters[monster][0]:
-                        self.land[x][y] = self.heights['grass'][1]
+                        self.land[x][y] = self.terrains['grass'][1]
                         count = 0
                         while count < 5:
                             new_x = int(random.uniform(-2,2)) + x
                             new_y = int(random.uniform(-2,2)) + y
-                            if self.land[new_x][new_y] == self.heights['grass'][1]:
+                            if self.land[new_x][new_y] == self.terrains['grass'][1]:
                                 self.land[new_x][new_y] = self.monsters[monster][0]
                                 break
                             count += 1
@@ -137,6 +153,7 @@ class Land:
         for block in height_map:
             if height_map[block][0][0] <= val <= height_map[block][0][1]:
                 return height_map[block][1]
+        return self.def_id
 
     # Here we should use some data base
     def save(self, name):

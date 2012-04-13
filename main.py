@@ -175,12 +175,12 @@ class Main:
         img_pig = self.load_image("pig%dr.png" % self.texture_size)
         img_player = self.load_image("player%d.png" % self.texture_size)
         
-        self.img_blocks = { heights['water'][1] : img_water,
-                            heights['sand'][1]  : img_sand,
-                            heights['grass'][1] : img_grass,
-                            heights['log'][1]   : img_log,
-                            heights['stone'][1] : img_stone,
-                            heights['tree'][1]  : img_tree,
+        self.img_blocks = { terrains['water'][1] : img_water,
+                            terrains['sand'][1]  : img_sand,
+                            terrains['grass'][1] : img_grass,
+                            objects['log'][1]   : img_log,
+                            objects['stone'][1] : img_stone,
+                            objects['tree'][1]  : img_tree,
                             monsters['wolf'][0] : img_wolf,
                             monsters['pig'][0]  : img_pig,
                             player_id : img_player }
@@ -252,14 +252,18 @@ if __name__ == "__main__":
     # log, stone, tree
     #objects_heights = [0.948, 0.949,  0.95, 1]
 
-    # water, sand, grass, log, stone, tree
-    heights = {
-        'water' : [[0, 0.58],     0],
-        'sand'  : [[0.58, 0.60],  1],
-        'grass' : [[0.60, 0.948], 2],
-        'log'   : [[0.948, 0.949],3],
-        'stone' : [[0.949,  0.95],4],
-        'tree'  : [[0.95, 1],     5],
+    # terrains are constant
+    terrains = {
+        'water'   : [[0, 0.58],     0],
+        'sand'    : [[0.58, 0.60],  1],
+        'grass'   : [[0.60, 0.948], 2],
+    }
+
+    # objects may gone
+    objects = {
+        'log'   :  [[0.948, 0.949], 3],
+        'stone' :  [[0.949,  0.95], 4],
+        'tree'  :  [[0.95, 1.0],    5],
     }
 
     # colors for mini/demo map
@@ -292,11 +296,11 @@ if __name__ == "__main__":
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
     # init land
-    land = Land(heights, monsters, grass_area, map_generator)
+    land = Land(terrains, objects, monsters, 2, grass_area, map_generator)
 
     # create window
     MainWindow = Main(land, 1024, 768, True)
-    MainWindow.set_full_screen()
+    #MainWindow.set_full_screen()
 
     # starting the main loop / game
     MainWindow.main_loop()
