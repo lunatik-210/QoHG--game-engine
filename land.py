@@ -72,8 +72,7 @@ class DemoLand:
         return self.border
 
     def get_local_pos(self, global_pos, surface_size):
-        return Position( global_pos.x/(self.land.get_size()/surface_size),
-                         global_pos.y/(self.land.get_size()/surface_size))
+        return global_pos / (self.land.get_size()/surface_size)
 
 class Land:
     def __init__(self, heights, monsters, grass_area, map_generator):
