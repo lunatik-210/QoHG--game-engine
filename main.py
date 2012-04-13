@@ -300,7 +300,7 @@ if __name__ == "__main__":
 
     # create window
     MainWindow = Main(land, 1024, 768, True)
-    #MainWindow.set_full_screen()
+    MainWindow.set_full_screen()
 
     # starting the main loop / game
     MainWindow.main_loop()
