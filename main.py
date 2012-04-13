@@ -51,20 +51,22 @@ class Main:
 
         # Get random x,y starting location
         lsize = self.land.get_size() >> 2
-        displs_x = abs(int(random.gauss(lsize, lsize)))
-        displs_y = abs(int(random.gauss(lsize, lsize)))
+        displs = Position(abs(int(random.gauss(lsize, lsize))), 
+                          abs(int(random.gauss(lsize, lsize))))
+        #displs_x = abs(int(random.gauss(lsize, lsize)))
+        #displs_y = abs(int(random.gauss(lsize, lsize)))
 
-        self.land.set_value(displs_x, displs_y, player_id)
+        self.land.set_value(displs, player_id)
         ##################################
 
         # some local variables
         changes = True
         
-        speed_x = 1
-        speed_y = 1
+        # speed.x = 1, speed.y = 1
+        speed = Position(1,1)
 
-        mouse_x = 0
-        mouse_y = 0
+        mouse = Position(0,0)
+
         ######################
         
         # init demo land surface 
@@ -85,9 +87,7 @@ class Main:
                 if event.type == pygame.QUIT:
                     sys.exit()
                 elif event.type == USEREVENT+1:
-                    self.land.update( displs_x, displs_y, 
-                                     (displs_x+self.block_size_x) % self.land.get_size(), 
-                                     (displs_y+self.block_size_y) % self.land.get_size() )
+                    self.land.update(displs, (displs+self.block_size) % self.land.get_size())
                     changes = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == K_1:
@@ -103,53 +103,53 @@ class Main:
                         sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        mouse_x = int(event.pos[0]/self.texture_size + displs_x)
-                        mouse_y = int(event.pos[1]/self.texture_size + displs_y)
+                        mouse = Position(int(event.pos[0]/self.texture_size + displs.x), 
+                                         int(event.pos[1]/self.texture_size + displs.y))
                     if event.button == 3:
-                        dx = int(event.pos[0]/self.texture_size + displs_x)
-                        dy = int(event.pos[1]/self.texture_size + displs_y)
+                        destination = Position(int(event.pos[0]/self.texture_size + displs.x),
+                                               int(event.pos[1]/self.texture_size + displs.y))
                         # now you may see debug information about the path
-                        print get_path(Position(mouse_x, mouse_y), Position(dx, dy), self.land.get_land(), 2)
+                        print get_path(mouse, destination, self.land.get_land(), 2)
 
 
             """Process continuous events"""
             key = pygame.key.get_pressed()
             if key[K_RIGHT] or key[K_d]:
-                displs_x += speed_x
-                displs_x %= self.land.get_size()
+                displs.x += speed.x
+                displs.x %= self.land.get_size()
                 changes = True
             elif key[K_LEFT] or key[K_a]:
-                displs_x -= speed_x
-                displs_x %= self.land.get_size()
+                displs.x -= speed.x
+                displs.x %= self.land.get_size()
                 changes = True
             elif key[K_UP] or key[K_w]:
-                displs_y -= speed_y
-                displs_y %= self.land.get_size()
+                displs.y -= speed.y
+                displs.y %= self.land.get_size()
                 changes = True
             elif key[K_DOWN] or key[K_s]:
-                displs_y += speed_y
-                displs_y %= self.land.get_size()
+                displs.y += speed.y
+                displs.y %= self.land.get_size()
                 changes = True
 
             if changes:
-                self.redraw(displs_x, displs_y)
-                self.draw_demo_land_surface(demo_land_surface, displs_x, displs_y)
+                self.redraw(displs)
+                self.draw_demo_land_surface(demo_land_surface, displs)
                 changes = False
 
             if self.debug:
-                self.draw_debug_window(displs_x, displs_y)
+                self.draw_debug_window(displs)
                 
             pygame.display.update()
 
 
-    def draw_debug_window(self, displs_x, displs_y):
-        values = { 'x' : displs_x, 'y' : displs_y }
+    def draw_debug_window(self, displs):
+        values = { 'x' : displs.x, 'y' : displs.y }
         font = pygame.font.Font(None, 30)
         text = font.render("Global: x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0, 0, 0))
         self.screen.blit(text, (0,0))
 
         pos = pygame.mouse.get_pos()
-        values = { 'x' : pos[0]/self.texture_size + displs_x, 'y' : pos[1]/self.texture_size + displs_y }
+        values = { 'x' : pos[0]/self.texture_size + displs.x, 'y' : pos[1]/self.texture_size + displs.y }
         font = pygame.font.Font(None, 30)
         text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0, 0, 0))
         self.screen.blit(text, (0,20))    
@@ -160,8 +160,10 @@ class Main:
 
     def set_view_mod(self, bit):
         self.texture_size = bit
-        self.block_size_x = self.width / self.texture_size
-        self.block_size_y = self.height / self.texture_size
+        self.block_size = Position(self.width / self.texture_size, 
+                                   self.height / self.texture_size)
+        #self.block_size_x = self.width / self.texture_size
+        #self.block_size_y = self.height / self.texture_size
         self.load_resources()
 
     def load_resources(self):
@@ -191,14 +193,14 @@ class Main:
         img_resources = "./images/"
         return pygame.image.load(img_resources + name).convert()
 
-    def redraw(self, displs_x, displs_y):
+    def redraw(self, displs):
         """
         Get necessary image block and
         redraw matrix of LandscapeBlocks' sprites
         """
-        for x in range(self.block_size_x):
-            for y in range(self.block_size_y):
-                val = self.land.value((x+displs_x)%self.land.get_size(), (y+displs_y)%self.land.get_size())
+        for x in range(self.block_size.x):
+            for y in range(self.block_size.y):
+                val = self.land.value((Position(x,y) + displs) % self.land.get_size())
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,
@@ -207,19 +209,19 @@ class Main:
                                             self.img_blocks[val])
                 lb.draw(self.screen)
 
-    def draw_demo_land_surface(self, surface, displs_x, displs_y):
+    def draw_demo_land_surface(self, surface, displs):
         surface_size = surface.get_width()
         b_surface = pygame.Surface((surface_size, surface_size))
         b_surface.blit(surface,(0,0))
         
         # draw rectangle to show you current location
-        dp = self.demo_land.get_local_pos(Position(displs_x,displs_y), surface_size)
+        dp = self.demo_land.get_local_pos(displs, surface_size)
         # move window to central
-        dp -= Position(self.block_size_x/2, self.block_size_y/2)
+        dp -= Position(self.block_size.x/2, self.block_size.y/2)
         lines = [(0+dp.x,0+dp.y), 
-                 (0+dp.x,self.block_size_y+dp.y), 
-                 (self.block_size_x+dp.x,self.block_size_y+dp.y), 
-                 (self.block_size_x+dp.x,0+dp.y)]
+                 (0+dp.x,self.block_size.y+dp.y), 
+                 (self.block_size.x+dp.x,self.block_size.y+dp.y), 
+                 (self.block_size.x+dp.x,0+dp.y)]
         pygame.draw.lines(b_surface, (255, 0, 0), True, lines, 2)
         #############################################
 
