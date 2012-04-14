@@ -2,6 +2,8 @@ Interesting links:
 ----------
 * Текстурирование спрайтов с помощью (dis)placement map http://habrahabr.ru/post/117420/
 * Алгоритм «diamond-square» для построения фрактальных ландшафтов http://habrahabr.ru/post/111538/
+* Создание генератора мира для minecraft http://habrahabr.ru/post/125621/
+* A* search http://en.wikipedia.org/wiki/A*_search_algorithm
 
 12.04.2012
 ----------
