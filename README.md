@@ -1,3 +1,8 @@
+Interesting links:
+----------
+* Текстурирование спрайтов с помощью (dis)placement map http://habrahabr.ru/post/117420/
+* Алгоритм «diamond-square» для построения фрактальных ландшафтов http://habrahabr.ru/post/111538/
+
 12.04.2012
 ----------
 * Implemented A* algorithm to be able move player around the map by optimal path

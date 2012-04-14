@@ -60,6 +60,39 @@ class Position:
         return (self.left(), self.top(), self.right(), self.bottom(), 
                 self.lefttop(), self.righttop(), self.leftbottom(), self.rightbottom())
 
+class ObjectGenerator:
+    def __init__(self, probability_array):
+        self.objects = self.extract_object_ids(probability_array)
+        self.mean = self.calc_mean(probability_array)
+        self.variance = self.calc_variance(self.mean, probability_array)
+        print self.mean, self.variance
+
+    def calc_mean(self, probability_array):
+        mean = 0
+        for obj in probability_array:
+            array = probability_array[obj]
+            mean += array[0] * array[1]
+        return mean
+
+    def calc_variance(self, mean, probability_array):
+        var = 0
+        for obj in probability_array:
+            array = probability_array[obj]
+            var += abs((array[0]-mean)) * array[1]
+        return var
+
+    def extract_object_ids(self, probability_array):
+        objects = []
+        for obj in probability_array:
+            objects.append(probability_array[obj][0])
+        return objects
+
+    def generate(self):
+        val = abs(int(random.gauss(self.mean, self.variance)))
+        if val in self.objects:
+            return val
+        return None
+
 class DemoLand:
     def __init__(self, land, size, border = 4):
         self.land = land
@@ -98,6 +131,7 @@ class Land:
         self.lsize = self.map_generator.get_size()
         self.land = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
+        self.monster_genearator = ObjectGenerator(monsters)
 
     def set_land_id(self, land_id):
         self.map_generator.set_seed(land_id)
@@ -113,15 +147,18 @@ class Land:
         if val != -1:
             return val
         val = self.map_generator.calc(pos.x,pos.y)
+
         self.land[pos.x][pos.y] = self.get_block_id(self.terrains, val)
+
         if self.land[pos.x][pos.y] == self.def_id:
             self.land[pos.x][pos.y] = self.get_block_id(self.objects, val)
+        
         '''Make desicion about pig or wolf'''
         if self.grass_area[0] < val < self.grass_area[1]:
-            who = int(random.uniform(0,len(self.monsters)))
-            name = 'wolf' * (1-who) + 'pig' * (0+who)
-            if self.monsters[name][1] > random.gauss(0.6,0.17):
-                self.land[pos.x][pos.y] = self.monsters[name][0]
+            new_val = self.monster_genearator.generate()
+            if new_val is not None:
+                self.land[pos.x][pos.y] = new_val
+
         return self.land[pos.x][pos.y]
 
     def update(self, p1, p2):
@@ -162,3 +199,13 @@ class Land:
     def load(self, name):
         pass
 
+if __name__ == '__main__':
+    monsters = { 
+        'wolf' : [11, 0.2],
+        'pig'  : [12, 0.4]
+    }
+
+    g = ObjectGenerator( monsters )
+
+    for i in range(100):
+        print g.generate()

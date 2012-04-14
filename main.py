@@ -256,41 +256,42 @@ if __name__ == "__main__":
     terrains = {
         'water'   : [[0, 0.58],     0],
         'sand'    : [[0.58, 0.60],  1],
-        'grass'   : [[0.60, 0.948], 2],
+        'grass'   : [[0.60, 0.1],   2]
     }
 
     # objects may gone
     objects = {
         'log'   :  [[0.948, 0.949], 3],
         'stone' :  [[0.949,  0.95], 4],
-        'tree'  :  [[0.95, 1.0],    5],
-    }
-
-    # colors for mini/demo map
-    # id - color
-    colors = {
-        0 : 'Blue',
-        1 : 'Yellow',
-        2 : 'Black',
-        3 : 'Brown',
-        4 : 'Gray',
-        5 : 'Green',
-        10: 'Black',
-        11 : 'Black',
-        12 : 'Black',
+        'tree'  :  [[0.95, 1.0],    5]
     }
 
     # [monster_id, probability]
     # wolf, pig
     monsters = { 
-        'wolf' : [11, 0.2],
-        'pig'  : [12, 0.2]
+        'wolf' :  [11, 0.2],
+        'pig'  :  [12, 0.3],
+        'grass' : [2,  0.5]
     }
+
+    # grass area
+    grass_area = [0.8, 0.81]
 
     player_id = 10
 
-    # grass area
-    grass_area = [0.8, 0.9]
+    # colors for mini/demo map
+    # id - color
+    colors = {
+        terrains['water'][1] : 'Blue',
+        terrains['sand'][1] : 'Yellow',
+        terrains['grass'][1] : 'Black',
+        objects['log'][1] : 'Brown',
+        objects['stone'][1] : 'Gray',
+        objects['tree'][1] : 'Green',
+        monsters['wolf'][0]: 'Black',
+        monsters['pig'][0] : 'Black',
+        player_id : 'Black',
+    }
 
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
