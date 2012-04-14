@@ -176,7 +176,7 @@ class Main:
 
         img_wolf = self.load_image("wolf%s%dr.png"   % (suffix, self.texture_size))
         img_pig = self.load_image("pig%dr.png" % self.texture_size)
-        img_player = self.load_image("player%d.png" % self.texture_size)
+        img_player = self.load_image_with_alpha("player%s%d.png" % (suffix, self.texture_size))
         
         self.img_blocks = { terrains['water'][1] : img_water,
                             terrains['sand'][1]  : img_sand,
@@ -191,6 +191,10 @@ class Main:
     def load_image(self, name):
         img_resources = "./resources/images/"
         return pygame.image.load(img_resources + name).convert()
+
+    def load_image_with_alpha(self, name):
+        img_resources = "./resources/images/"
+        return pygame.image.load(img_resources + name).convert_alpha()
 
     def redraw(self, displs):
         """
