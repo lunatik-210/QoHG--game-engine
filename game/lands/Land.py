@@ -55,6 +55,8 @@ class Land:
 
     def add_path_to_player(self, destination):
         path = get_path(self.player.pos, destination, self.get_land(), self.def_id)
+        if None == path:
+            return
         path.reverse()
         print path
         self.player.set_path(path)
