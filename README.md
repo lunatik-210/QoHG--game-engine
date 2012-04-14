@@ -12,6 +12,7 @@ Interesting links:
 * Added player to the map, and you may controll him!!! Cool =)
 * I've done a lot of refactoring, now code more readable
 * Changed folders
+* Added new Video http://youtu.be/DfZdguZGq6w
 
 ###Plans:
 * Optimize A* path search, player think about the path too much time
