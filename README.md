@@ -4,6 +4,7 @@ Interesting links:
 * Алгоритм «diamond-square» для построения фрактальных ландшафтов http://habrahabr.ru/post/111538/
 * Создание генератора мира для minecraft http://habrahabr.ru/post/125621/
 * A* search http://en.wikipedia.org/wiki/A*_search_algorithm
+* Perling noise http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
 12.04.2012
 ----------
