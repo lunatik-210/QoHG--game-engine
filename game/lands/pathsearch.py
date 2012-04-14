@@ -1,7 +1,7 @@
 
 import numpy
 
-from lands.Position import Position 
+from Position import Position 
 
 '''
     Here I've implemented A* search algorithm for path finding.

@@ -109,16 +109,10 @@ class Main:
                     elif event.key == K_ESCAPE:
                         sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    #if event.button == 1:
-                        #mouse = Position(int(event.pos[0]/self.texture_size + displs.x), 
-                        #                 int(event.pos[1]/self.texture_size + displs.y))
                     if event.button == 3:
                         destination = Position(int(event.pos[0]/self.texture_size + displs.x),
                                                int(event.pos[1]/self.texture_size + displs.y))
                         self.land.add_path_to_player(destination)
-                        # now you may see debug information about the path
-                        #print get_path(mouse, destination, self.land.get_land(), 2)
-
 
             """Process continuous events"""
             key = pygame.key.get_pressed()

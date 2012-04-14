@@ -58,7 +58,6 @@ class Land:
         if None == path:
             return
         path.reverse()
-        print path
         self.player.set_path(path)
 
     #######################################
