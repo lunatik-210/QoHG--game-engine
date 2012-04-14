@@ -32,7 +32,7 @@ class Land:
         self.land = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
         self.monster_genearator = ObjectGenerator(monsters)
-        self.player = Player(Position(-1,-1))
+        self.player = Player(Position(-1, -1))
 
     def set_land_id(self, land_id):
         self.map_generator.set_seed(land_id)
@@ -102,8 +102,8 @@ class Land:
                         self.land[x][y] = self.terrains['grass'][1]
                         count = 0
                         while count < 5:
-                            new_x = int(random.uniform(-2,2)) + x
-                            new_y = int(random.uniform(-2,2)) + y
+                            new_x = int(random.uniform(-2, 2)) + x
+                            new_y = int(random.uniform(-2, 2)) + y
                             if self.land[new_x][new_y] == self.terrains['grass'][1]:
                                 self.land[new_x][new_y] = self.monsters[monster][0]
                                 break

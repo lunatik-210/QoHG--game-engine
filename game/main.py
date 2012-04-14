@@ -59,16 +59,16 @@ class Main:
 
         # Get random x,y starting location
         displs = self.land.init_player()
-        displs -= Position(10,10)
+        displs -= Position(10, 10)
         ##################################
 
         # some local variables
         changes = True
         
         # speed.x = 1, speed.y = 1
-        speed = Position(1,1)
+        speed = Position(1, 1)
 
-        mouse = Position(0,0)
+        mouse = Position(0, 0)
 
         ######################
         
@@ -150,10 +150,11 @@ class Main:
         self.screen.blit(text, (0,0))
 
         pos = pygame.mouse.get_pos()
-        values = { 'x' : pos[0]/self.texture_size + displs.x, 'y' : pos[1]/self.texture_size + displs.y }
+        values = { 'x' : pos[0] / self.texture_size + displs.x,
+                   'y' : pos[1] / self.texture_size + displs.y }
         font = pygame.font.Font(None, 30)
         text = font.render("Local:   x = %(x)d y = %(y)d" % values, True, (255, 255, 255), (0, 0, 0))
-        self.screen.blit(text, (0,20))    
+        self.screen.blit(text, (0, 20))    
 
         font = pygame.font.Font(None, 30)
         text = font.render("Mode: %d (1-3 to switch)" % self.texture_size, True, (255, 255, 255), (0, 0, 0))
@@ -174,18 +175,18 @@ class Main:
         img_stone = self.load_image("stone%s%d.png" % (suffix, self.texture_size))
         img_water = self.load_image("water%s%d.png" % (suffix, self.texture_size))
 
-        img_wolf = self.load_image("wolf%s%dr.png"   % (suffix, self.texture_size))
-        img_pig = self.load_image("pig%dr.png" % self.texture_size)
+        img_wolf   = self.load_image("wolf%s%dr.png" % (suffix, self.texture_size))
+        img_pig    = self.load_image("pig%dr.png"    % self.texture_size)
         img_player = self.load_image_with_alpha("player%s%d.png" % (suffix, self.texture_size))
         
         self.img_blocks = { terrains['water'][1] : img_water,
                             terrains['sand'][1]  : img_sand,
                             terrains['grass'][1] : img_grass,
-                            objects['log'][1]   : img_log,
-                            objects['stone'][1] : img_stone,
-                            objects['tree'][1]  : img_tree,
-                            monsters['wolf'][0] : img_wolf,
-                            monsters['pig'][0]  : img_pig,
+                            objects['log'][1]    : img_log,
+                            objects['stone'][1]  : img_stone,
+                            objects['tree'][1]   : img_tree,
+                            monsters['wolf'][0]  : img_wolf,
+                            monsters['pig'][0]   : img_pig,
                             player_id : img_player }
                 
     def load_image(self, name):
@@ -215,12 +216,12 @@ class Main:
     def draw_demo_land_surface(self, surface, displs):
         surface_size = surface.get_width()
         b_surface = pygame.Surface((surface_size, surface_size))
-        b_surface.blit(surface,(0,0))
+        b_surface.blit(surface, (0, 0))
         
         # draw rectangle to show you current location
         dp = self.demo_land.get_local_pos(displs, surface_size)
         # move window to central
-        dp -= self.block_size/2
+        dp -= self.block_size / 2
         lines = [dp.value(), 
                  (dp + Position(0, self.block_size.y)).value(),
                  (dp + self.block_size).value(),
@@ -241,7 +242,7 @@ class Main:
         for x in range(border, s-border):
             for y in range(border, s-border):
                 color = pygame.Color(colors[demo[x][y]])
-                pygame.draw.rect(map, color, pygame.Rect(x * ds, y * ds, ds, ds))
+                pygame.draw.rect(map, color, pygame.Rect(x*ds, y*ds, ds, ds))
         return map
 
 '''define constants'''
@@ -291,14 +292,14 @@ player_id = 10
 # id - color
 colors = {
     terrains['water'][1] : 'Blue',
-    terrains['sand'][1] : 'Yellow',
+    terrains['sand'][1]  : 'Yellow',
     terrains['grass'][1] : 'Black',
-    objects['log'][1] : 'Brown',
-    objects['stone'][1] : 'Gray',
-    objects['tree'][1] : 'Green',
-    monsters['wolf'][0]: 'Black',
-    monsters['pig'][0] : 'Black',
-    player_id : 'Black',
+    objects['log'][1]    : 'Brown',
+    objects['stone'][1]  : 'Gray',
+    objects['tree'][1]   : 'Green',
+    monsters['wolf'][0]  : 'Black',
+    monsters['pig'][0]   : 'Black',
+    player_id            : 'Black',
 }
 
 def start():
