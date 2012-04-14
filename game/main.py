@@ -45,9 +45,9 @@ class Main:
         self.width, self.height = width, height
         self.debug = debug
 
-    def set_full_screen(self):
+    def set_full_screen(self, fullscreen_option):
         modes = pygame.display.list_modes(32)
-        if modes:
+        if modes and fullscreen_option:
             pygame.display.set_mode(modes[0], pygame.FULLSCREEN, 32)
         self.width, self.height = modes[0]
 
@@ -302,7 +302,7 @@ colors = {
     player_id            : 'Black',
 }
 
-def start():
+def start(fullscreen_option):
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
@@ -311,10 +311,17 @@ def start():
 
     # create window
     MainWindow = Main(land, 1024, 768, True)
-    MainWindow.set_full_screen()
+    MainWindow.set_full_screen(fullscreen_option)
 
     # starting the main loop / game
     MainWindow.main_loop()    
 
 if __name__ == "__main__":
-    start()
+
+    # "python main.py -window" starts the game in window mode
+    fullscreen_option = True
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "-w":
+            fullscreen_option = False
+
+    start(fullscreen_option)
