@@ -3,11 +3,13 @@
 import random
 import sprites
 import sys
-import MapGenerator
 
-from land import Land
-from land import DemoLand
-from land import Position
+import lands.generators.Map as MapGenerator
+
+
+from lands.Land import Land
+from lands.DemoLand import DemoLand
+from lands.Position import Position
 from copy import deepcopy
 
 from pathsearch import a_star_path_search as get_path
@@ -186,7 +188,7 @@ class Main:
                             player_id : img_player }
                 
     def load_image(self, name):
-        img_resources = "./images/"
+        img_resources = "./resources/images/"
         return pygame.image.load(img_resources + name).convert()
 
     def redraw(self, displs):
@@ -237,62 +239,64 @@ class Main:
                 pygame.draw.rect(map, color, pygame.Rect(x * ds, y * ds, ds, ds))
         return map
 
-if __name__ == "__main__":
-    # the approximate size of the map you want (should be large than size of main screen)
-    # I will try to think how to fix it later
-    size = 1000
-    # (change view) roughness, more biggest value will give more filled map
-    roughness = 15.0
-    # (change map ) you can think about seed as map number or id
-    land_id = 1231123213123
-    
-    # water, sand, grass    
-    #land_heights = [0, 0.55, 0.60, 1]
+'''define constants'''
 
-    # log, stone, tree
-    #objects_heights = [0.948, 0.949,  0.95, 1]
+# the approximate size of the map you want (should be large than size of main screen)
+# I will try to think how to fix it later
+size = 1000
+# (change view) roughness, more biggest value will give more filled map
+roughness = 15.0
+# (change map ) you can think about seed as map number or id
+land_id = 1231123213123
 
-    # terrains are constant
-    terrains = {
-        'water'   : [[0, 0.58],     0],
-        'sand'    : [[0.58, 0.60],  1],
-        'grass'   : [[0.60, 0.1],   2]
-    }
+# water, sand, grass    
+#land_heights = [0, 0.55, 0.60, 1]
 
-    # objects may gone
-    objects = {
-        'log'   :  [[0.948, 0.949], 3],
-        'stone' :  [[0.949,  0.95], 4],
-        'tree'  :  [[0.95, 1.0],    5]
-    }
+# log, stone, tree
+#objects_heights = [0.948, 0.949,  0.95, 1]
 
-    # [monster_id, probability]
-    # wolf, pig
-    monsters = { 
-        'wolf' :  [11, 0.2],
-        'pig'  :  [12, 0.3],
-        'grass' : [2,  0.5]
-    }
+# terrains are constant
+terrains = {
+    'water'   : [[0, 0.58],     0],
+    'sand'    : [[0.58, 0.60],  1],
+    'grass'   : [[0.60, 0.1],   2]
+}
 
-    # grass area
-    grass_area = [0.8, 0.81]
+# objects may gone
+objects = {
+    'log'   :  [[0.948, 0.949], 3],
+    'stone' :  [[0.949,  0.95], 4],
+    'tree'  :  [[0.95, 1.0],    5]
+}
 
-    player_id = 10
+# [monster_id, probability]
+# wolf, pig
+monsters = { 
+    'wolf' :  [11, 0.2],
+    'pig'  :  [12, 0.3],
+    'grass' : [2,  0.5]
+}
 
-    # colors for mini/demo map
-    # id - color
-    colors = {
-        terrains['water'][1] : 'Blue',
-        terrains['sand'][1] : 'Yellow',
-        terrains['grass'][1] : 'Black',
-        objects['log'][1] : 'Brown',
-        objects['stone'][1] : 'Gray',
-        objects['tree'][1] : 'Green',
-        monsters['wolf'][0]: 'Black',
-        monsters['pig'][0] : 'Black',
-        player_id : 'Black',
-    }
+# grass area
+grass_area = [0.8, 0.81]
 
+player_id = 10
+
+# colors for mini/demo map
+# id - color
+colors = {
+    terrains['water'][1] : 'Blue',
+    terrains['sand'][1] : 'Yellow',
+    terrains['grass'][1] : 'Black',
+    objects['log'][1] : 'Brown',
+    objects['stone'][1] : 'Gray',
+    objects['tree'][1] : 'Green',
+    monsters['wolf'][0]: 'Black',
+    monsters['pig'][0] : 'Black',
+    player_id : 'Black',
+}
+
+def start():
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
@@ -304,4 +308,7 @@ if __name__ == "__main__":
     MainWindow.set_full_screen()
 
     # starting the main loop / game
-    MainWindow.main_loop()
+    MainWindow.main_loop()    
+
+if __name__ == "__main__":
+    start()
