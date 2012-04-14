@@ -1,24 +1,30 @@
 #!/usr/bin/env python
 
+########## System libs ##########
 import random
-import sprites
 import sys
+from copy import deepcopy
+#################################
 
+######### PyGame ################
+import pygame
+from pygame.locals import *
+import sprites
+
+if not pygame.font: print 'Warning, fonts disabled'
+if not pygame.mixer: print 'Warning, sound disabled'
+#################################
+
+######### Game logic ############
 import lands.generators.Map as MapGenerator
-
 
 from lands.Land import Land
 from lands.DemoLand import DemoLand
 from lands.Position import Position
-from copy import deepcopy
 
 from pathsearch import a_star_path_search as get_path
+#################################
 
-import pygame
-from pygame.locals import *
-
-if not pygame.font: print 'Warning, fonts disabled'
-if not pygame.mixer: print 'Warning, sound disabled'
 
 class Main:
     """
