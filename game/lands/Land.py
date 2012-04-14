@@ -3,23 +3,63 @@ import numpy
 import random
 
 from generators.Object import ObjectGenerator
+from pathsearch import a_star_path_search as get_path
 from Position import Position
 
+class Player:
+    def __init__(self, pos):
+        self.pos = pos
+        self.path = []
+
+    def set_path(self, path):
+        self.path = path
+
+    def move(self):
+        if len(self.path) != 0:
+            step = self.path.pop()
+            self.pos = step
+
 class Land:
-    def __init__(self, terrains, objects, monsters, def_id, grass_area, map_generator):
+    def __init__(self, terrains, objects, monsters, player_id, def_id, grass_area, map_generator):
         self.grass_area = grass_area
         self.monsters = monsters
         self.terrains = terrains
         self.objects = objects
+        self.player_id = player_id
         self.def_id = def_id
         self.map_generator = map_generator
         self.lsize = self.map_generator.get_size()
         self.land = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
         self.monster_genearator = ObjectGenerator(monsters)
+        self.player = Player(Position(-1,-1))
 
     def set_land_id(self, land_id):
         self.map_generator.set_seed(land_id)
+
+    ############# for player ##############
+    def init_player(self):
+        found = False
+        pos = None
+        s = self.lsize
+        while not found:
+            pos = Position(abs(int(random.uniform(0, s))),
+                           abs(int(random.uniform(0, s))))
+            if self.value(pos) == self.def_id:
+                found = True
+        self.player = Player(pos)
+        return pos
+
+    def move_player(self):
+        self.player.move()
+
+    def add_path_to_player(self, destination):
+        path = get_path(self.player.pos, destination, self.get_land(), self.def_id)
+        path.reverse()
+        print path
+        self.player.set_path(path)
+
+    #######################################
 
     def set_value(self, pos, value):
         self.land[pos.x][pos.y] = value
@@ -28,7 +68,11 @@ class Land:
         return self.land
 
     def value(self, pos):
+        if self.player.pos == pos:
+            return self.player_id
+
         val = self.land[pos.x][pos.y]
+
         if val != -1:
             return val
         val = self.map_generator.calc(pos.x,pos.y)
@@ -63,10 +107,6 @@ class Land:
                                 self.land[new_x][new_y] = self.monsters[monster][0]
                                 break
                             count += 1
-
-    def add_player(self, player_id):
-        self.player = Position(abs(int(random.gauss(lsize, lsize))),abs(int(random.gauss(lsize, lsize))))
-        return self.player
 
     def get_size(self):
         return self.lsize

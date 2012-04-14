@@ -6,8 +6,23 @@ Interesting links:
 * A* search http://en.wikipedia.org/wiki/A*_search_algorithm
 * Perling noise http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
+14.04.2012
+----------
+###Done:
+* Added player to the map, and you may controll him!!! Cool =)
+* I've done a lot of refactoring, now code more readable
+* Changed folders
+
+###Plans:
+* Optimize A* path search, player think about the path too much time
+* Add fog
+* Add multiplayer mode
+* Think about GUI (PyGameGui - is a proper solution)
+* Network, we need network ASAP
+
 12.04.2012
 ----------
+###Done:
 * Implemented A* algorithm to be able move player around the map by optimal path
 * Added small map to right top angle to be able to navigate, enjoy!! =)
 

@@ -22,7 +22,7 @@ from lands.Land import Land
 from lands.DemoLand import DemoLand
 from lands.Position import Position
 
-from pathsearch import a_star_path_search as get_path
+#from pathsearch import a_star_path_search as get_path
 #################################
 
 
@@ -58,11 +58,8 @@ class Main:
         self.set_view_mod(48)
 
         # Get random x,y starting location
-        lsize = self.land.get_size() >> 2
-        displs = Position(abs(int(random.gauss(lsize, lsize))), 
-                          abs(int(random.gauss(lsize, lsize))))
-
-        self.land.set_value(displs, player_id)
+        displs = self.land.init_player()
+        displs -= Position(10,10)
         ##################################
 
         # some local variables
@@ -84,9 +81,10 @@ class Main:
 
         # set User event to update Monsters
         pygame.time.set_timer(USEREVENT+1, 700)
+        pygame.time.set_timer(USEREVENT+2, 350)
         while 1:
             # Make sure game doesn't run at more than 60 frames per second
-            clock.tick(30)
+            clock.tick(40)
             
             """Process single events"""
             for event in pygame.event.get():
@@ -94,6 +92,9 @@ class Main:
                     sys.exit()
                 elif event.type == USEREVENT+1:
                     self.land.update(displs, (displs+self.block_size) % self.land.get_size())
+                    changes = True
+                elif event.type == USEREVENT+2:
+                    self.land.move_player()
                     changes = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == K_1:
@@ -108,14 +109,15 @@ class Main:
                     elif event.key == K_ESCAPE:
                         sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        mouse = Position(int(event.pos[0]/self.texture_size + displs.x), 
-                                         int(event.pos[1]/self.texture_size + displs.y))
+                    #if event.button == 1:
+                        #mouse = Position(int(event.pos[0]/self.texture_size + displs.x), 
+                        #                 int(event.pos[1]/self.texture_size + displs.y))
                     if event.button == 3:
                         destination = Position(int(event.pos[0]/self.texture_size + displs.x),
                                                int(event.pos[1]/self.texture_size + displs.y))
+                        self.land.add_path_to_player(destination)
                         # now you may see debug information about the path
-                        print get_path(mouse, destination, self.land.get_land(), 2)
+                        #print get_path(mouse, destination, self.land.get_land(), 2)
 
 
             """Process continuous events"""
@@ -146,7 +148,6 @@ class Main:
                 self.draw_debug_window(displs)
                 
             pygame.display.update()
-
 
     def draw_debug_window(self, displs):
         values = { 'x' : displs.x, 'y' : displs.y }
@@ -249,11 +250,11 @@ class Main:
 
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
-size = 1000
+size = 2000
 # (change view) roughness, more biggest value will give more filled map
-roughness = 15.0
+roughness = 20.0
 # (change map ) you can think about seed as map number or id
-land_id = 12311
+land_id = 1233213
 
 # water, sand, grass    
 #land_heights = [0, 0.55, 0.60, 1]
@@ -307,7 +308,7 @@ def start():
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
     # init land
-    land = Land(terrains, objects, monsters, 2, grass_area, map_generator)
+    land = Land(terrains, objects, monsters, player_id, 2, grass_area, map_generator)
 
     # create window
     MainWindow = Main(land, 1024, 768, True)
