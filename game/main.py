@@ -253,7 +253,7 @@ size = 1000
 # (change view) roughness, more biggest value will give more filled map
 roughness = 15.0
 # (change map ) you can think about seed as map number or id
-land_id = 1231123213123
+land_id = 12311
 
 # water, sand, grass    
 #land_heights = [0, 0.55, 0.60, 1]

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-from numpy import *
+import numpy
 import sys
-import random
 
 class MapGenerator():
     def __init__(self, size, debug=False):      
@@ -34,7 +33,7 @@ class MapGenerator():
                 return dsize
 
     def setup_grid(self, size):
-        return zeros((size, size))
+        return numpy.zeros((size, size))
 
     # must be defined by children
     def calc(self, x, y):
@@ -47,13 +46,13 @@ class DiamondSquare(MapGenerator):
         self.roughness = roughness
         self.seed = seed
 
-        random.seed(seed)
+        numpy.random.seed(seed)
 
     def set_seed(self, seed):
         self.seed = seed
 
     def displace(self, v, blockSize, x, y):
-        return (v + (random.gauss(0.5, 0.2) - 0.5) * blockSize * 2 / self.size * self.roughness)
+        return (v + (numpy.random.normal(0.5, 0.2) - 0.5) * blockSize * 2 / self.size * self.roughness)
 
     def calc(self, x, y, v="undef"):
         if v == "undef":
