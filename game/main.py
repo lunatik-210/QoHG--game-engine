@@ -110,8 +110,8 @@ class Main:
                         sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        destination = Position(int(event.pos[0]/self.texture_size + displs.x),
-                                               int(event.pos[1]/self.texture_size + displs.y))
+                        destination = Position(int(event.pos[0]/self.texture_size+displs.x),
+                                               int(event.pos[1]/self.texture_size+displs.y))
                         self.land.add_path_to_player(destination)
 
             """Process continuous events"""
@@ -302,7 +302,7 @@ colors = {
     player_id            : 'Black',
 }
 
-def start(fullscreen_option):
+def start(fullscreen_option=True, debug_option=False):
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
@@ -310,18 +310,28 @@ def start(fullscreen_option):
     land = Land(terrains, objects, monsters, player_id, 2, grass_area, map_generator)
 
     # create window
-    MainWindow = Main(land, 1024, 768, True)
+    MainWindow = Main(land, 1024, 768, debug_option)
     MainWindow.set_full_screen(fullscreen_option)
 
     # starting the main loop / game
-    MainWindow.main_loop()    
+    MainWindow.main_loop()
 
 if __name__ == "__main__":
+    # command line flags:
+    #   [-f] fullscreen mode on
+    #   [-w] window mode on
+    #   [-d] debug mode on
 
-    # "python main.py -window" starts the game in window mode
     fullscreen_option = True
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "-w":
+    debug_option = True # Actually False as default, but who cares
+
+    argv = sys.argv
+    for arg in argv:
+        if arg == "-d":
+            debug_option = True
+        elif arg == "-f":
+            fullscreen_option = True
+        elif arg == "-w":
             fullscreen_option = False
 
-    start(fullscreen_option)
+    start(fullscreen_option, debug_option)
