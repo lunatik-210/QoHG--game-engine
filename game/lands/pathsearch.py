@@ -81,11 +81,20 @@ def a_star_path_search(start, goal, grid, allowed_id):
             if neighbor in closed:
                 continue
 
+            new_g = g[current_pos.value()] + 1
+            update_pos = False
+
             if neighbor not in open:
-                g[neighbor.value()] = g[current_pos.value()] + 1
+                open.append(neighbor)
+                update_pos = True
+            elif new_g < g[neighbor.value()]:
+                update_pos = True
+
+            if update_pos:
+                g[neighbor.value()] = new_g
                 f[neighbor.value()] = g[neighbor.value()] + heuristic(neighbor, goal)
                 came_from[neighbor.value()] = current_pos
-                open.append(neighbor)
+
     return None
 
 
@@ -117,9 +126,6 @@ if __name__ == '__main__':
     start2 = Position(0,0)
     goal2  = Position(len(grid2)-1, len(grid2[0])-1)
 
-    # (0, 0) -> (0, 1) -> (0, 2) -> (0, 3) -> (1, 3) -> (2, 3) -> (3, 3) -> (3, 4) -> (4, 4) is the best path
-    # (0, 0) -> (1, 0) -> (2, 0) -> (3, 0) -> (4, 0) -> (4, 1) -> (4, 2) -> (3, 2) -> (3, 3) -> (3, 4) -> (4, 4) what algo is find
-    #         0  1  2  3  4
     grid3 = [[0, 0, 0, 0, 0], # 0
              [0, 1, 1, 0, 0], # 1
              [0, 1, 1, 0, 1], # 2
