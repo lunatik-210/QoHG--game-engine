@@ -168,12 +168,12 @@ class Main:
 
     def load_resources(self):
         suffix = "_"
-        img_sand  = self.load_image("sand%s%d.png"  % (suffix, self.texture_size))
+        img_sand  = self.load_image("sand__%d.png"  % (self.texture_size))
         img_tree  = self.load_image("tree%s%d.png"  % (suffix, self.texture_size))
-        img_grass = self.load_image("grass%s%d.png" % (suffix, self.texture_size))
+        img_grass = self.load_image("grass__%d.png" % (self.texture_size))
         img_log   = self.load_image("log%s%d.png"   % (suffix, self.texture_size))
         img_stone = self.load_image("stone%s%d.png" % (suffix, self.texture_size))
-        img_water = self.load_image("water%s%d.png" % (suffix, self.texture_size))
+        img_water = self.load_image("water__%d.png" % (self.texture_size))
 
         img_wolf   = self.load_image("wolf%s%dr.png" % (suffix, self.texture_size))
         img_pig    = self.load_image("pig%dr.png"    % self.texture_size)
@@ -249,7 +249,7 @@ class Main:
 
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
-size = 2000
+size = 1000
 # (change view) roughness, more biggest value will give more filled map
 roughness = 20.0
 # (change map ) you can think about seed as map number or id
@@ -311,7 +311,7 @@ def start(fullscreen_option=True, debug_option=False):
 
     # create window
     MainWindow = Main(land, 1024, 768, debug_option)
-    MainWindow.set_full_screen(fullscreen_option)
+    #MainWindow.set_full_screen(fullscreen_option)
 
     # starting the main loop / game
     MainWindow.main_loop()
