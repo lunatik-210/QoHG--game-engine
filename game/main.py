@@ -176,7 +176,7 @@ class Main:
         img_water = self.load_image("water%s%d.png" % ('__',self.texture_size))
 
         img_wolf   = self.load_image("wolf%s%dr.png" % (suffix, self.texture_size))
-        img_pig    = self.load_image("pig%dr.png"    % self.texture_size)
+        img_pig    = self.load_image_with_alpha("pig%s%d.png"  % ('__', self.texture_size))
         img_player = self.load_image_with_alpha("player%s%d.png" % (suffix, self.texture_size))
         
         self.img_blocks = { terrains['water'][1] : img_water,
