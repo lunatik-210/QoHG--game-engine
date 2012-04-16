@@ -80,11 +80,11 @@ class Main:
         clock = pygame.time.Clock()
 
         # set User event to update Monsters
-        pygame.time.set_timer(USEREVENT+1, 700)
+        pygame.time.set_timer(USEREVENT+1, 600)
         pygame.time.set_timer(USEREVENT+2, 150)
         while 1:
             # Make sure game doesn't run at more than 60 frames per second
-            clock.tick(40)
+            clock.tick(60)
             
             """Process single events"""
             for event in pygame.event.get():
