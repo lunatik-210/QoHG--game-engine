@@ -31,6 +31,8 @@ def particion(a, l, r, h):
 ###################################
 
 ####### fast_insert (logn) is faster than quick_sort (nlogn) #######
+    # It inserts element to his place corresponding to his f(h) value
+    # So the shortest point places on top of list
 def fast_insert(element, h, list):
     l = len(list)
     val = h[element.value()]
@@ -119,7 +121,7 @@ def a_star_path_search(start, goal, grid, allowed_id):
             return None
         steps += 1
         # getting the step with the shortest f - value
-        #quicksort(open, 0, len(open)-1, f)
+        # quicksort(open, 0, len(open)-1, f)
         current_pos = open.pop()
 
         closed.append(current_pos)
