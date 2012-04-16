@@ -54,6 +54,6 @@ class Position:
         return (self.x, self.y)
 
     def get_neighbors(self):
-        return (self.left(), self.top(), self.right(), self.bottom()) 
-                #self.lefttop(), self.righttop(), self.leftbottom(), self.rightbottom())
+        return (self.left(), self.top(), self.right(), self.bottom(),
+                self.lefttop(), self.righttop(), self.leftbottom(), self.rightbottom())
         
