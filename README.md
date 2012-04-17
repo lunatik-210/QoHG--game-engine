@@ -1,3 +1,9 @@
+Prerequirements:
+----------
+* PyGame lib
+* PGU (PyGame Gui) lib
+* numpy lib
+
 Interesting links:
 ----------
 * Текстурирование спрайтов с помощью (dis)placement map http://habrahabr.ru/post/117420/
