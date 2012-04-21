@@ -60,9 +60,9 @@ class DiamondSquare(MapGenerator):
                 return 0.0
             if self.grid[x][y] == 0:
                 base = 1
-                while (((x & base) == 0) and ((y & base) == 0)):
+                while (x & base) == 0 and (y & base) == 0:
                     base <<= 1
-                if (((x & base) != 0) and ((y & base) != 0)):
+                if (x & base) != 0 and (y & base) != 0:
                     self.square_step(x, y, base)
                 else:
                     self.diamond_step(x, y, base)
