@@ -1,11 +1,13 @@
 Prerequirements:
 ----------
 * PyGame lib
-* PGU (PyGame Gui) lib
+* PGU (PyGame Gui) lib # or pythonGame look below links
 * numpy lib
 
 Interesting links:
 ----------
+* Awesome GameEngine - based on PyGame (book as addition plus avaliable on site) http://www.aharrisbooks.net/pythonGame/
+* stackless used in EVE online (simple thread lib) http://zope.stackless.com/
 * Текстурирование спрайтов с помощью (dis)placement map http://habrahabr.ru/post/117420/
 * Алгоритм «diamond-square» для построения фрактальных ландшафтов http://habrahabr.ru/post/111538/
 * Создание генератора мира для minecraft http://habrahabr.ru/post/125621/
