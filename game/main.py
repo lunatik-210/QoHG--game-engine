@@ -305,6 +305,7 @@ colors = {
 def start(fullscreen_option=True, debug_option=False):
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
+    #map_generator = MapGenerator.Perling(size, 2, 0.8)
 
     # init land
     land = Land(terrains, objects, monsters, player_id, 2, grass_area, map_generator)

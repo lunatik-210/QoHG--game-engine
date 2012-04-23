@@ -1,6 +1,6 @@
 import sys
 import random
-
+import numpy
 import pygame
 from pygame.locals import *
 
@@ -42,7 +42,7 @@ class Gui:
             self.screen.fill((0,0,0))
 
             for anymal in self.animals:
-            	pygame.draw.circle(self.screen, (255,0,0), (anymal.x, anymal.y), anymal.observe_area)
+            	pygame.draw.circle(self.screen, (255,0,0), (anymal.x, anymal.y), 2)
             	anymal.x = (anymal.x + random.gauss(0.5, 1)*random.gauss(0.5, 1) ) % self.height
             	anymal.y = (anymal.y + random.gauss(0.5, 1)*random.gauss(0.5, 1) ) % self.width
 

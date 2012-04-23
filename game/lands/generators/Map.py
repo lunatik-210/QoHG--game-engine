@@ -2,6 +2,7 @@
 
 import numpy
 import sys
+import math
 
 class MapGenerator():
     def __init__(self, size, debug=False):      
@@ -83,3 +84,47 @@ class DiamondSquare(MapGenerator):
                                            self.calc((x+blockSize), y) + 
                                            self.calc(x, (y-blockSize)) + 
                                            self.calc(x, (y+blockSize))) / 4, blockSize, x, y ))
+
+class Perling(MapGenerator):
+    def __init__(self, size, octaves = 6, persistence = 0.2, debug = False):
+        MapGenerator.__init__(self, size, debug)
+        self.octaves = octaves
+        self.persistence = persistence
+
+    def noise(self, x, y):
+        n = x + y * 57
+        x = (x<<13) ^ x
+        return ( 1.0 - ( (x * (x * x * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0)
+
+    def lin_interpolate(self, a, b, x):
+        return  a*(1-x) + b*x
+
+    def cos_interpolate(self, a, b, x):
+        ft = x * 3.1415927
+        f = (1 - math.cos(ft)) * .5
+        return  a*(1-f) + b*f
+
+    def smooth_noise(self, x, y):
+        corners = ( self.noise(x-1, y-1)+self.noise(x+1, y-1)+self.noise(x-1, y+1)+self.noise(x+1, y+1) ) / 16
+        sides   = ( self.noise(x-1, y)  +self.noise(x+1, y)  +self.noise(x, y-1)  +self.noise(x, y+1) ) /  8
+        center  =  self.noise(x, y) / 4
+        return corners + sides + center
+
+    def interpolated_noise(self, x, y, interpolate):
+        integer_X    = int(x)
+        fractional_X = x - 1
+        integer_Y    = int(y)
+        fractional_Y = y - 1
+        v1 = self.smooth_noise(integer_X,     integer_Y)
+        v2 = self.smooth_noise(integer_X + 1, integer_Y)
+        v3 = self.smooth_noise(integer_X,     integer_Y + 1)
+        v4 = self.smooth_noise(integer_X + 1, integer_Y + 1)
+        i1 = interpolate(v1 , v2 , fractional_X)
+        i2 = interpolate(v3 , v4 , fractional_X)
+        return interpolate(i1 , i2 , fractional_Y)
+
+    def calc(self, x, y):
+        val = 0.0
+        for i in range(self.octaves):
+            val += self.interpolated_noise(x * (2**i), y * (2**i), self.cos_interpolate) * self.persistence**i
+        return val
