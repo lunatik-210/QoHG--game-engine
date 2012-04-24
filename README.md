@@ -14,6 +14,22 @@ Interesting links:
 * A* search http://en.wikipedia.org/wiki/A*_search_algorithm
 * Perling noise http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
+24.04.2012
+----------
+###Done:
+* Tryed Perling noise for map generation, but it turns out DemondSquare is better
+* Added bioms: prairie, mountains, desert, swamp, taiga
+* Monsters connected to their specific biom
+* We've started work on TCP/IP protocol, we have some great results (https://github.com/sagod/2D-Experiments-Client-Server-Edition)
+* And new Video =) (http://youtu.be/Pd6z6RKmlXk)
+
+###Plans:
+* Refactoring, again and again =(
+* pythonGame, try to use it
+* Do some menu
+* Upgrdae tcp/ip protocol
+* Merge our repositories
+
 14.04.2012
 ----------
 ###Done:

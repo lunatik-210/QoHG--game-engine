@@ -393,7 +393,7 @@ config = {
 ##################################################
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
-size = 1000
+size = 2000
 # (change view) roughness, more biggest value will give more filled map
 roughness = 20.0
 # (change map ) you can think about seed as map number or id
@@ -413,7 +413,7 @@ def start(fullscreen_option=True, debug_option=False):
 
     # create window
     MainWindow = Main(land, 1024, 768, debug_option)
-    #MainWindow.set_full_screen(fullscreen_option)
+    MainWindow.set_full_screen(fullscreen_option)
 
     # starting the main loop / game
     MainWindow.main_loop()
