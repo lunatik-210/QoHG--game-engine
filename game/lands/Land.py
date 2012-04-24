@@ -21,11 +21,12 @@ class Player:
             self.pos = step
 
 class Land:
-    def __init__(self, heights, monsters, player_id, grass_area, map_generator):
+    def __init__(self, heights, monsters, player_id, grass_area, map_generator, allowable_list):
         self.grass_area = grass_area
         self.monsters = monsters
         self.heights = heights
         self.player_id = player_id
+        self.allowable_list = allowable_list
 
         self.map_generator = map_generator
         self.monster_genearator = ObjectGenerator(monsters)
@@ -35,7 +36,7 @@ class Land:
         self.land.fill(-1)
 
         self.humidity = Humidity(self.lsize, self.heights['humidity'])
-        print self.humidity.build_map()
+        self.humidity.build_map()
 
         self.player = Player(Position(-1, -1))
 
@@ -59,7 +60,7 @@ class Land:
         self.player.move()
 
     def add_path_to_player(self, destination):
-        path = get_path(self.player.pos, destination, self.get_land(), self.heights['default'])
+        path = get_path(self.player.pos, destination, self.get_land(), self.allowable_list)
         if None == path:
             return
         path.reverse()

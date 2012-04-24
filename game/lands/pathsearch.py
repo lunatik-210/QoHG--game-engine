@@ -90,13 +90,13 @@ def get_path(came_from, pos):
 def is_out_of_range(p, land, allowed_id):
     return not (0 <= p.x < len(land) and 
                 0 <= p.y < len(land[0]) and 
-                land[p.x][p.y] == allowed_id)
+                land[p.x][p.y] in allowed_id)
 
 def heuristic(start, goal):
     return numpy.sqrt((start.x-goal.x)**2 + (start.y-goal.y)**2)
 
 def a_star_path_search(start, goal, grid, allowed_id):
-    if grid[goal.x][goal.y] != allowed_id:
+    if grid[goal.x][goal.y] not in allowed_id:
         return None
 
     closed = []
@@ -206,9 +206,9 @@ if __name__ == '__main__':
 
     goal4  = Position(2,3)
 
-    results = (a_star_path_search(start1, goal1, grid1, 0), 
-               a_star_path_search(start2, goal2, grid2, 0),
-               a_star_path_search(start3, goal3, grid3, 0),
-               a_star_path_search(start4, goal4, grid4, 0))
+    results = (a_star_path_search(start1, goal1, grid1, [0]), 
+               a_star_path_search(start2, goal2, grid2, [0]),
+               a_star_path_search(start3, goal3, grid3, [0]),
+               a_star_path_search(start4, goal4, grid4, [0]))
     
     nice_print(results)

@@ -174,6 +174,7 @@ class Main:
         img_log   = self.load_image("log%s%d.png"   % (suffix, self.texture_size))
         img_stone = self.load_image("stone%s%d.png" % (suffix, self.texture_size))
         img_water = self.load_image("water%s%d.png" % ('__',self.texture_size))
+        img_snow  = self.load_image("snow%s%d.png"  % ('__',self.texture_size))
 
         img_wolf   = self.load_image("wolf%s%dr.png" % (suffix, self.texture_size))
         img_pig    = self.load_image_with_alpha("pig%s%dr.png"  % ('', self.texture_size))
@@ -185,6 +186,7 @@ class Main:
                             objects['log']      : img_log,
                             objects['stone']    : img_stone,
                             objects['tree']     : img_tree,
+                            objects['snow']     : img_snow,
                             monsters['wolf'][0] : img_wolf,
                             monsters['pig'][0]  : img_pig,
                             player_id : img_player }
@@ -255,7 +257,8 @@ objects = {
     'grass' : 2,
     'log'   : 3,
     'stone' : 4,
-    'tree'  : 5
+    'tree'  : 5,
+    'snow'  : 6,
 }
 
 monsters = { 
@@ -279,6 +282,7 @@ colors = {
     objects['log']      : 'Brown',
     objects['stone']    : 'Gray',
     objects['tree']     : 'Green',
+    objects['snow']     : 'White',
     monsters['wolf'][0] : 'Black',
     monsters['pig'][0]  : 'Black',
     player_id           : 'Black',
@@ -325,11 +329,11 @@ mountains = (((0.00, 0.58),  objects['water'] ),
              ((0.58, 0.60),  objects['sand']  ),
              ((0.60, 0.70),  objects['grass'] ),
              ((0.70, 0.73),  objects['stone'] ),
-             ((0.73, 0.80),  objects['grass'] ),
+             ((0.73, 0.80),  objects['snow'] ),
              ((0.80, 0.85),  objects['stone'] ),
-             ((0.85, 0.88),  objects['grass'] ),
+             ((0.85, 0.88),  objects['snow'] ),
              ((0.88, 0.91),  objects['tree'] ),
-             ((0.91, 0.97),  objects['grass'] ),
+             ((0.91, 0.97),  objects['snow'] ),
              ((0.97, 1.00),  objects['stone'] ))
 
 desert = (((0.00, 0.58), objects['water'] ),
@@ -370,6 +374,10 @@ size = 1000
 roughness = 20.0
 # (change map ) you can think about seed as map number or id
 land_id = 1233213
+
+allowable_list = [objects['sand'],
+                  objects['grass'],
+                  objects['snow']]
 ##################################################
 
 def start(fullscreen_option=True, debug_option=False):
@@ -377,7 +385,7 @@ def start(fullscreen_option=True, debug_option=False):
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
     # init land
-    land = Land(heights, monsters, player_id, grass_area, map_generator)
+    land = Land(heights, monsters, player_id, grass_area, map_generator, allowable_list)
 
     # create window
     MainWindow = Main(land, 1024, 768, debug_option)
