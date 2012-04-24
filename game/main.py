@@ -179,14 +179,14 @@ class Main:
         img_pig    = self.load_image_with_alpha("pig%s%dr.png"  % ('', self.texture_size))
         img_player = self.load_image_with_alpha("player%s%d.png" % (suffix, self.texture_size))
         
-        self.img_blocks = { terrains['water'][1] : img_water,
-                            terrains['sand'][1]  : img_sand,
-                            terrains['grass'][1] : img_grass,
-                            objects['log'][1]    : img_log,
-                            objects['stone'][1]  : img_stone,
-                            objects['tree'][1]   : img_tree,
-                            monsters['wolf'][0]  : img_wolf,
-                            monsters['pig'][0]   : img_pig,
+        self.img_blocks = { objects['water']    : img_water,
+                            objects['sand']     : img_sand,
+                            objects['grass']    : img_grass,
+                            objects['log']      : img_log,
+                            objects['stone']    : img_stone,
+                            objects['tree']     : img_tree,
+                            monsters['wolf'][0] : img_wolf,
+                            monsters['pig'][0]  : img_pig,
                             player_id : img_player }
                 
     def load_image(self, name):
@@ -245,8 +245,124 @@ class Main:
                 pygame.draw.rect(map, color, pygame.Rect(x*ds, y*ds, ds, ds))
         return map
 
-'''define constants'''
 
+##################################################
+# types of objects
+##################################################
+objects = {
+    'water' : 0,
+    'sand'  : 1,
+    'grass' : 2,
+    'log'   : 3,
+    'stone' : 4,
+    'tree'  : 5
+}
+
+monsters = { 
+    'wolf' :  [11, 0.2],
+    'pig'  :  [12, 0.3],
+    'grass' : [2,  0.5]
+}
+
+grass_area = [0.8, 0.81]
+
+player_id = 10
+
+##################################################
+# colors for mini/demo map
+# id - color
+##################################################
+colors = {
+    objects['water']    : 'Blue',
+    objects['sand']     : 'Yellow',
+    objects['grass']    : 'Black',
+    objects['log']      : 'Brown',
+    objects['stone']    : 'Gray',
+    objects['tree']     : 'Green',
+    monsters['wolf'][0] : 'Black',
+    monsters['pig'][0]  : 'Black',
+    player_id           : 'Black',
+}
+
+#################################################
+# types of bioms (areas)
+##################################################
+bioms = {
+    'prairie'   : 0,
+    'mountains' : 1,
+    'desert'    : 2,
+    'swamp'     : 3,
+    'taiga'     : 4
+}
+
+##################################################
+# determine hight map for bioms
+##################################################
+humidity = (((0.0, 0.50),  bioms['prairie']   ),
+            ((0.50, 0.65), bioms['mountains'] ),
+            ((0.65, 0.80), bioms['taiga']     ),
+            ((0.80, 0.90), bioms['swamp']     ),
+            ((0.90, 1.0),  bioms['desert']    ))
+
+##################################################
+# Determine hight map for every biom 
+##################################################
+taiga = (((0.00, 0.58), objects['water'] ),
+         ((0.58, 0.60), objects['sand']  ),
+         ((0.60, 0.62), objects['grass'] ),
+         ((0.62, 0.64), objects['tree']  ),
+         ((0.64, 0.78), objects['grass'] ),
+         ((0.78, 0.80), objects['tree']  ),
+         ((0.80, 0.94), objects['grass'] ),
+         ((0.94, 1.00), objects['tree']  ))
+
+prairie = (((0.00, 0.58),  objects['water'] ),
+           ((0.58, 0.60),  objects['sand']  ),
+           ((0.60, 0.94),  objects['grass'] ),
+           ((0.94, 1.00),  objects['tree']  ))
+
+mountains = (((0.00, 0.58),  objects['water'] ),
+             ((0.58, 0.60),  objects['sand']  ),
+             ((0.60, 0.70),  objects['grass'] ),
+             ((0.70, 0.73),  objects['stone'] ),
+             ((0.73, 0.80),  objects['grass'] ),
+             ((0.80, 0.85),  objects['stone'] ),
+             ((0.85, 0.88),  objects['grass'] ),
+             ((0.88, 0.91),  objects['tree'] ),
+             ((0.91, 0.97),  objects['grass'] ),
+             ((0.97, 1.00),  objects['stone'] ))
+
+desert = (((0.00, 0.58), objects['water'] ),
+          ((0.58, 0.59), objects['sand']  ),
+          ((0.59, 0.61), objects['grass'] ),
+          ((0.64, 1.00), objects['sand']  ))
+
+swamp = (((0.00, 0.56), objects['water'] ),
+         ((0.56, 0.58), objects['sand']  ),
+         ((0.58, 0.77), objects['grass'] ),
+         ((0.77, 0.79), objects['log']   ),
+         ((0.79, 0.82), objects['tree']  ),
+         ((0.82, 0.94), objects['grass'] ),
+         ((0.94, 0.97), objects['log']   ),
+         ((0.97, 0.98), objects['tree']  ),
+         ((0.98, 1.0),  objects['log']   ))
+
+##################################################
+# Set hight map
+##################################################
+heights = {
+    'humidity' : humidity,
+    bioms['prairie'] : prairie,
+    bioms['mountains'] : mountains,
+    bioms['desert'] : desert,
+    bioms['swamp'] : swamp,
+    bioms['taiga'] : taiga,
+    'default' : objects['grass']
+}
+
+##################################################
+# define constants
+##################################################
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
 size = 1000
@@ -254,61 +370,14 @@ size = 1000
 roughness = 20.0
 # (change map ) you can think about seed as map number or id
 land_id = 1233213
-
-# water, sand, grass    
-#land_heights = [0, 0.55, 0.60, 1]
-
-# log, stone, tree
-#objects_heights = [0.948, 0.949,  0.95, 1]
-
-# terrains are constant
-terrains = {
-    'water'   : [[0, 0.58],     0],
-    'sand'    : [[0.58, 0.60],  1],
-    'grass'   : [[0.60, 0.1],   2]
-}
-
-# objects may gone
-objects = {
-    'log'   :  [[0.948, 0.949], 3],
-    'stone' :  [[0.949,  0.95], 4],
-    'tree'  :  [[0.95, 1.0],    5]
-}
-
-# [monster_id, probability]
-# wolf, pig
-monsters = { 
-    'wolf' :  [11, 0.2],
-    'pig'  :  [12, 0.3],
-    'grass' : [2,  0.5]
-}
-
-# grass area
-grass_area = [0.8, 0.81]
-
-player_id = 10
-
-# colors for mini/demo map
-# id - color
-colors = {
-    terrains['water'][1] : 'Blue',
-    terrains['sand'][1]  : 'Yellow',
-    terrains['grass'][1] : 'Black',
-    objects['log'][1]    : 'Brown',
-    objects['stone'][1]  : 'Gray',
-    objects['tree'][1]   : 'Green',
-    monsters['wolf'][0]  : 'Black',
-    monsters['pig'][0]   : 'Black',
-    player_id            : 'Black',
-}
+##################################################
 
 def start(fullscreen_option=True, debug_option=False):
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
-    #map_generator = MapGenerator.Perling(size, 2, 0.8)
 
     # init land
-    land = Land(terrains, objects, monsters, player_id, 2, grass_area, map_generator)
+    land = Land(heights, monsters, player_id, grass_area, map_generator)
 
     # create window
     MainWindow = Main(land, 1024, 768, debug_option)

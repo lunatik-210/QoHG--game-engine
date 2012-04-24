@@ -3,6 +3,7 @@ import numpy
 import random
 
 from generators.Object import ObjectGenerator
+from generators.Map import Humidity
 from pathsearch import a_star_path_search as get_path
 from Position import Position
 
@@ -20,18 +21,22 @@ class Player:
             self.pos = step
 
 class Land:
-    def __init__(self, terrains, objects, monsters, player_id, def_id, grass_area, map_generator):
+    def __init__(self, heights, monsters, player_id, grass_area, map_generator):
         self.grass_area = grass_area
         self.monsters = monsters
-        self.terrains = terrains
-        self.objects = objects
+        self.heights = heights
         self.player_id = player_id
-        self.def_id = def_id
+
         self.map_generator = map_generator
+        self.monster_genearator = ObjectGenerator(monsters)
+
         self.lsize = self.map_generator.get_size()
         self.land = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
-        self.monster_genearator = ObjectGenerator(monsters)
+
+        self.humidity = Humidity(self.lsize, self.heights['humidity'])
+        print self.humidity.build_map()
+
         self.player = Player(Position(-1, -1))
 
     def set_land_id(self, land_id):
@@ -45,7 +50,7 @@ class Land:
         while not found:
             pos = Position(abs(int(random.uniform(0, s))),
                            abs(int(random.uniform(0, s))))
-            if self.value(pos) == self.def_id:
+            if self.value(pos) == self.heights['default']:
                 found = True
         self.player = Player(pos)
         return pos
@@ -54,7 +59,7 @@ class Land:
         self.player.move()
 
     def add_path_to_player(self, destination):
-        path = get_path(self.player.pos, destination, self.get_land(), self.def_id)
+        path = get_path(self.player.pos, destination, self.get_land(), self.heights['default'])
         if None == path:
             return
         path.reverse()
@@ -78,10 +83,7 @@ class Land:
             return val
         val = self.map_generator.calc(pos.x,pos.y)
 
-        self.land[pos.x][pos.y] = self.get_block_id(self.terrains, val)
-
-        if self.land[pos.x][pos.y] == self.def_id:
-            self.land[pos.x][pos.y] = self.get_block_id(self.objects, val)
+        self.land[pos.x][pos.y] = self.get_block_id(val, self.humidity.value(pos.x, pos.y ))
         
         '''Make desicion about pig or wolf'''
         if self.grass_area[0] < val < self.grass_area[1]:
@@ -99,12 +101,12 @@ class Land:
             for y in range(p1.y, p2.y):
                 for monster in self.monsters:
                     if self.land[x][y] == self.monsters[monster][0]:
-                        self.land[x][y] = self.terrains['grass'][1]
+                        self.land[x][y] = self.heights['default']
                         count = 0
                         while count < 5:
                             new_x = int(random.uniform(-2, 2)) + x
                             new_y = int(random.uniform(-2, 2)) + y
-                            if self.land[new_x][new_y] == self.terrains['grass'][1]:
+                            if self.land[new_x][new_y] == self.heights['default']:
                                 self.land[new_x][new_y] = self.monsters[monster][0]
                                 break
                             count += 1
@@ -112,11 +114,11 @@ class Land:
     def get_size(self):
         return self.lsize
 
-    def get_block_id(self, height_map, val):
-        for block in height_map:
-            if height_map[block][0][0] <= val <= height_map[block][0][1]:
-                return height_map[block][1]
-        return self.def_id
+    def get_block_id(self, val, humidity):
+        for block in self.heights[humidity]:
+            if block[0][0] <= val <= block[0][1]:
+                return block[1]
+        return self.heights['default']
 
     # Here we should use some data base
     def save(self, name):

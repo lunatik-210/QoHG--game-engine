@@ -3,6 +3,32 @@
 import numpy
 import sys
 import math
+import random
+
+class Humidity():
+    def __init__(self, size, height):
+        self.height = height
+        self.size = int(numpy.log2(size))
+        self.scale = int(size / self.size)
+        self.map = numpy.zeros((self.size, self.size))
+
+    def build_map(self):
+        for x in range(self.size):
+            for y in range(self.size):
+                self.map[x][y] = self.get_block_id(random.uniform(0,1))
+        return self.map
+
+    def value(self, x, y):
+        x = int(x/self.scale) % self.size
+        y = int(y/self.scale) % self.size
+        return self.map[x][y]
+
+    def get_block_id(self, val):
+        for block in self.height:
+            if block[0][0] <= val <= block[0][1]:
+                return block[1]
+        print 'Error: cannt define Humidity block: ', val
+        return None
 
 class MapGenerator():
     def __init__(self, size, debug=False):      
@@ -93,8 +119,8 @@ class Perling(MapGenerator):
 
     def noise(self, x, y):
         n = x + y * 57
-        x = (x<<13) ^ x
-        return ( 1.0 - ( (x * (x * x * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0)
+        n = (n<<13) ^ n
+        return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0)
 
     def lin_interpolate(self, a, b, x):
         return  a*(1-x) + b*x
