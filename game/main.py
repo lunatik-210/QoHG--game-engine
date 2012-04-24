@@ -354,7 +354,7 @@ mountains = { 'objects' : (((0.00, 0.58),  objects['water'] ),
 desert = { 'objects' :  (((0.00, 0.58), objects['water'] ),
                          ((0.58, 0.59), objects['sand']  ),
                          ((0.59, 0.61), objects['grass'] ),
-                         ((0.64, 1.00), objects['sand']  )),
+                         ((0.61, 1.00), objects['sand']  )),
            'monsters' : None,
            'default'  : objects['sand']
 }        
