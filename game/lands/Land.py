@@ -21,21 +21,18 @@ class Player:
             self.pos = step
 
 class Land:
-    def __init__(self, heights, monsters, player_id, grass_area, map_generator, allowable_list):
-        self.grass_area = grass_area
-        self.monsters = monsters
-        self.heights = heights
+    def __init__(self, config, player_id, map_generator, allowable_list):
+        self.config = config
         self.player_id = player_id
         self.allowable_list = allowable_list
 
         self.map_generator = map_generator
-        self.monster_genearator = ObjectGenerator(monsters)
 
         self.lsize = self.map_generator.get_size()
         self.land = numpy.empty((self.lsize,self.lsize))
         self.land.fill(-1)
 
-        self.humidity = Humidity(self.lsize, self.heights['humidity'])
+        self.humidity = Humidity(self.lsize, self.config['humidity'])
         self.humidity.build_map()
 
         self.player = Player(Position(-1, -1))
@@ -51,7 +48,7 @@ class Land:
         while not found:
             pos = Position(abs(int(random.uniform(0, s))),
                            abs(int(random.uniform(0, s))))
-            if self.value(pos) == self.heights['default']:
+            if self.value(pos) == self.config['default'] and self.config['bioms']['prairie'] == self.humidity.value(pos.x, pos.y):
                 found = True
         self.player = Player(pos)
         return pos
@@ -82,13 +79,16 @@ class Land:
 
         if val != -1:
             return val
-        val = self.map_generator.calc(pos.x,pos.y)
-
-        self.land[pos.x][pos.y] = self.get_block_id(val, self.humidity.value(pos.x, pos.y ))
         
-        '''Make desicion about pig or wolf'''
-        if self.grass_area[0] < val < self.grass_area[1]:
-            new_val = self.monster_genearator.generate()
+        val = self.map_generator.calc(pos.x,pos.y)
+        biom = self.humidity.value(pos.x, pos.y)
+
+        self.land[pos.x][pos.y] = self.get_block_id(val, biom)
+        monsters = self.config[biom]['monsters']
+
+        # choose monster
+        if (monsters is not None) and (self.land[pos.x][pos.y] in self.allowable_list):
+            new_val = ObjectGenerator(monsters).generate()
             if new_val is not None:
                 self.land[pos.x][pos.y] = new_val
 
@@ -98,28 +98,29 @@ class Land:
         '''-_______- -_______- -_______- -_______- -_______-'''
         '''Not understandable code, I have to fix it        '''
         '''But it really makes monsters move =))))))))))))) '''
+        monsters = self.config['monsters']
         for x in range(p1.x, p2.x):
             for y in range(p1.y, p2.y):
-                for monster in self.monsters:
-                    if self.land[x][y] == self.monsters[monster][0]:
-                        self.land[x][y] = self.heights['default']
+                for monster in monsters:
+                    if self.land[x][y] == monsters[monster]:
+                        self.land[x][y] = self.config[self.humidity.value(x,y)]['default']
                         count = 0
                         while count < 5:
                             new_x = int(random.uniform(-2, 2)) + x
                             new_y = int(random.uniform(-2, 2)) + y
-                            if self.land[new_x][new_y] == self.heights['default']:
-                                self.land[new_x][new_y] = self.monsters[monster][0]
+                            if self.land[new_x][new_y] in self.allowable_list:
+                                self.land[new_x][new_y] = monsters[monster]
                                 break
                             count += 1
 
     def get_size(self):
         return self.lsize
 
-    def get_block_id(self, val, humidity):
-        for block in self.heights[humidity]:
+    def get_block_id(self, val, biom):
+        for block in self.config[biom]['objects']:
             if block[0][0] <= val <= block[0][1]:
                 return block[1]
-        return self.heights['default']
+        return self.config[biom]['default']
 
     # Here we should use some data base
     def save(self, name):

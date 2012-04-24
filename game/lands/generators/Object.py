@@ -9,21 +9,19 @@ class ObjectGenerator:
     def calc_mean(self, probability_array):
         mean = 0
         for obj in probability_array:
-            array = probability_array[obj]
-            mean += array[0] * array[1]
+            mean += obj[1] * obj[0]
         return mean
 
     def calc_variance(self, mean, probability_array):
         var = 0
         for obj in probability_array:
-            array = probability_array[obj]
-            var += abs((array[0]-mean)) * array[1]
+            var += abs((obj[1]-mean)) * obj[0]
         return var
 
     def extract_object_ids(self, probability_array):
         objects = []
         for obj in probability_array:
-            objects.append(probability_array[obj][0])
+            objects.append(obj[1])
         return objects
 
     def generate(self):
@@ -31,3 +29,4 @@ class ObjectGenerator:
         if val in self.objects:
             return val
         return None
+
