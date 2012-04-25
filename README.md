@@ -1,3 +1,5 @@
+Last demonstration video: http://youtu.be/Pd6z6RKmlXk
+
 Prerequirements:
 ----------
 * PyGame lib
