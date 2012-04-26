@@ -6,9 +6,8 @@ import zlib
 import sys
 
 class Client(socket):
-    def __init__(self, addr, buffsize, debug=False):
+    def __init__(self, addr, debug=False):
         self.addr = addr
-        self.buffsize = buffsize
         self.debug = debug
     
     def __reinitsoc(self):
@@ -21,8 +20,8 @@ class Client(socket):
         self.send(request)
         data = None
         if waite_for_response:
-            self.buffsize = int(self.recv(5))
-            data = self.recv(self.buffsize)
+            buffsize = int(self.recv(5))
+            data = self.recv(buffsize)
             data = zlib.decompress(data)
             if is_pickle:
                 data = pickle.loads(data)

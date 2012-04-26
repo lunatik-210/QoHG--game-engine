@@ -22,15 +22,9 @@ import lands.generators.Map as MapGenerator
 import config
 #################################
 
-
 ##let's set up some constants
 TYPE_SIZE = 2
 DATA_SIZE = 5
-
-HOST = ''               #we are the host
-PORT = 29877            #arbitrary port not currently in use
-ADDR = (HOST, PORT)     #we need a tuple for the address
-BUFSIZE = 4096          #reasonably sized buffer for data
 
 '''define constants'''
 # the approximate size of the map you want (should be large than size of main screen)
@@ -40,33 +34,6 @@ size = 1000
 roughness = 20.0
 # (change map ) you can think about seed as map number or id
 land_id = 1233213
-
-# terrains are constant
-terrains = {
-    'water'   : [[0, 0.58],     0],
-    'sand'    : [[0.58, 0.60],  1],
-    'grass'   : [[0.60, 0.1],   2]
-}
-
-# objects may gone
-objects = {
-    'log'   :  [[0.948, 0.949], 3],
-    'stone' :  [[0.949,  0.95], 4],
-    'tree'  :  [[0.95, 1.0],    5]
-}
-
-# [monster_id, probability]
-# wolf, pig
-monsters = { 
-    'wolf' :  [11, 0.2],
-    'pig'  :  [12, 0.3],
-    'grass' : [2,  0.5]
-}
-
-# grass area
-grass_area = [0.8, 0.81]
-
-player_id = 10
 
 ########################################
 def pack_data(request_type, data, land):
@@ -169,7 +136,7 @@ if __name__ == '__main__':
     thread.start()
 
     # init server
-    server = Server(ADDR, True)
+    server = Server(config.ADDR, True)
     server.init()
 
     # starting accepting requests loop

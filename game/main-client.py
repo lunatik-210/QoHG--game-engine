@@ -32,7 +32,7 @@ class Main:
         pygame.init()
 
         # Create the Screen
-        self.client = Client(config.ADDR, config.BUFSIZE, False)
+        self.client = Client(config.ADDR, False)
 
         # init lands
         self.demo_size = 100
