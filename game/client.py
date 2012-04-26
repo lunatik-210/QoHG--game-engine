@@ -20,7 +20,7 @@ class Client(socket):
         self.send(request)
         data = None
         if waite_for_response:
-            buffsize = int(self.recv(5))
+            buffsize = int(self.recv(config.DATA_SIZE))
             data = self.recv(buffsize)
             data = zlib.decompress(data)
             if is_pickle:
@@ -32,7 +32,7 @@ class Client(socket):
         return data
 
 class Request:
-    def __init__(self, type, data=None, bytes=5):
+    def __init__(self, type, data=None, bytes=config.DATA_SIZE):
         self.type = self._type_string(type)
         self.data = data
         self.bytes = bytes
@@ -58,18 +58,6 @@ class Request:
             return None
 
     def form_request(self):
-        """
-        Form request by pattern:
-            [REQUESTTYPE (?:BUFSIZE DATA)?]
-            REQUESTTYPE: 2b
-            BUFSIZE:     5b
-            DATA:        15b (or less)
-        There are 4 request types at this moment:
-            0 -> get_map
-            1 -> get_preview
-            2 -> get_land_size
-            3 -> update_map
-        """
         if not self.data:
             return self.type
         else:

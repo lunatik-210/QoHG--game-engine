@@ -4,6 +4,21 @@
 HOST = 'localhost'
 PORT = 29877   #our port from before
 ADDR = (HOST, PORT)
+
+"""
+Form request by pattern:
+    [REQUESTTYPE (?:BUFSIZE DATA)?]
+    REQUESTTYPE: 2b
+    BUFSIZE:     5b
+    DATA:        15b (or less)
+There are 4 request types at this moment:
+    0 -> get_map
+    1 -> get_preview
+    2 -> get_land_size
+    3 -> update_map
+"""
+TYPE_SIZE = 2
+DATA_SIZE = 5
 ##################################################
 
 ##################################################

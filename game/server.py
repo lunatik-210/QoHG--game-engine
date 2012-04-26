@@ -22,11 +22,6 @@ import lands.generators.Map as MapGenerator
 import config
 #################################
 
-##let's set up some constants
-TYPE_SIZE = 2
-DATA_SIZE = 5
-
-'''define constants'''
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
 size = 1000
@@ -44,7 +39,7 @@ def pack_data(request_type, data, land):
         2 : 'get_land_size',
         3 : 'update_map'
     }
-    set_front_zeros = lambda s: (DATA_SIZE - len(s)) * '0' + s
+    set_front_zeros = lambda s: (config.DATA_SIZE - len(s)) * '0' + s
 
     if types[request_type] == 'get_map':
         x1, y1, x2, y2 = map(int, data.split(','))
@@ -99,10 +94,10 @@ def request_parser(conn):
     data_size 0 - 9999  [5 bytes]
     data                [data_size]
     """
-    request_type = int(conn.recv(TYPE_SIZE))
+    request_type = int(conn.recv(config.TYPE_SIZE))
 
     if request_type == 0 or request_type == 1 or request_type == 3:
-        data_size = int(conn.recv(DATA_SIZE))
+        data_size = int(conn.recv(config.DATA_SIZE))
         data = conn.recv(data_size)
         return [request_type, data]
     elif request_type == 2:
