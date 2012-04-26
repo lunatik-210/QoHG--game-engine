@@ -22,7 +22,7 @@ Interesting links:
 * Tryed Perling noise for map generation, but it turns out DemondSquare is better
 * Added bioms: prairie, mountains, desert, swamp, taiga
 * Monsters connected to their specific biom
-* We've started work on TCP/IP protocol, we have some great results (https://github.com/sagod/2D-Experiments-Client-Server-Edition)
+* We've started work on TCP/IP protocol and there are already some great results
 * And new Video =) (http://youtu.be/Pd6z6RKmlXk)
 
 ###Plans:
