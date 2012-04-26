@@ -5,6 +5,8 @@ from array import *
 import zlib
 import sys
 
+import config
+
 class Client(socket):
     def __init__(self, addr, debug=False):
         self.addr = addr
