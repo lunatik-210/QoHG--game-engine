@@ -8,6 +8,9 @@ from pathsearch import a_star_path_search as get_path
 from Position import Position
 
 class Player:
+    """
+    Player can move on the land - user just let him do it by clicking on the stage.
+    """
     def __init__(self, pos):
         self.pos = pos
         self.path = []
@@ -58,7 +61,7 @@ class Land:
 
     def add_path_to_player(self, destination):
         path = get_path(self.player.pos, destination, self.get_land(), self.allowable_list)
-        if None == path:
+        if path is None:
             return
         path.reverse()
         self.player.set_path(path)

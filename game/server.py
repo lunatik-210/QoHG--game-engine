@@ -78,11 +78,8 @@ def queue_data_handler(**kwargs):
         if queue.empty():
             time.sleep(0.05)
             continue
-        try:
-            conn, addr = queue.get()
-        except IndexError:
-            print "Can't get item[2]"
 
+        conn, addr = queue.get()
         request_type, data = request_parser(conn)
         pack_data(request_type, data, land)
         
@@ -97,7 +94,7 @@ def request_parser(conn):
     """
     request_type = int(conn.recv(config.TYPE_SIZE))
 
-    if request_type == 0 or request_type == 1 or request_type == 3:
+    if request_type in [0, 1, 3]:
         data_size = int(conn.recv(config.DATA_SIZE))
         data = conn.recv(data_size)
         return [request_type, data]
