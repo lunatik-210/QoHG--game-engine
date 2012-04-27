@@ -8,6 +8,10 @@ import sys
 import config
 
 class Client(socket):
+    """
+    Class Client
+    TODO: write documentation
+    """
     def __init__(self, addr, debug=False):
         self.addr = addr
         self.debug = debug
@@ -34,18 +38,20 @@ class Client(socket):
         return data
 
 class Request:
+    """
+    Class Request
+    TODO: write documentation
+    """
     def __init__(self, type, data=None, bytes=config.DATA_SIZE):
-        self.type = self._type_string(type)
+        self.type = self.__type_string(type)
         self.data = data
         self.bytes = bytes
 
-    def _type_string(self, type):
-        if type < 10:
-            return "%d%d" % (0, type)
-        else:
-            return str(type)
+    def __type_string(self, type):
+        """Return 2 bytes string for correctly sending in request"""
+        return "%d%d" % (0, type) if type < 10 else str(type)
 
-    def _add_leading_0(self, data, bytes):
+    def __add_leading_0(self, data, bytes):
         """
         Function adds leading zeros to number for getting [bytes]bytes number
         For example, incoming data is 'testfoobar'
@@ -64,11 +70,14 @@ class Request:
             return self.type
         else:
             return "%s%s%s" % (self.type,
-                               self._add_leading_0(self.data, self.bytes),
+                               self.__add_leading_0(self.data, self.bytes),
                                self.data)
 
 if __name__ == '__main__':
-    client = Client(ADDR, BUFSIZE, True)
+    """
+    Request class testing
+    """
+    client = Client(config.ADDR, True)
 
     data1 = '600,600,621,616'
     data2 = '100'

@@ -146,16 +146,16 @@ swamp = { 'objects' : (((0.00, 0.56), objects['water'] ),
 # Set hight map
 ##################################################
 config = {
-    'humidity' : humidity,
-    bioms['prairie'] : prairie,
+    'humidity'         : humidity,
+    bioms['prairie']   : prairie,
     bioms['mountains'] : mountains,
-    bioms['desert'] : desert,
-    bioms['swamp'] : swamp,
-    bioms['taiga'] : taiga,
-    'default' : objects['grass'],
-    'monsters' : monsters,
-    'objects' : objects,
-    'bioms' : bioms
+    bioms['desert']    : desert,
+    bioms['swamp']     : swamp,
+    bioms['taiga']     : taiga,
+    'default'          : objects['grass'],
+    'monsters'         : monsters,
+    'objects'          : objects,
+    'bioms'            : bioms
 }
 
 allowable_list = (objects['sand'],

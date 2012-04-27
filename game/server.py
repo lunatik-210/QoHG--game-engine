@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 ########## System libs ##########
 from threading import Thread

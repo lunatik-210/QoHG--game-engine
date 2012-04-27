@@ -37,8 +37,8 @@ class Main:
         # init lands
         self.demo_size = 100
         self.demo_land = self.client.send_request(
-            Request(1, self.demo_size).form_request(), 
-            waite_for_response=True, is_pickle=True )
+            Request(1, self.demo_size).form_request(),
+            waite_for_response=True, is_pickle=True)
 
         self.land_size = int(self.client.send_request(Request(type=2).form_request(),
                              waite_for_response=True))
@@ -93,8 +93,8 @@ class Main:
                 if event.type == pygame.QUIT:
                     sys.exit()
                 elif event.type == USEREVENT+1:
-                    correct =lambda a: (a+1 if a % 2 else a)
-                    req = Request(3, '%d,%d,%d,%d' % (displs.x-self.block_size.x/2, 
+                    correct = lambda a: (a+1 if a % 2 else a)
+                    req = Request(3, '%d,%d,%d,%d' % (displs.x-self.block_size.x/2,
                                                       displs.y-self.block_size.y/2,
                                                       displs.x+correct(self.block_size.x)/2,
                                                       displs.y+correct(self.block_size.y)/2))
@@ -180,19 +180,19 @@ class Main:
         self.load_resources()
 
     def load_resources(self):
-        suffix = "_"
+        suff = "_"
         img_sand  = self.load_image("sand%s%d.png"  % ('__', self.texture_size))
-        img_tree  = self.load_image("tree%s%d.png"  % (suffix, self.texture_size))
+        img_tree  = self.load_image("tree%s%d.png"  % (suff, self.texture_size))
         img_grass = self.load_image("grass%s%d.png" % ('__',self.texture_size))
-        img_log   = self.load_image("log%s%d.png"   % (suffix, self.texture_size))
-        img_stone = self.load_image("stone%s%d.png" % (suffix, self.texture_size))
+        img_log   = self.load_image("log%s%d.png"   % (suff, self.texture_size))
+        img_stone = self.load_image("stone%s%d.png" % (suff, self.texture_size))
         img_water = self.load_image("water%s%d.png" % ('__',self.texture_size))
         img_snow  = self.load_image("snow%s%d.png"  % ('__',self.texture_size))
 
-        img_wolf   = self.load_image_with_alpha("wolf%s%d.png" % ('__', self.texture_size))
-        img_pig    = self.load_image_with_alpha("pig%s%d.png"  % ('__', self.texture_size))
-        img_player = self.load_image_with_alpha("player%s%d.png" % (suffix, self.texture_size))
-        img_golem  = self.load_image_with_alpha("golem%s%d.png" % ('__', self.texture_size))
+        img_wolf   = self.load_image("wolf%s%d.png"   % ('__', self.texture_size), True)
+        img_pig    = self.load_image("pig%s%d.png"    % ('__', self.texture_size), True)
+        img_player = self.load_image("player%s%d.png" % (suff, self.texture_size), True)
+        img_golem  = self.load_image("golem%s%d.png"  % ('__', self.texture_size), True)
         
         self.img_blocks = { config.objects['water']  : img_water,
                             config.objects['sand']   : img_sand,
@@ -204,23 +204,22 @@ class Main:
                             config.monsters['wolf']  : img_wolf,
                             config.monsters['pig']   : img_pig,
                             config.monsters['golem'] : img_golem,
-                            config.player_id : img_player }
-                
-    def load_image(self, name):
-        img_resources = "./resources/images/"
-        return pygame.image.load(img_resources + name).convert()
+                            config.player_id         : img_player }
 
-    def load_image_with_alpha(self, name):
+    def load_image(self, name, alpha=False):
         img_resources = "./resources/images/"
-        return pygame.image.load(img_resources + name).convert_alpha()
+        if alpha:
+            return pygame.image.load(img_resources + name).convert_alpha()
+        else:
+            return pygame.image.load(img_resources + name).convert()
 
     def redraw(self, displs):
         """
         Get necessary image block and
         redraw matrix of LandscapeBlocks' sprites
         """
-        correct =lambda a: (a+1 if a % 2 else a)
-        req = Request(0, '%d,%d,%d,%d' % (displs.x-self.block_size.x/2, 
+        correct = lambda a: (a+1 if a % 2 else a)
+        req = Request(0, '%d,%d,%d,%d' % (displs.x-self.block_size.x/2,
                                           displs.y-self.block_size.y/2,
                                           displs.x+correct(self.block_size.x)/2,
                                           displs.y+correct(self.block_size.y)/2))
@@ -283,10 +282,11 @@ def start(fullscreen_option=True, debug_option=False):
     MainWindow.main_loop()
 
 if __name__ == "__main__":
-    # command line flags:
-    #   [-f] fullscreen mode on
-    #   [-w] window mode on
-    #   [-d] debug mode on
+    """Command line flags:
+        [-f] fullscreen mode on
+        [-w] window mode on
+        [-d] debug mode on
+    """
 
     fullscreen_option = True
     debug_option = True # Actually False as default, but who cares
