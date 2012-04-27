@@ -10,9 +10,9 @@ Interesting links:
 ----------
 * Awesome GameEngine - based on PyGame (book as addition plus avaliable on site) http://www.aharrisbooks.net/pythonGame/
 * stackless used in EVE online (simple thread lib) http://zope.stackless.com/
-* Текстурирование спрайтов с помощью (dis)placement map http://habrahabr.ru/post/117420/
-* Алгоритм «diamond-square» для построения фрактальных ландшафтов http://habrahabr.ru/post/111538/
-* Создание генератора мира для minecraft http://habrahabr.ru/post/125621/
+* Texturing sprites by using displacement map http://habrahabr.ru/post/117420/
+* «diamond-square» to build fractal landscape http://habrahabr.ru/post/111538/
+* Minecraft world generator creation http://habrahabr.ru/post/125621/
 * A* search http://en.wikipedia.org/wiki/A*_search_algorithm
 * Perling noise http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
