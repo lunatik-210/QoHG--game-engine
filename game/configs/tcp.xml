@@ -8,12 +8,12 @@
 <protocol type="request">
 	<field bytes="2">request_type</field>
 	<field bytes="5">buffer_size</field>
-	<field bytes="inf">buffer</field>
+	<field bytes="undef">buffer</field>
 </protocol>
 
 <protocol type="response">
 	<field bytes="5">buffer_size</field>
-	<field bytes="inf">buffer</field>
+	<field bytes="undef">buffer</field>
 </protocol>
 
 <list type="request">
