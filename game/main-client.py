@@ -19,18 +19,15 @@ if not pygame.mixer: print 'Warning, sound disabled'
 ######### Game logic ############
 from lands.Position import Position
 import config
+import engine
 #################################
 
-class Main:
-    """
-    The Main Class - This class handles the main 
-    initialization and creating of the Game.
-    """
-    
-    def __init__(self, width=1024, height=768, debug=False):
-        # Initialize PyGame
-        pygame.init()
+class Main(engine.State):
 
+    def init(self):
+        """
+        This is the Main Loop of the Game
+        """
         # Create the Screen
         self.client = Client(config.ADDR, False)
 
@@ -42,118 +39,101 @@ class Main:
 
         self.land_size = int(self.client.send_request(Request(type=2).form_request(),
                              waite_for_response=True))
-        self.screen = pygame.display.set_mode((width, height))
-        self.width, self.height = width, height
-        self.debug = debug
 
-    def set_full_screen(self, fullscreen_option):
-        modes = pygame.display.list_modes(32)
-        if modes and fullscreen_option:
-            pygame.display.set_mode(modes[0], pygame.FULLSCREEN, 32)
-        self.width, self.height = modes[0]
-
-    def main_loop(self):
-        """
-        This is the Main Loop of the Game
-        """
-        self.set_view_mod(48)
+        self.__set_view_mod(48)
 
         # Get random x,y starting location
-        #displs = self.land.init_player()
-        #displs -= Position(10, 10)
-        displs = Position(500, 500)
+        self.displs = Position(500, 500)
         ##################################
 
         # some local variables
-        changes = True
+        self.changes = True
         
         # speed.x = 1, speed.y = 1
-        speed = Position(1, 1)
-
-        mouse = Position(0, 0)
+        self.speed = Position(1, 1)
+        self.mouse = Position(0, 0)
 
         ######################
         
         # init demo land surface 
         small_map_size = 200
-        demo_land_surface = self.create_demo_land_surface(small_map_size)
+        self.demo_land_surface = self.__create_demo_land_surface(small_map_size)
         ########################
 
-        clock = pygame.time.Clock()
+        self.UPDATEMONSTERS = USEREVENT+1
+        self.UPDATEPLAYER = USEREVENT+2
 
         # set User event to update Monsters
-        pygame.time.set_timer(USEREVENT+1, 600)
-        pygame.time.set_timer(USEREVENT+2, 150)
-        while 1:
-            # Make sure game doesn't run at more than 60 frames per second
-            clock.tick(60)
-            
-            """Process single events"""
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                elif event.type == USEREVENT+1:
-                    correct = lambda a: (a+1 if a % 2 else a)
-                    req = Request(3, '%d,%d,%d,%d' % (displs.x-self.block_size.x/2,
-                                                      displs.y-self.block_size.y/2,
-                                                      displs.x+correct(self.block_size.x)/2,
-                                                      displs.y+correct(self.block_size.y)/2))
-                    self.client.send_request(req.form_request())
-                    changes = True
+        pygame.time.set_timer(self.UPDATEMONSTERS, 600)
+        pygame.time.set_timer(self.UPDATEPLAYER, 150)
+
+    def paint(self):
+        if self.changes:
+            self.__redraw(self.displs)
+            self.__draw_demo_land_surface(self.demo_land_surface, self.displs)
+            self.changes = False
+
+        if self.debug:
+            self.__draw_debug_window(self.displs)
+
+    def event(self, events):
+        """Process single events"""
+        for event in events:
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == self.UPDATEMONSTERS:
+                correct = lambda a: (a+1 if a % 2 else a)
+                req = Request(3, '%d,%d,%d,%d' % (self.displs.x-self.block_size.x/2,
+                                                  self.displs.y-self.block_size.y/2,
+                                                  self.displs.x+correct(self.block_size.x)/2,
+                                                  self.displs.y+correct(self.block_size.y)/2))
+                self.client.send_request(req.form_request())
+                self.changes = True
+                pass
+            elif event.type == self.UPDATEPLAYER:
+                #self.land.move_player()
+                #changes = True
+                pass
+            elif event.type == pygame.KEYDOWN:
+                if event.key == K_1:
+                    self.__set_view_mod(64)
+                    self.changes = True
+                elif event.key == K_2:
+                    self.__set_view_mod(48)
+                    self.changes = True        
+                elif event.key == K_3:
+                    self.__set_view_mod(32)
+                    self.changes = True    
+                elif event.key == K_ESCAPE:
+                    return engine.Quit(self.game, self.debug)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 3:
+                    #destination = Position(
+                    #    int(event.pos[0]/self.texture_size+displs.x),
+                    #    int(event.pos[1]/self.texture_size+displs.y))
+                    #self.land.add_path_to_player(destination)
                     pass
-                elif event.type == USEREVENT+2:
-                    #self.land.move_player()
-                    #changes = True
-                    pass
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == K_1:
-                        self.set_view_mod(64)
-                        changes = True
-                    elif event.key == K_2:
-                        self.set_view_mod(48)
-                        changes = True        
-                    elif event.key == K_3:
-                        self.set_view_mod(32)
-                        changes = True    
-                    elif event.key == K_ESCAPE:
-                        sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 3:
-                        destination = Position(
-                            int(event.pos[0]/self.texture_size+displs.x),
-                            int(event.pos[1]/self.texture_size+displs.y))
-                        #self.land.add_path_to_player(destination)
 
-            """Process continuous events"""
-            key = pygame.key.get_pressed()
-            if key[K_RIGHT] or key[K_d]:
-                displs.x += speed.x
-                displs.x %= self.land_size
-                changes = True
-            elif key[K_LEFT] or key[K_a]:
-                displs.x -= speed.x
-                displs.x %= self.land_size
-                changes = True
-            elif key[K_UP] or key[K_w]:
-                displs.y -= speed.y
-                displs.y %= self.land_size
-                changes = True
-            elif key[K_DOWN] or key[K_s]:
-                displs.y += speed.y
-                displs.y %= self.land_size
-                changes = True
+        """Process continuous events"""
+        key = pygame.key.get_pressed()
+        if key[K_RIGHT] or key[K_d]:
+            self.displs.x += self.speed.x
+            self.displs.x %= self.land_size
+            self.changes = True
+        elif key[K_LEFT] or key[K_a]:
+            self.displs.x -= self.speed.x
+            self.displs.x %= self.land_size
+            self.changes = True
+        elif key[K_UP] or key[K_w]:
+            self.displs.y -= self.speed.y
+            self.displs.y %= self.land_size
+            self.changes = True
+        elif key[K_DOWN] or key[K_s]:
+            self.displs.y += self.speed.y
+            self.displs.y %= self.land_size
+            self.changes = True
 
-            if changes:
-                self.redraw(displs)
-                self.draw_demo_land_surface(demo_land_surface, displs)
-                changes = False
-
-            if self.debug:
-                self.draw_debug_window(displs)
-                
-            pygame.display.update()
-
-    def draw_debug_window(self, displs):
+    def __draw_debug_window(self, displs):
         values = { 'x': displs.x, 'y': displs.y }
         font = pygame.font.Font(None, 30)
         text = font.render("Center: x = %(x)d y = %(y)d" % values, True,
@@ -173,26 +153,27 @@ class Main:
                             True, (255, 255, 255), (0, 0, 0))
         self.screen.blit(text, (0, 40))
 
-    def set_view_mod(self, bit):
+    def __set_view_mod(self, bit):
+        width, height = self.screen.get_size()
         self.texture_size = bit
-        self.block_size = Position(self.width/self.texture_size,
-                                   self.height/self.texture_size)
-        self.load_resources()
+        self.block_size = Position(width/self.texture_size,
+                                   height/self.texture_size)
+        self.__load_resources()
 
-    def load_resources(self):
+    def __load_resources(self):
         suff = "_"
-        img_sand  = self.load_image("sand%s%d.png"  % ('__', self.texture_size))
-        img_tree  = self.load_image("tree%s%d.png"  % (suff, self.texture_size))
-        img_grass = self.load_image("grass%s%d.png" % ('__',self.texture_size))
-        img_log   = self.load_image("log%s%d.png"   % (suff, self.texture_size))
-        img_stone = self.load_image("stone%s%d.png" % (suff, self.texture_size))
-        img_water = self.load_image("water%s%d.png" % ('__',self.texture_size))
-        img_snow  = self.load_image("snow%s%d.png"  % ('__',self.texture_size))
+        img_sand  = self.__load_image("sand%s%d.png"  % ('__', self.texture_size))
+        img_tree  = self.__load_image("tree%s%d.png"  % (suff, self.texture_size))
+        img_grass = self.__load_image("grass%s%d.png" % ('__',self.texture_size))
+        img_log   = self.__load_image("log%s%d.png"   % (suff, self.texture_size))
+        img_stone = self.__load_image("stone%s%d.png" % (suff, self.texture_size))
+        img_water = self.__load_image("water%s%d.png" % ('__',self.texture_size))
+        img_snow  = self.__load_image("snow%s%d.png"  % ('__',self.texture_size))
 
-        img_wolf   = self.load_image("wolf%s%d.png"   % ('__', self.texture_size), True)
-        img_pig    = self.load_image("pig%s%d.png"    % ('__', self.texture_size), True)
-        img_player = self.load_image("player%s%d.png" % (suff, self.texture_size), True)
-        img_golem  = self.load_image("golem%s%d.png"  % ('__', self.texture_size), True)
+        img_wolf   = self.__load_image("wolf%s%d.png"   % ('__', self.texture_size), True)
+        img_pig    = self.__load_image("pig%s%d.png"    % ('__', self.texture_size), True)
+        img_player = self.__load_image("player%s%d.png" % (suff, self.texture_size), True)
+        img_golem  = self.__load_image("golem%s%d.png"  % ('__', self.texture_size), True)
         
         self.img_blocks = { config.objects['water']  : img_water,
                             config.objects['sand']   : img_sand,
@@ -206,14 +187,14 @@ class Main:
                             config.monsters['golem'] : img_golem,
                             config.player_id         : img_player }
 
-    def load_image(self, name, alpha=False):
+    def __load_image(self, name, alpha=False):
         img_resources = "./resources/images/"
         if alpha:
             return pygame.image.load(img_resources + name).convert_alpha()
         else:
             return pygame.image.load(img_resources + name).convert()
 
-    def redraw(self, displs):
+    def __redraw(self, displs):
         """
         Get necessary image block and
         redraw matrix of LandscapeBlocks' sprites
@@ -238,7 +219,7 @@ class Main:
                                             self.img_blocks[data[self.block_size.y * x + y]])
                 lb.draw(self.screen)
 
-    def draw_demo_land_surface(self, surface, displs):
+    def __draw_demo_land_surface(self, surface, displs):
         surface_size = surface.get_width()
         b_surface = pygame.Surface((surface_size, surface_size))
         b_surface.blit(surface, (0, 0))
@@ -255,10 +236,9 @@ class Main:
         pygame.draw.lines(b_surface, (255, 0, 0), True, lines, 2)
         #############################################
 
-        self.screen.blit(b_surface, (self.width-surface_size-20, 20)) 
+        self.screen.blit(b_surface, (self.screen.get_size()[0]-surface_size-20, 20)) 
 
-
-    def create_demo_land_surface(self, size):
+    def __create_demo_land_surface(self, size):
         demo = self.demo_land
         s = self.demo_size
         border = 2
@@ -274,12 +254,9 @@ class Main:
         return map
 
 def start(fullscreen_option=True, debug_option=False):
-    # create window
-    MainWindow = Main(1024, 768, debug_option)
-    MainWindow.set_full_screen(fullscreen_option)
-
-    # starting the main loop / game
-    MainWindow.main_loop()
+    game = engine.Game()
+    game.set_full_screen(fullscreen_option)
+    game.run(Main(game, debug_option))
 
 if __name__ == "__main__":
     """Command line flags:

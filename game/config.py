@@ -140,7 +140,7 @@ swamp = { 'objects' : (((0.00, 0.56), objects['water'] ),
                        ((0.98, 1.00), objects['log']   )),
          'monsters' : None,
          'default'  : objects['grass']
-}      
+}
 
 ##################################################
 # Set hight map
