@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<list type="objects">
+	<object id="0" color="Blue">water</object>
+	<object id="1" color="Yellow">sand</object>
+	<object id="2" color="Black">grass</object>
+	<object id='3' color="Brown">swamp</object>
+	<object id='4' color="Gray">stone</object>
+	<object id="5" color="Green">tree</object>
+	<object id="6" color="White">snow</object>
+</list>
+
+<list type="monsters">
+	<monster id="10" color="Black">player</object>
+	<monster id="11" color="Black">wolf</object>
+	<monster id="12" color="Black">pig</object>
+	<monster id="13" color="Black">golem</object>
+</list>
+
+<list type="bioms">
+	<monster id="0">prairie</object>
+	<monster id="1">mountains</object>
+	<monster id="2">desert</object>
+	<monster id="3">swamp</object>
+	<monster id="4">taiga</object>
+</list>
+
+<biom name="taiga">
+	<list type="objects">
+		<object value="0.58">water</object>
+		<object value="0.02">sand</object>
+		<object value="0.02">grass</object>
+		<object value="0.02">tree</object>
+		<object value="0.14">grass</object>
+		<object value="0.02">tree</object>
+		<object value="0.14">grass</object>
+		<object value="0.06">tree</object>
+	</list>
+	<list type="monsters">
+		<monster prob="0.1">wolf</monster>
+		<monster prob="0.1">pig</monster>
+	</list>
+	<default>grass</default>
+</biom>
+
+<biom name="prairie">
+	<list type="objects">
+		<object value="0.58">water</object>
+		<object value="0.02">sand</object>
+		<object value="0.42">grass</object>
+		<object value="0.06">tree</object>
+	</list>
+	<list type="monsters">
+		<monster prob="0.2">pig</monster>
+	</list>
+	<default>grass</default>
+</biom>
+
+<biom name="mountains">
+	<list type="objects">
+		<object value="0.58">water</object>
+		<object value="0.02">sand</object>
+		<object value="0.10">grass</object>
+		<object value="0.03">stone</object>
+		<object value="0.07">grass</object>
+		<object value="0.05">stone</object>
+		<object value="0.03">snow</object>
+		<object value="0.03">tree</object>
+		<object value="0.06">snow</object>
+		<object value="0.03">stone</object>
+	</list>
+	<list type="monsters">
+		<monster prob="0.2">golem</monster>
+	</list>
+	<default>snow</default>
+</biom>
+
+<biom name="desert">
+	<list type="objects">
+		<object value="0.58">water</object>
+		<object value="0.01">sand</object>
+		<object value="0.02">grass</object>
+		<object value="0.39">sand</object>
+	</list>
+	<list type="monsters">
+	</list>
+	<default>sand</default>
+</biom>
+
+<biom name="swamp">
+	<list type="objects">
+		<object value="0.56">water</object>
+		<object value="0.02">sand</object>
+		<object value="0.19">grass</object>
+		<object value="0.02">swamp</object>
+		<object value="0.03">tree</object>
+		<object value="0.12">grass</object>
+		<object value="0.03">swamp</object>
+		<object value="0.01">tree</object>
+		<object value="0.02">swamp</object>
+	</list>
+	<list type="monsters">
+	</list>
+	<default>grass</default>
+</biom>
+
+<list type="walkable_objects">
+	<object>sand</object>
+	<object>grass</object>
+	<object>snow</object>
+</list>

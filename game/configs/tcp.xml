@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<addr>
+	<host>localhost</host>
+	<port>29877</port>
+</addr>
+
+<protocol type="request">
+	<field bytes="2">request_type</field>
+	<field bytes="5">buffer_size</field>
+	<field bytes="inf">buffer</field>
+</protocol>
+
+<protocol type="response">
+	<field bytes="5">buffer_size</field>
+	<field bytes="inf">buffer</field>
+</protocol>
+
+<list type="request">
+	<item id=0>get_map</item>
+	<item id=1>get_preview</item>
+	<item id=2>get_land_size</item>
+	<item id=3>update_map</item>
+</list>
