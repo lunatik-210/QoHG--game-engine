@@ -49,13 +49,16 @@ class Game:
         clock = pygame.time.Clock()
         while not self.quit:
             clock.tick(60)
-            self.loop()
+            self.__loop()
 
-    def loop(self):
+        self.__quit()
+
+    def __loop(self):
         s = self.state.event(pygame.event.get())
         self.state.paint()
         pygame.display.update()
         if s: self.state = s
-    
-    def stop(self):
-        self.quit = True
+
+    def __quit(self):
+        pygame.display.quit()
+        pygame.quit()
