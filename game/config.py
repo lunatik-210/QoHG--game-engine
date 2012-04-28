@@ -91,9 +91,8 @@ taiga = { 'objects' : (((0.00, 0.58), objects['water'] ),
                        ((0.78, 0.80), objects['tree']  ),
                        ((0.80, 0.94), objects['grass'] ),
                        ((0.94, 1.00), objects['tree']  )),
-         'monsters' : ((0.1, monsters['wolf']),
-                       (0.1, monsters['pig']),
-                       (0.8, objects['grass'])),
+         'monsters' : [(0.1, monsters['wolf']),
+                       (0.1, monsters['pig'])],
          'default'  : objects['grass']
 }
 
@@ -101,8 +100,7 @@ prairie = { 'objects' : (((0.00, 0.58),  objects['water'] ),
                          ((0.58, 0.60),  objects['sand']  ),
                          ((0.60, 0.94),  objects['grass'] ),
                          ((0.94, 1.00),  objects['tree']  )),
-          'monsters' : ((0.2, monsters['pig']),
-                        (0.8, objects['grass'])),
+          'monsters' : [(0.2, monsters['pig'])],
           'default'  : objects['grass']
 }
 
@@ -116,8 +114,7 @@ mountains = { 'objects' : (((0.00, 0.58),  objects['water'] ),
                            ((0.88, 0.91),  objects['tree']  ),
                            ((0.91, 0.97),  objects['snow']  ),
                            ((0.97, 1.00),  objects['stone'] )),
-             'monsters' : ((0.2, monsters['golem']),
-                           (0.8, objects['snow'])),
+             'monsters' : [(0.2, monsters['golem'])],
              'default'  : objects['snow']
 }
 
