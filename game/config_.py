@@ -1,5 +1,9 @@
 from lxml import etree
 
+############################################################
+# Please someone, make refactoring of this damn code <_<
+############################################################
+
 def load_items(file):
 	items = {'colors' : {}}
 
