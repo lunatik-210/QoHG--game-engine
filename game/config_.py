@@ -66,6 +66,22 @@ def load_network(file):
 	data = etree.parse(file)
 	root = data.getroot()	
 
+	### parse adddr ###
+	addr = root.find('addr')
+	network['addr'] = (addr.text, int(addr.get('port')))
+
+	for list in root.findall('list'):
+		type = list.get('type')
+		n = network[type] = {}
+		if type == 'protocol':
+			for item in list.iterchildren():
+				type = item.get('type')
+				n[type] = {}
+				for field in item.iterchildren():
+					n[type][field.text] = int(field.get('bytes'))
+		elif type == 'requests':
+			for item in list.iterchildren():
+				n[int(item.get('id'))] = item.text
 	return network
 
 if __name__ == '__main__':
@@ -85,10 +101,6 @@ if __name__ == '__main__':
 
 	print 'default:', items['default'] 
 
-	print 'humidity', bioms['humidity']
-	print bioms['mountains']
-	print bioms['prairie']
-	print bioms['taiga']
-	print bioms['swamp']
-	print bioms['desert']
-	print bioms
+	print 'humidity:', bioms['humidity']
+	print 'bioms:', bioms
+	print 'network:', network

@@ -6,6 +6,11 @@ import zlib
 import sys
 
 import config
+import config_
+
+path = './configs'
+
+network = config_.load_network(path+'/network.xml')
 
 class Client(socket):
     """
@@ -42,7 +47,7 @@ class Request:
     Class Request
     TODO: write documentation
     """
-    def __init__(self, type, data=None, bytes=config.DATA_SIZE):
+    def __init__(self, type, data=None, bytes=network['protocol']['request']['buffer_size']):
         self.type = self.__type_string(type)
         self.data = data
         self.bytes = bytes
@@ -77,7 +82,7 @@ if __name__ == '__main__':
     """
     Request class testing
     """
-    client = Client(config.ADDR, True)
+    client = Client(network['addr'], True)
 
     data1 = '600,600,621,616'
     data2 = '100'

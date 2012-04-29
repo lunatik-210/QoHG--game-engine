@@ -36,7 +36,7 @@ class Main(engine.State):
         This is the Main Loop of the Game
         """
         # Create the Screen
-        self.client = Client(config.ADDR, False)
+        self.client = Client(network['addr'], False)
 
         # init lands
         self.demo_size = 100

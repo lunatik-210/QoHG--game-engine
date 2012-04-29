@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<addr>
-		<host>localhost</host>
-		<port>29877</port>
-	</addr>
-
-	<protocol type="request">
-		<field bytes="2">request_type</field>
-		<field bytes="5">buffer_size</field>
-		<field bytes="undef">buffer</field>
-	</protocol>
-
-	<protocol type="response">
-		<field bytes="5">buffer_size</field>
-		<field bytes="undef">buffer</field>
-	</protocol>
-
-	<list type="request">
+	<addr port='29880'>localhost</addr>
+	<list type='protocol'>
+		<item type="request">
+			<field bytes="2">request_type</field>
+			<field bytes="5">buffer_size</field>
+			<field bytes="99999">buffer</field>
+		</item>
+		<item type="response">
+			<field bytes="5">buffer_size</field>
+			<field bytes="99999">buffer</field>
+		</item>
+	</list>
+	<list type="requests">
 		<item id="0">get_map</item>
 		<item id="1">get_preview</item>
 		<item id="2">get_land_size</item>

@@ -40,15 +40,11 @@ land_id = 1233213
 ########################################
 def pack_data(request_type, data, land):
     ###########################################################
-    types = {
-        0 : 'get_map',
-        1 : 'get_preview',
-        2 : 'get_land_size',
-        3 : 'update_map'
-    }
-    set_front_zeros = lambda s: (config.DATA_SIZE - len(s)) * '0' + s
+    buffer_size = network['protocol']['response']['buffer_size']
+    type = network['requests'][request_type]
+    set_front_zeros = lambda s: (buffer_size - len(s)) * '0' + s
 
-    if types[request_type] == 'get_map':
+    if type == 'get_map':
         x1, y1, x2, y2 = map(int, data.split(','))
         matrix = numpy.zeros((x2-x1, y2-y1))
         ## prepare data ##
@@ -61,18 +57,18 @@ def pack_data(request_type, data, land):
         compressed_vector = zlib.compress(packed_vector, 9)
         conn.send(set_front_zeros(str(sys.getsizeof(compressed_vector))) + compressed_vector)
     ###########################################################
-    elif types[request_type] == 'get_preview':
+    elif type == 'get_preview':
         size = int(data)
         vector = DemoLand(land, size).get_demo()
         vector = pickle.dumps(vector)
         vector = zlib.compress(vector, 9)
         conn.send(set_front_zeros(str(sys.getsizeof(vector))) + vector)
     ###########################################################
-    elif types[request_type] == 'get_land_size':
+    elif type == 'get_land_size':
         size = zlib.compress("%d" % land.get_size(), 9)
         conn.send(set_front_zeros(str(sys.getsizeof(size))) + size)
     ###########################################################
-    elif types[request_type] == 'update_map':
+    elif type == 'update_map':
         x1, y1, x2, y2 = map(int, data.split(','))
         land.update(Position(x1,y1), Position(x2,y2))
 
@@ -98,10 +94,13 @@ def request_parser(conn):
     data_size 0 - 9999  [5 bytes]
     data                [data_size]
     """
-    request_type = int(conn.recv(config.TYPE_SIZE))
+    type_size = network['protocol']['request']['request_type']
+    data_size = network['protocol']['request']['buffer_size']
+
+    request_type = int(conn.recv(type_size))
 
     if request_type in [0, 1, 3]:
-        data_size = int(conn.recv(config.DATA_SIZE))
+        data_size = int(conn.recv(data_size))
         data = conn.recv(data_size)
         return [request_type, data]
     elif request_type == 2:
@@ -135,7 +134,7 @@ if __name__ == '__main__':
     thread.start()
 
     # init server
-    server = Server(config.ADDR, True)
+    server = Server(network['addr'], True)
     server.init()
 
     # starting accepting requests loop
