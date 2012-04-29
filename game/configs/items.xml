@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<list type="objects">
+		<item id="0" color="Blue">water</item>
+		<item id="1" color="Yellow">sand</item>
+		<item id="2" color="Black">grass</item>
+		<item id='3' color="Brown">swamp</item>
+		<item id='4' color="Gray">stone</item>
+		<item id="5" color="Green">tree</item>
+		<item id="6" color="White">snow</item>
+	</list>
+	<list type="monsters">
+		<item id="10" color="Black">player</item>
+		<item id="11" color="Black">wolf</item>
+		<item id="12" color="Black">pig</item>
+		<item id="13" color="Black">golem</item>
+	</list>
+	<list type="walkable_objects">
+		<item>sand</item>
+		<item>grass</item>
+		<item>snow</item>
+	</list>
+	<default>grass</default>
+</root>
