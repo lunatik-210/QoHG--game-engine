@@ -20,7 +20,14 @@ if not pygame.mixer: print 'Warning, sound disabled'
 from lands.Position import Position
 import config
 import engine
+import config_
 #################################
+
+path = './configs'
+
+items = config_.load_items(path+'/items.xml')
+bioms = config_.load_bioms(path+'/bioms.xml', items)
+network = config_.load_network(path+'/network.xml')
 
 class Main(engine.State):
 
@@ -165,7 +172,7 @@ class Main(engine.State):
         img_sand  = self.__load_image("sand%s%d.png"  % ('__', self.texture_size))
         img_tree  = self.__load_image("tree%s%d.png"  % (suff, self.texture_size))
         img_grass = self.__load_image("grass%s%d.png" % ('__',self.texture_size))
-        img_log   = self.__load_image("log%s%d.png"   % (suff, self.texture_size))
+        img_swamp = self.__load_image("log%s%d.png"   % (suff, self.texture_size))
         img_stone = self.__load_image("stone%s%d.png" % (suff, self.texture_size))
         img_water = self.__load_image("water%s%d.png" % ('__',self.texture_size))
         img_snow  = self.__load_image("snow%s%d.png"  % ('__',self.texture_size))
@@ -174,18 +181,18 @@ class Main(engine.State):
         img_pig    = self.__load_image("pig%s%d.png"    % ('__', self.texture_size), True)
         img_player = self.__load_image("player%s%d.png" % (suff, self.texture_size), True)
         img_golem  = self.__load_image("golem%s%d.png"  % ('__', self.texture_size), True)
-        
-        self.img_blocks = { config.objects['water']  : img_water,
-                            config.objects['sand']   : img_sand,
-                            config.objects['grass']  : img_grass,
-                            config.objects['log']    : img_log,
-                            config.objects['stone']  : img_stone,
-                            config.objects['tree']   : img_tree,
-                            config.objects['snow']   : img_snow,
-                            config.monsters['wolf']  : img_wolf,
-                            config.monsters['pig']   : img_pig,
-                            config.monsters['golem'] : img_golem,
-                            config.player_id         : img_player }
+
+        self.img_blocks = { items['objects']['water']   : img_water,
+                            items['objects']['sand']    : img_sand,
+                            items['objects']['grass']   : img_grass,
+                            items['objects']['swamp']   : img_swamp,
+                            items['objects']['stone']   : img_stone,
+                            items['objects']['tree']    : img_tree,
+                            items['objects']['snow']    : img_snow,
+                            items['monsters']['wolf']   : img_wolf,
+                            items['monsters']['pig']    : img_pig,
+                            items['monsters']['golem']  : img_golem,
+                            items['monsters']['player'] : img_player }
 
     def __load_image(self, name, alpha=False):
         img_resources = "./resources/images/"
@@ -249,7 +256,7 @@ class Main(engine.State):
         #    for y in range(border, s-border):
         for x in range(border, s-border):
             for y in range(border, s-border):
-                color = pygame.Color(config.colors[self.demo_land[x][y]])
+                color = pygame.Color(items['colors'][self.demo_land[x][y]])
                 pygame.draw.rect(map, color, pygame.Rect(x*ds, y*ds, ds, ds))
         return map
 

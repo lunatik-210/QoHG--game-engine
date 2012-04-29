@@ -21,7 +21,15 @@ from lands.DemoLand import DemoLand
 
 import lands.generators.Map as MapGenerator
 import config
+import config_
 #################################
+
+
+path = './configs'
+
+items = config_.load_items(path+'/items.xml')
+bioms = config_.load_bioms(path+'/bioms.xml', items)
+network = config_.load_network(path+'/network.xml')
 
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
@@ -118,7 +126,7 @@ if __name__ == '__main__':
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
     # init land
-    land = Land(config.config, config.player_id, map_generator, config.allowable_list)
+    land = Land(items, bioms, map_generator)
 
     # init queue for storing requests
     queue = Queue()
