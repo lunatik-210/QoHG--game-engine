@@ -27,8 +27,6 @@ import config_
 
 path = './configs'
 
-items = config_.load_items(path+'/items.xml')
-bioms = config_.load_bioms(path+'/bioms.xml', items)
 network = config_.load_network(path+'/network.xml')
 
 # the approximate size of the map you want (should be large than size of main screen)
@@ -126,7 +124,7 @@ if __name__ == '__main__':
     # init map generator
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
     # init land
-    land = Land(items, bioms, map_generator)
+    land = Land(map_generator)
 
     # init queue for storing requests
     queue = Queue()

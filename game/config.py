@@ -2,7 +2,7 @@
 # Tcp setting
 ##################################################
 HOST = 'localhost'
-PORT = 29877   #our port from before
+PORT = 29878   #our port from before
 ADDR = (HOST, PORT)
 
 """
