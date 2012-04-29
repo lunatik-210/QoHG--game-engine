@@ -1,160 +1,106 @@
-##################################################
-# Tcp setting
-##################################################
-HOST = 'localhost'
-PORT = 29878   #our port from before
-ADDR = (HOST, PORT)
+from lxml import etree
 
-"""
-Form request by pattern:
-    [REQUESTTYPE (?:BUFSIZE DATA)?]
-    REQUESTTYPE: 2b
-    BUFSIZE:     5b
-    DATA:        15b (or less)
-There are 4 request types at this moment:
-    0 -> get_map
-    1 -> get_preview
-    2 -> get_land_size
-    3 -> update_map
-"""
-TYPE_SIZE = 2
-DATA_SIZE = 5
-##################################################
+############################################################
+# Please someone, make refactoring of this damn code <_<
+############################################################
 
-##################################################
-# types of objects
-##################################################
-objects = {
-    'water' : 0,
-    'sand'  : 1,
-    'grass' : 2,
-    'log'   : 3,
-    'stone' : 4,
-    'tree'  : 5,
-    'snow'  : 6,
-}
+def load_items(file):
+	items = {'colors' : {}}
 
-monsters = {
-    'wolf'  : 11,
-    'pig'   : 12,
-    'golem' : 13    
-}
+	data = etree.parse(file)
+	root = data.getroot()
 
-player_id = 10
+	for child in root.iterchildren('list'):
+		type = child.get("type")
+		if type in ['objects', 'monsters']:
+			o = items[type] = {}
+			for it in child.iterchildren():
+				id = int(it.get('id'))
+				o[it.text] = id
+				items['colors'][id] = it.get('color')
+		elif type == 'walkable_objects':
+			o = items[type] = []
+			for it in child.iterchildren():
+				o.append(items['objects'][it.text])
 
-##################################################
-# colors for mini/demo map
-# id - color
-##################################################
-colors = {
-    objects['water']  : 'Blue',
-    objects['sand']   : 'Yellow',
-    objects['grass']  : 'Black',
-    objects['log']    : 'Brown',
-    objects['stone']  : 'Gray',
-    objects['tree']   : 'Green',
-    objects['snow']   : 'White',
-    monsters['wolf']  : 'Black',
-    monsters['pig']   : 'Black',
-    monsters['golem'] : 'Black',
-    player_id         : 'Black'
-}
+	items['default'] = items['objects'][root.find('default').text]
+	return items
 
-#################################################
-# types of bioms (areas)
-##################################################
-bioms = {
-    'prairie'   : 0,
-    'mountains' : 1,
-    'desert'    : 2,
-    'swamp'     : 3,
-    'taiga'     : 4
-}
+def load_bioms(file, items):
+	bioms = {}
 
-##################################################
-# determine hight map for bioms
-##################################################
-humidity = (((0.00, 0.50), bioms['prairie']   ),
-            ((0.50, 0.65), bioms['mountains'] ),
-            ((0.65, 0.80), bioms['taiga']     ),
-            ((0.80, 0.90), bioms['swamp']     ),
-            ((0.90, 1.00), bioms['desert']    ))
+	data = etree.parse(file)
+	root = data.getroot().find('bioms')
 
-##################################################
-# Determine hight map for every biom 
-##################################################
-taiga = { 'objects' : (((0.00, 0.58), objects['water'] ),
-                       ((0.58, 0.60), objects['sand']  ),
-                       ((0.60, 0.62), objects['grass'] ),
-                       ((0.62, 0.64), objects['tree']  ),
-                       ((0.64, 0.78), objects['grass'] ),
-                       ((0.78, 0.80), objects['tree']  ),
-                       ((0.80, 0.94), objects['grass'] ),
-                       ((0.94, 1.00), objects['tree']  )),
-         'monsters' : [(0.1, monsters['wolf']),
-                       (0.1, monsters['pig'])],
-         'default'  : objects['grass']
-}
+	for item in root.findall('item'):
+		b = bioms[int(item.get('id'))] = {}
+		bioms[item.get('name')] = int(item.get('id'))
+		b['default'] = items['objects'][item.find('default').text]
+		for list in item.findall('list'):
+			type = list.get('type')
+			item_array = []
+			if type == 'objects':
+				val = 0.0
+				for item in list.iterchildren('item'):
+					next_val = float(item.get('value'))
+					item_array.append(((val, next_val), items[type][item.text]))
+					val = next_val
+			elif type == 'monsters':
+				for item in list.iterchildren('item'):
+					item_array.append((float(item.get('prob')), items[type][item.text]))
+			b[type] = item_array if item_array else None
 
-prairie = { 'objects' : (((0.00, 0.58),  objects['water'] ),
-                         ((0.58, 0.60),  objects['sand']  ),
-                         ((0.60, 0.94),  objects['grass'] ),
-                         ((0.94, 1.00),  objects['tree']  )),
-          'monsters' : [(0.2, monsters['pig'])],
-          'default'  : objects['grass']
-}
+	root = data.getroot().find('humidity').find('list')
+	array = []
+	val = 0.0
+	for item in root.iterchildren('item'):
+		next_val = float(item.get('value'))
+		array.append(((val, next_val), bioms[item.text]))
+		val = next_val
+	bioms['humidity'] = array
+	return bioms
 
-mountains = { 'objects' : (((0.00, 0.58),  objects['water'] ),
-                           ((0.58, 0.60),  objects['sand']  ),
-                           ((0.60, 0.70),  objects['grass'] ),
-                           ((0.70, 0.73),  objects['stone'] ),
-                           ((0.73, 0.80),  objects['grass'] ),
-                           ((0.80, 0.85),  objects['stone'] ),
-                           ((0.85, 0.88),  objects['snow']  ),
-                           ((0.88, 0.91),  objects['tree']  ),
-                           ((0.91, 0.97),  objects['snow']  ),
-                           ((0.97, 1.00),  objects['stone'] )),
-             'monsters' : [(0.2, monsters['golem'])],
-             'default'  : objects['snow']
-}
+def load_network(file):
+	network = {}
 
-desert = { 'objects' :  (((0.00, 0.58), objects['water'] ),
-                         ((0.58, 0.59), objects['sand']  ),
-                         ((0.59, 0.61), objects['grass'] ),
-                         ((0.61, 1.00), objects['sand']  )),
-           'monsters' : None,
-           'default'  : objects['sand']
-}        
+	data = etree.parse(file)
+	root = data.getroot()	
 
-swamp = { 'objects' : (((0.00, 0.56), objects['water'] ),
-                       ((0.56, 0.58), objects['sand']  ),
-                       ((0.58, 0.77), objects['grass'] ),
-                       ((0.77, 0.79), objects['log']   ),
-                       ((0.79, 0.82), objects['tree']  ),
-                       ((0.82, 0.94), objects['grass'] ),
-                       ((0.94, 0.97), objects['log']   ),
-                       ((0.97, 0.98), objects['tree']  ),
-                       ((0.98, 1.00), objects['log']   )),
-         'monsters' : None,
-         'default'  : objects['grass']
-}
+	### parse adddr ###
+	addr = root.find('addr')
+	network['addr'] = (addr.text, int(addr.get('port')))
 
-##################################################
-# Set hight map
-##################################################
-config = {
-    'humidity'         : humidity,
-    bioms['prairie']   : prairie,
-    bioms['mountains'] : mountains,
-    bioms['desert']    : desert,
-    bioms['swamp']     : swamp,
-    bioms['taiga']     : taiga,
-    'default'          : objects['grass'],
-    'monsters'         : monsters,
-    'objects'          : objects,
-    'bioms'            : bioms
-}
+	for list in root.findall('list'):
+		type = list.get('type')
+		n = network[type] = {}
+		if type == 'protocol':
+			for item in list.iterchildren():
+				type = item.get('type')
+				n[type] = {}
+				for field in item.iterchildren():
+					n[type][field.text] = int(field.get('bytes'))
+		elif type == 'requests':
+			for item in list.iterchildren():
+				n[int(item.get('id'))] = item.text
+	return network
 
-allowable_list = (objects['sand'],
-                  objects['grass'],
-                  objects['snow'])
+if __name__ == '__main__':
+	path = './configs'
+
+	items = load_items(path+'/items.xml')
+	bioms = load_bioms(path+'/bioms.xml', items)
+	network = load_network(path+'/network.xml')
+
+	for type in ['objects', 'monsters']:
+		for item in items[type]:
+			print '%s: (%s), id: (%d)' % (type, item, items[type][item])
+
+	print items['colors']
+
+	print 'walkable_objects:', items['walkable_objects']
+
+	print 'default:', items['default'] 
+
+	print 'humidity:', bioms['humidity']
+	print 'bioms:', bioms
+	print 'network:', network

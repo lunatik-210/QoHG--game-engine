@@ -20,14 +20,13 @@ if not pygame.mixer: print 'Warning, sound disabled'
 from lands.Position import Position
 import config
 import engine
-import config_
 #################################
 
 path = './configs'
 
-items = config_.load_items(path+'/items.xml')
-bioms = config_.load_bioms(path+'/bioms.xml', items)
-network = config_.load_network(path+'/network.xml')
+items = config.load_items(path+'/items.xml')
+bioms = config.load_bioms(path+'/bioms.xml', items)
+network = config.load_network(path+'/network.xml')
 
 class Main(engine.State):
 

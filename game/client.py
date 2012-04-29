@@ -6,11 +6,10 @@ import zlib
 import sys
 
 import config
-import config_
 
 path = './configs'
 
-network = config_.load_network(path+'/network.xml')
+network = config.load_network(path+'/network.xml')
 
 class Client(socket):
     """
@@ -31,7 +30,7 @@ class Client(socket):
         self.send(request)
         data = None
         if waite_for_response:
-            buffsize = int(self.recv(config.DATA_SIZE))
+            buffsize = int(self.recv(network['protocol']['response']['buffer_size']))
             data = self.recv(buffsize)
             data = zlib.decompress(data)
             if is_pickle:

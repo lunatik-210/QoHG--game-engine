@@ -7,12 +7,12 @@ from generators.Map import Humidity
 from pathsearch import a_star_path_search as get_path
 from Position import Position
 
-import config_
+import config
 
 path = './configs'
 
-items = config_.load_items(path+'/items.xml')
-bioms = config_.load_bioms(path+'/bioms.xml', items)
+items = config.load_items(path+'/items.xml')
+bioms = config.load_bioms(path+'/bioms.xml', items)
 
 class Player:
     """

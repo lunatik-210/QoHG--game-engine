@@ -21,13 +21,12 @@ from lands.DemoLand import DemoLand
 
 import lands.generators.Map as MapGenerator
 import config
-import config_
 #################################
 
 
 path = './configs'
 
-network = config_.load_network(path+'/network.xml')
+network = config.load_network(path+'/network.xml')
 
 # the approximate size of the map you want (should be large than size of main screen)
 # I will try to think how to fix it later
