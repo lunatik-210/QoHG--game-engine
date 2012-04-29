@@ -6,6 +6,7 @@ Already used:
 * lxml (sudo easy_install lxml)
 * PyGame lib
 * numpy lib
+
 Soon:
 * PGU (PyGame Gui) lib
 
