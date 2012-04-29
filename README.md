@@ -2,9 +2,12 @@ Last demonstration video: http://youtu.be/Pd6z6RKmlXk
 
 Prerequirements:
 ----------
+Already used:
+* lxml (sudo easy_install lxml)
 * PyGame lib
-* PGU (PyGame Gui) lib # or pythonGame look below links
 * numpy lib
+Soon:
+* PGU (PyGame Gui) lib
 
 Interesting links:
 ----------
