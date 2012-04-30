@@ -126,15 +126,15 @@ class Main(engine.State):
             self.displs.x += self.speed.x
             self.displs.x %= self.land_size
             self.changes = True
-        elif key[K_LEFT] or key[K_a]:
+        if key[K_LEFT] or key[K_a]:
             self.displs.x -= self.speed.x
             self.displs.x %= self.land_size
             self.changes = True
-        elif key[K_UP] or key[K_w]:
+        if key[K_UP] or key[K_w]:
             self.displs.y -= self.speed.y
             self.displs.y %= self.land_size
             self.changes = True
-        elif key[K_DOWN] or key[K_s]:
+        if key[K_DOWN] or key[K_s]:
             self.displs.y += self.speed.y
             self.displs.y %= self.land_size
             self.changes = True

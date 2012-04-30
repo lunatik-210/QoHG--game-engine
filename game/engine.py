@@ -38,7 +38,7 @@ class Game:
     def set_full_screen(self, fullscreen_option):
         modes = pygame.display.list_modes(32)
         if modes and fullscreen_option:
-            self.screen = pygame.display.set_mode(modes[0], pygame.FULLSCREEN, 32)
+            self.screen = pygame.display.set_mode(modes[0], pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.FULLSCREEN, 32)
         else:
             self.screen = pygame.display.set_mode(self.screen_size)
 
@@ -48,7 +48,7 @@ class Game:
 
         clock = pygame.time.Clock()
         while not self.quit:
-            clock.tick(60)
+            clock.tick(30)
             self.__loop()
 
         self.__quit()
