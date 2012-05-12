@@ -2,6 +2,7 @@
 
 ########## System libs ##########
 import random
+import numpy
 import sys
 from copy import deepcopy
 #################################
@@ -28,6 +29,32 @@ items = config.load_items(path+'/items.xml')
 bioms = config.load_bioms(path+'/bioms.xml', items)
 network = config.load_network(path+'/network.xml')
 
+class VirtualLand:
+    def __init__(self, size, client):
+        self.client = client
+        self.size = size
+        self.land = numpy.empty((self.size,self.size))
+        self.land.fill(items['objects']['sky'])
+
+    def value(self, pos):
+        return self.land[pos.x][pos.y]
+
+    def get_size(self):
+        return self.size
+
+    def update(self, displs, block_size):
+        correct = lambda a: (a+1 if a % 2 else a)
+        req = Request(0, '%d,%d,%d,%d' % (displs.x-block_size.x/2,
+                                          displs.y-block_size.y/2,
+                                          displs.x+correct(block_size.x)/2,
+                                          displs.y+correct(block_size.y)/2))
+        data = self.client.send_request(req.form_request(),
+                                        waite_for_response=True, is_pickle=True)
+
+        for x in range(block_size.x):
+            for y in range(block_size.y):
+                self.land[x+displs.x][y+displs.y] = data[block_size.y * x + y]
+
 class Main(engine.State):
 
     def init(self):
@@ -45,6 +72,8 @@ class Main(engine.State):
 
         self.land_size = int(self.client.send_request(Request(type=2).form_request(),
                              waite_for_response=True))
+
+        self.land = VirtualLand(self.land_size, self.client)
 
         self.__set_view_mod(48)
 
@@ -175,6 +204,7 @@ class Main(engine.State):
         img_stone = self.__load_image("stone%s%d.png" % (suff, self.texture_size))
         img_water = self.__load_image("water%s%d.png" % ('__',self.texture_size))
         img_snow  = self.__load_image("snow%s%d.png"  % ('__',self.texture_size))
+        img_sky   = self.__load_image("sky%s%d.png"   % ('__', self.texture_size))
 
         img_wolf   = self.__load_image("wolf%s%d.png"   % ('__', self.texture_size), True)
         img_pig    = self.__load_image("pig%s%d.png"    % ('__', self.texture_size), True)
@@ -188,6 +218,7 @@ class Main(engine.State):
                             items['objects']['stone']   : img_stone,
                             items['objects']['tree']    : img_tree,
                             items['objects']['snow']    : img_snow,
+                            items['objects']['sky']     : img_sky,
                             items['monsters']['wolf']   : img_wolf,
                             items['monsters']['pig']    : img_pig,
                             items['monsters']['golem']  : img_golem,
@@ -205,24 +236,19 @@ class Main(engine.State):
         Get necessary image block and
         redraw matrix of LandscapeBlocks' sprites
         """
-        correct = lambda a: (a+1 if a % 2 else a)
-        req = Request(0, '%d,%d,%d,%d' % (displs.x-self.block_size.x/2,
-                                          displs.y-self.block_size.y/2,
-                                          displs.x+correct(self.block_size.x)/2,
-                                          displs.y+correct(self.block_size.y)/2))
-        data = self.client.send_request(req.form_request(),
-                                        waite_for_response=True, is_pickle=True)
+        self.land.update(displs, self.block_size)
 
         for x in range(self.block_size.x):
             for y in range(self.block_size.y):
-                #val = self.land.value((Position(x,y) + displs) % 
-                #                           self.land.get_size())
+                val = self.land.value((Position(x,y) + displs) % 
+                                           self.land.get_size())
+                #val = data[self.block_size.y * x + y]
                 lb = sprites.LandscapeBlock(self.screen,
                                             x*self.texture_size,
                                             y*self.texture_size,
                                             self.texture_size,
                                             self.texture_size,
-                                            self.img_blocks[data[self.block_size.y * x + y]])
+                                            self.img_blocks[val])
                 lb.draw(self.screen)
 
     def __draw_demo_land_surface(self, surface, displs):

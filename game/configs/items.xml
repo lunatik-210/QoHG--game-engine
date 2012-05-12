@@ -8,6 +8,7 @@
 		<item id='4' color="Gray">stone</item>
 		<item id="5" color="Green">tree</item>
 		<item id="6" color="White">snow</item>
+		<item id="7" color="Grey">sky</item>
 	</list>
 	<list type="monsters">
 		<item id="10" color="Black">player</item>

@@ -78,6 +78,8 @@ class Land:
         return self.land
 
     def value(self, pos):
+        pos %= self.lsize
+
         if self.player.pos == pos:
             return self.player_id
 
@@ -107,13 +109,15 @@ class Land:
         monsters = items['monsters']
         for x in range(p1.x, p2.x):
             for y in range(p1.y, p2.y):
+                x %= self.lsize
+                y %= self.lsize
                 for monster in monsters:
                     if self.land[x][y] == monsters[monster]:
                         self.land[x][y] = bioms[self.humidity.value(x,y)]['default']
                         count = 0
                         while count < 5:
-                            new_x = int(random.uniform(-2, 2)) + x
-                            new_y = int(random.uniform(-2, 2)) + y
+                            new_x = (int(random.uniform(-2, 2)) + x) % self.lsize
+                            new_y = (int(random.uniform(-2, 2)) + y) % self.lsize
                             if self.land[new_x][new_y] in items['walkable_objects']:
                                 self.land[new_x][new_y] = monsters[monster]
                                 break
