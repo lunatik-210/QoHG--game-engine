@@ -82,7 +82,7 @@ class StateMachine(object):
 
 class Animal(Entity):
     def __init__(self, world):
-        Entity.__init__(self, world, 'name', (255,0,0))
+        Entity.__init__(self, world, 'Animal', (255,0,0))
         self.health = 100
 
         exploring_state = StateExploring(self)
