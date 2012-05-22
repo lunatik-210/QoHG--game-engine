@@ -20,6 +20,23 @@ Interesting links:
 * A* search http://en.wikipedia.org/wiki/A*_search_algorithm
 * Perling noise http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
+22.05.2012
+----------
+###Done:
+* Developed Engine/State classes us basic classes of Game Engine
+* (AI preporations) Developed first version of State Machine, and one example with state exploration!
+* Developed new version of Texture Loader
+* Explored so nice lib for Animation representaion http://inventwithpython.com/pyganim/
+* Explored new so so great algorith for Map Generation (http://www.pygame.org/project-heightfield-2204-.html)
+
+###Broken:
+* Player controlling (For network version)
+
+###Plans:
+* Make new states for State Machine and integrate it to the game
+* Fix bugs
+* Planning the development path
+
 20.05.2012
 ----------
 ###Done:

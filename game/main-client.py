@@ -324,7 +324,7 @@ class Main(engine.State):
 
 def start(fullscreen_option=True, debug_option=False):
     game = engine.Game()
-    game.set_full_screen(fullscreen_option)
+    #game.set_full_screen(fullscreen_option)
     game.run(Main(game, debug_option))
 
 if __name__ == "__main__":
