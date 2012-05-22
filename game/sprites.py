@@ -7,11 +7,9 @@ class LandscapeBlock(pygame.sprite.Sprite):
     There are 4 types of it:
         Water < Sand < Grass < Forest
     """
-    def __init__(self, parent, x, y, w, h, image):
-        self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [x, y]
-        self.rect.w, self.rect.h = w, h
+    def __init__(self, parent, x, y, w, h, texture):
+        self.texture = texture
+        self.x, self.y = x, y
     
     def draw(self, parent):
-        parent.blit(self.image, self.rect)
+        self.texture.draw(parent, (self.x, self.y))

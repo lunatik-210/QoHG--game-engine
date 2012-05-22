@@ -5,6 +5,7 @@ import random
 import numpy
 import sys
 from copy import deepcopy
+import os
 #################################
 
 ######### PyGame ################
@@ -54,6 +55,75 @@ class VirtualLand:
         for x in range(block_size.x):
             for y in range(block_size.y):
                 self.land[x+displs.x][y+displs.y] = data[block_size.y * x + y]
+
+
+class Texture:
+    """
+    TODO: add documentation
+    """
+    def __init__(self, file_or_size, x=0, y=0, alpha=True):
+        if isinstance(file_or_size, int):
+            if alpha:
+                self.image = pygame.Surface((file_or_size, file_or_size), HWSURFACE & SRCALPHA)
+            else:
+                self.image = pygame.Surface((file_or_size, file_or_size), HWSURFACE)
+        else:
+            if alpha:
+                self.image = pygame.image.load(os.path.join("./resources/images/", file_or_size)).convert_alpha()
+            else:
+                self.image = pygame.image.load(os.path.join("./resources/images/", file_or_size)).convert()
+
+    def copy(self, image, pos=(0, 0)):
+        self.image.blit(image, (0, 0), pos)
+
+    def scale(self, size):
+         self.image = pygame.transform.scale(self.image, (size, size))
+
+    def draw(self, parent, pos):
+        if self.image is not None:
+            parent.blit(self.image, pos)
+
+
+class TexturesMap:
+    """
+    TODO: add documentation
+    """
+    max_in_raw = 8
+    max_in_col = 2
+    objects = ['water', 'sand', 'grass', 'swamp', 'stone', 'tree', 'snow', 'sky']
+    monsters = ['wolf', 'pig', 'golem', 'player']
+
+    def __init__(self, file, texture_size):
+        image = pygame.image.load(os.path.join("./resources/images/", file)).convert_alpha()
+        size = image.get_rect().width / self.max_in_raw # 64px
+        self.textures_map = {}
+
+        for i in range(self.max_in_col):
+            for j in range(self.max_in_raw):
+                texture = Texture(size)
+                texture.copy(image, (j*size, i*size, size, size))
+                if texture_size != size:
+                    texture.scale(texture_size)
+                if i == 0:
+                    try:
+                        self.textures_map[items['objects'][self.objects[j]]] = texture
+                    except IndexError:
+                        break
+                elif i == 1:
+                    try:
+                        self.textures_map[items['monsters'][self.monsters[j]]] = texture
+                    except IndexError:
+                        break
+
+    def get_map(self):
+        return self.textures_map
+
+    def get_texture(self, value):
+        return self.textures_map[value]
+
+    def draw(self, parent, value, pos):
+        self.textures_map[value].draw(parent, pos)
+
 
 class Main(engine.State):
 
@@ -196,40 +266,7 @@ class Main(engine.State):
         self.__load_resources()
 
     def __load_resources(self):
-        suff = "_"
-        img_sand  = self.__load_image("sand%s%d.png"  % ('__', self.texture_size))
-        img_tree  = self.__load_image("tree%s%d.png"  % (suff, self.texture_size))
-        img_grass = self.__load_image("grass%s%d.png" % ('__',self.texture_size))
-        img_swamp = self.__load_image("log%s%d.png"   % (suff, self.texture_size))
-        img_stone = self.__load_image("stone%s%d.png" % (suff, self.texture_size))
-        img_water = self.__load_image("water%s%d.png" % ('__',self.texture_size))
-        img_snow  = self.__load_image("snow%s%d.png"  % ('__',self.texture_size))
-        img_sky   = self.__load_image("sky%s%d.png"   % ('__', self.texture_size))
-
-        img_wolf   = self.__load_image("wolf%s%d.png"   % ('__', self.texture_size), True)
-        img_pig    = self.__load_image("pig%s%d.png"    % ('__', self.texture_size), True)
-        img_player = self.__load_image("player%s%d.png" % (suff, self.texture_size), True)
-        img_golem  = self.__load_image("golem%s%d.png"  % ('__', self.texture_size), True)
-
-        self.img_blocks = { items['objects']['water']   : img_water,
-                            items['objects']['sand']    : img_sand,
-                            items['objects']['grass']   : img_grass,
-                            items['objects']['swamp']   : img_swamp,
-                            items['objects']['stone']   : img_stone,
-                            items['objects']['tree']    : img_tree,
-                            items['objects']['snow']    : img_snow,
-                            items['objects']['sky']     : img_sky,
-                            items['monsters']['wolf']   : img_wolf,
-                            items['monsters']['pig']    : img_pig,
-                            items['monsters']['golem']  : img_golem,
-                            items['monsters']['player'] : img_player }
-
-    def __load_image(self, name, alpha=False):
-        img_resources = "./resources/images/"
-        if alpha:
-            return pygame.image.load(img_resources + name).convert_alpha()
-        else:
-            return pygame.image.load(img_resources + name).convert()
+        self.textures_map = TexturesMap('textures.png', self.texture_size).get_map()
 
     def __redraw(self, displs):
         """
@@ -248,7 +285,7 @@ class Main(engine.State):
                                             y*self.texture_size,
                                             self.texture_size,
                                             self.texture_size,
-                                            self.img_blocks[val])
+                                            self.textures_map[val])
                 lb.draw(self.screen)
 
     def __draw_demo_land_surface(self, surface, displs):

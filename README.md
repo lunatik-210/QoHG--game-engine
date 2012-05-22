@@ -20,6 +20,11 @@ Interesting links:
 * A* search http://en.wikipedia.org/wiki/A*_search_algorithm
 * Perling noise http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
+20.05.2012
+----------
+###Done:
+* Added Textures Map class: removed all images files except one - textures.png, size converter is in the Texture class
+
 24.04.2012
 ----------
 ###Done:
