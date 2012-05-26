@@ -3,7 +3,7 @@ import pygame
 
 class State:
     """Base State, inherit it if you want new one"""
-    def __init__(self, game, debug = False):
+    def __init__(self, game, debug=False):
         self.game = game
         self.screen = self.game.screen
         self.debug = debug
@@ -29,7 +29,7 @@ class Quit(State):
 
 class Game:
     """ Game engine, use it to start the game """
-    def __init__(self, screen_size = (1024, 768)):
+    def __init__(self, screen_size=(1024, 768)):
         pygame.init()
         self.screen_size = screen_size
         self.screen = None

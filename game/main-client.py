@@ -61,12 +61,12 @@ class Texture:
     """
     TODO: add documentation
     """
-    def __init__(self, file_or_size, x=0, y=0, alpha=True):
+    def __init__(self, file_or_size, x=0, y=0, alpha=False):
         if isinstance(file_or_size, int):
             if alpha:
-                self.image = pygame.Surface((file_or_size, file_or_size), HWSURFACE & SRCALPHA)
+                self.image = pygame.Surface((file_or_size, file_or_size), flags=pygame.SRCALPHA)
             else:
-                self.image = pygame.Surface((file_or_size, file_or_size), HWSURFACE)
+                self.image = pygame.Surface((file_or_size, file_or_size), flags=pygame.HWSURFACE)
         else:
             if alpha:
                 self.image = pygame.image.load(os.path.join("./resources/images/", file_or_size)).convert_alpha()
@@ -94,13 +94,13 @@ class TexturesMap:
     monsters = ['wolf', 'pig', 'golem', 'player']
 
     def __init__(self, file, texture_size):
-        image = pygame.image.load(os.path.join("./resources/images/", file)).convert_alpha()
+        image = pygame.image.load(os.path.join("./resources/images/", file))
         size = image.get_rect().width / self.max_in_raw # 64px
         self.textures_map = {}
 
         for i in range(self.max_in_col):
             for j in range(self.max_in_raw):
-                texture = Texture(size)
+                texture = Texture(size, alpha=i) # there is trick with i = 0 or 1
                 texture.copy(image, (j*size, i*size, size, size))
                 if texture_size != size:
                     texture.scale(texture_size)
