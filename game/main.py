@@ -18,14 +18,18 @@ if not pygame.mixer: print 'Warning, sound disabled'
 ######### Game logic ############
 import lands.generators.Map as MapGenerator
 
+from texture_manager import Texture, TexturesMap
 from lands.Land import Land
 from lands.DemoLand import DemoLand
 from lands.Position import Position
 import config
 
-#from pathsearch import a_star_path_search as get_path
 #################################
 
+path = './configs'
+
+items = config.load_items(path+'/items.xml')
+bioms = config.load_bioms(path+'/bioms.xml', items)
 
 class Main:
     """
@@ -169,31 +173,7 @@ class Main:
         self.load_resources()
 
     def load_resources(self):
-        suffix = "_"
-        img_sand  = self.load_image("sand%s%d.png"  % ('__', self.texture_size))
-        img_tree  = self.load_image("tree%s%d.png"  % (suffix, self.texture_size))
-        img_grass = self.load_image("grass%s%d.png" % ('__',self.texture_size))
-        img_log   = self.load_image("log%s%d.png"   % (suffix, self.texture_size))
-        img_stone = self.load_image("stone%s%d.png" % (suffix, self.texture_size))
-        img_water = self.load_image("water%s%d.png" % ('__',self.texture_size))
-        img_snow  = self.load_image("snow%s%d.png"  % ('__',self.texture_size))
-
-        img_wolf   = self.load_image_with_alpha("wolf%s%d.png" % ('__', self.texture_size))
-        img_pig    = self.load_image_with_alpha("pig%s%d.png"  % ('__', self.texture_size))
-        img_player = self.load_image_with_alpha("player%s%d.png" % (suffix, self.texture_size))
-        img_golem  = self.load_image_with_alpha("golem%s%d.png" % ('__', self.texture_size))
-        
-        self.img_blocks = { config.objects['water']  : img_water,
-                            config.objects['sand']   : img_sand,
-                            config.objects['grass']  : img_grass,
-                            config.objects['log']    : img_log,
-                            config.objects['stone']  : img_stone,
-                            config.objects['tree']   : img_tree,
-                            config.objects['snow']   : img_snow,
-                            config.monsters['wolf']  : img_wolf,
-                            config.monsters['pig']   : img_pig,
-                            config.monsters['golem'] : img_golem,
-                            config.player_id : img_player }
+        self.textures_map = TexturesMap('textures.png', self.texture_size).get_map()
                 
     def load_image(self, name):
         img_resources = "./resources/images/"
@@ -216,7 +196,7 @@ class Main:
                                             y*self.texture_size,
                                             self.texture_size,
                                             self.texture_size,
-                                            self.img_blocks[val])
+                                            self.textures_map[val])
                 lb.draw(self.screen)
 
     def draw_demo_land_surface(self, surface, displs):
@@ -247,7 +227,7 @@ class Main:
         # just fill the surface
         for x in range(border, s-border):
             for y in range(border, s-border):
-                color = pygame.Color(config.colors[demo[x][y]])
+                color = pygame.Color(items['colors'][demo[x][y]])
                 pygame.draw.rect(map, color, pygame.Rect(x*ds, y*ds, ds, ds))
         return map
 
@@ -269,7 +249,7 @@ def start(fullscreen_option=True, debug_option=False):
     map_generator = MapGenerator.DiamondSquare(size, roughness, land_id, True)
 
     # init land
-    land = Land(config.config, config.player_id, map_generator, config.allowable_list)
+    land = Land(map_generator)
 
     # create window
     MainWindow = Main(land, 1024, 768, debug_option)

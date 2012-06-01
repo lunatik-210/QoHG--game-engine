@@ -81,7 +81,7 @@ class Land:
         pos %= self.lsize
 
         if self.player.pos == pos:
-            return self.player_id
+            return items['monsters']['player']
 
         val = self.land[pos.x][pos.y]
 
