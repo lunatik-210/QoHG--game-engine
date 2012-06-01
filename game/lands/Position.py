@@ -1,4 +1,6 @@
 
+import numpy
+
 class Position:
     def __init__(self, x, y):
         self.x = x
@@ -57,3 +59,5 @@ class Position:
         return (self.left(), self.top(), self.right(), self.bottom(),
                 self.lefttop(), self.righttop(), self.leftbottom(), self.rightbottom())
         
+    def distance_to(self, p):
+        return numpy.sqrt((self.x-p.x)**2 + (self.y-p.y)**2)

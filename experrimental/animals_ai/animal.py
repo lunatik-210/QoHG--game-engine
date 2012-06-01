@@ -7,6 +7,9 @@ from pygame.locals import *
 if not pygame.font: print 'Warning, fonts disabled'
 if not pygame.mixer: print 'Warning, sound disabled'
 
+def distance(a, b):
+    return numpy.sqrt((a.x-b.x)**2 + (a.y-b.y)**2)
+
 class Entity(object):
     def __init__(self, world, name, color):
         self.world = world
@@ -45,15 +48,51 @@ class StateExploring(State):
         self.object = object
 
     def do_actions(self):
-        self.object.x = int((self.object.x + random.gauss(0.5, 1)*random.gauss(0.5, 1) ) % self.object.world.height)
-        self.object.y = int((self.object.y + random.gauss(0.5, 1)*random.gauss(0.5, 1) ) % self.object.world.width)        
+        generate_step = lambda : random.gauss(0.5, 1)*random.gauss(0.5, 1)
+        self.object.x = int((self.object.x + generate_step() ) % self.object.world.height)
+        self.object.y = int((self.object.y + generate_step() ) % self.object.world.width)        
 
     def check_conditions(self):
-        return None
+        for entity in self.object.world.entities:
+            if 0 < distance(entity, self.object) < 20:
+                return None
+        return 'moving'
 
     def entry_actions(self):
         self.object.x = random.uniform(0, self.object.world.height)
         self.object.y = random.uniform(0, self.object.world.width)
+
+class StateMoving(State):
+    def __init__(self, object):
+        State.__init__(self, 'moving')
+        self.object = object
+        self.neighbor = None
+
+    def do_actions(self):
+        if self.neighbor is None:
+            return
+        signx = self.neighbor.x - self.object.x
+        signy = self.neighbor.y - self.object.y
+        if signx > 0:
+            self.object.x += 1
+        else: self.object.x -= 1
+        if signy > 0:
+            self.object.x += 1
+        else: self.object.x -= 1       
+
+    def check_conditions(self):
+        if self.neighbor is None:
+            return 'exploring'
+
+        if 0 <= distance(self.neighbor, self.object) < 10:
+            return 'exploring'
+
+        return None
+
+    def entry_actions(self):
+        for entity in self.object.world.entities:
+            if 11 < distance(entity, self.object) < 70:
+                self.neighbor = entity
 
 class StateMachine(object):
     def __init__(self):
@@ -72,6 +111,7 @@ class StateMachine(object):
         new_state_name = self.active_state.check_conditions()
         if new_state_name is not None:
             self.set_state(new_state_name)
+            print 'New state: ', new_state_name
 
     def set_state(self, new_state_name):
         if self.active_state is not None:
@@ -86,8 +126,10 @@ class Animal(Entity):
         self.health = 100
 
         exploring_state = StateExploring(self)
+        moving_state = StateMoving(self)
 
         self.brain.add_state(exploring_state)
+        self.brain.add_state(moving_state)
 
 class World(object):
     def __init__(self, width, height):
@@ -118,7 +160,7 @@ def run():
 
     clock = pygame.time.Clock()
 
-    for i in range(40):
+    for i in range(30):
         ent = Animal(world)
         ent.brain.set_state('exploring')
         world.add_entity(ent)
