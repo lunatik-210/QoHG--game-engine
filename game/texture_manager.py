@@ -1,4 +1,3 @@
-
 import pygame
 import os
 
@@ -38,8 +37,7 @@ class TexturesMap:
     """
     TODO: add documentation
     """
-    max_in_raw = 8
-    max_in_col = 2
+    max_in_raw, max_in_col = 8, 2
     objects = ['water', 'sand', 'grass', 'swamp', 'stone', 'tree', 'snow', 'sky']
     monsters = ['wolf', 'pig', 'golem', 'player']
 

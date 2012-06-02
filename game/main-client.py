@@ -6,6 +6,7 @@ import numpy
 import sys
 from copy import deepcopy
 import os
+from log import *
 #################################
 
 ######### PyGame ################
@@ -14,8 +15,8 @@ from pygame.locals import *
 import sprites
 from client import *
 
-if not pygame.font: print 'Warning, fonts disabled'
-if not pygame.mixer: print 'Warning, sound disabled'
+if not pygame.font: logging.warning('Warning, fonts disabled')
+if not pygame.mixer: logging.warning('Warning, sound disabled')
 #################################
 
 ######### Game logic ############

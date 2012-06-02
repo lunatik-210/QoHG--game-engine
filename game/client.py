@@ -4,6 +4,7 @@ import pickle
 from array import *
 import zlib
 import sys
+from log import *
 
 import config
 
@@ -35,8 +36,7 @@ class Client(socket):
             data = zlib.decompress(data)
             if is_pickle:
                 data = pickle.loads(data)
-            if self.debug:
-                print "RESPONSE: ", (data)
+            logging.debug("RESPONSE: %s", str(data))
 
         self.close()
         return data

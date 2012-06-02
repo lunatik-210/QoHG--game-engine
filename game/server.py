@@ -12,6 +12,7 @@ import struct
 import pickle
 import zlib
 import sys
+from log import *
 #################################
 
 ######### Game logic ############
@@ -107,16 +108,16 @@ def request_parser(conn):
 
 
 class Server(socket):
-    def __init__(self, addr, debug = False):
+    def __init__(self, addr, debug=False):
         socket.__init__(self, AF_INET, SOCK_STREAM)
         self.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         self.addr = addr
-        self.debug = debug
+        # self.debug = debug
 
     def init(self):
         self.bind((self.addr))
         self.listen(50)
-        if self.debug: print 'starts listening...'
+        logging.info('starts listening...')
 
 if __name__ == '__main__':
     # init map generator
@@ -142,7 +143,7 @@ if __name__ == '__main__':
         conn, addr = server.accept()
         item = [conn, addr]
         queue.put(item)
-        print '...connected!'
+        logging.info('...connected!')
 
     # terminate server
     server.close()
