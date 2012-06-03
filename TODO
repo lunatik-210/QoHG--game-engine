@@ -1,0 +1,20 @@
++ ---------------------------------------------------------------------------- +
+| TODOS @ Sunday 03 June 2012 23:48                                            |
+| 25 files scanned                                                             |
++ ---------------------------------------------------------------------------- +
+
+## FIXME (2)
+1. client.py:63  Maybe there is function in stdlib
+2. Land.py:112  try to refactor this not understandable piece of sh!t T_T
+
+## TODO (10)
+1. client.py:17  write documentation
+2. client.py:46  write documentation
+3. texture_manager.py:40  write documentation
+4. DemoLand.py:7  write documentation
+5. Land.py:34  write documentation
+6. Map.py:10  write documentation
+7. Map.py:38  write documentation
+8. Map.py:77  write documentation
+9. Map.py:125  write documentation
+10. Object.py:5  write documentation

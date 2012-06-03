@@ -1,6 +1,9 @@
 import random
 
 class ObjectGenerator:
+    """
+    TODO: write documentation
+    """
     def __init__(self, probability_array):
         self.missed_prob = self.prob(probability_array)
         self.objects = self.extract_object_ids(probability_array)

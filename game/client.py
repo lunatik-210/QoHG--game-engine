@@ -1,4 +1,3 @@
-##client.py
 from socket import *
 import pickle
 from array import *

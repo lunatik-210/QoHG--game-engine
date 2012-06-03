@@ -9,7 +9,7 @@ import os
 from log import *
 #################################
 
-######### PyGame ################
+########## PyGame ###############
 import pygame
 from pygame.locals import *
 import sprites
@@ -19,7 +19,7 @@ if not pygame.font: logging.warning('Warning, fonts disabled')
 if not pygame.mixer: logging.warning('Warning, sound disabled')
 #################################
 
-######### Game logic ############
+########## Game logic ###########
 from texture_manager import Texture, TexturesMap
 
 from lands.Position import Position

@@ -1,4 +1,3 @@
-
 import numpy
 import random
 
@@ -31,6 +30,9 @@ class Player:
             self.pos = step
 
 class Land:
+    """
+    TODO: write documentation
+    """
     def __init__(self, map_generator):
         self.map_generator = map_generator
 
@@ -103,9 +105,11 @@ class Land:
         return self.land[pos.x][pos.y]
 
     def update(self, p1, p2):
-        '''-_______- -_______- -_______- -_______- -_______-'''
-        '''Not understandable code, I have to fix it        '''
-        '''But it really makes monsters move =))))))))))))) '''
+        """
+            Not understandable code, I have to fix it
+            But it really makes monsters move =)))))))))))))
+        """
+        # FIXME: try to refactor this not understandable piece of sh!t T_T
         monsters = items['monsters']
         for x in range(p1.x, p2.x):
             for y in range(p1.y, p2.y):

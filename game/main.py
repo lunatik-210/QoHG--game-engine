@@ -4,18 +4,19 @@
 import random
 import sys
 from copy import deepcopy
+from log import *
 #################################
 
-######### PyGame ################
+########## PyGame ###############
 import pygame
 from pygame.locals import *
 import sprites
 
-if not pygame.font: print 'Warning, fonts disabled'
-if not pygame.mixer: print 'Warning, sound disabled'
+if not pygame.font: logging.warning('Warning, fonts disabled')
+if not pygame.mixer: logging.warning('Warning, sound disabled')
 #################################
 
-######### Game logic ############
+########## Game logic ###########
 import lands.generators.Map as MapGenerator
 
 from texture_manager import Texture, TexturesMap
@@ -37,7 +38,7 @@ class Main:
     initialization and creating of the Game.
     """
     
-    def __init__(self, land, width=1024, height=768, debug=False):
+    def __init__(self, land, size=(1024, 768), debug=False):
         # Initialize PyGame
         pygame.init()
 
@@ -46,8 +47,8 @@ class Main:
         self.demo_land = DemoLand(land, 100)
 
         # Create the Screen
-        self.screen = pygame.display.set_mode((width, height))
-        self.width, self.height = width, height
+        self.screen = pygame.display.set_mode(size)
+        self.width, self.height = size
         self.debug = debug
 
     def set_full_screen(self, fullscreen_option):
@@ -174,14 +175,6 @@ class Main:
 
     def load_resources(self):
         self.textures_map = TexturesMap('textures.png', self.texture_size).get_map()
-                
-    def load_image(self, name):
-        img_resources = "./resources/images/"
-        return pygame.image.load(img_resources + name).convert()
-
-    def load_image_with_alpha(self, name):
-        img_resources = "./resources/images/"
-        return pygame.image.load(img_resources + name).convert_alpha()
 
     def redraw(self, displs):
         """
@@ -252,7 +245,7 @@ def start(fullscreen_option=True, debug_option=False):
     land = Land(map_generator)
 
     # create window
-    MainWindow = Main(land, 1024, 768, debug_option)
+    MainWindow = Main(land, (1024, 768), debug_option)
     MainWindow.set_full_screen(fullscreen_option)
 
     # starting the main loop / game

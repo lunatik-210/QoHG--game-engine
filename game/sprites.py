@@ -1,4 +1,3 @@
-
 import pygame
 
 class LandscapeBlock(pygame.sprite.Sprite):

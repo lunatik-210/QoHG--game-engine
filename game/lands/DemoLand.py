@@ -1,16 +1,18 @@
-
 import numpy
 
 from Position import Position
 
 class DemoLand:
-    def __init__(self, land, size, border = 4):
+    """
+    TODO: write documentation
+    """
+    def __init__(self, land, size, border=4):
         self.land = land
         self.size = size
         self.border = border
         self.demo_land = numpy.zeros((self.size,self.size))
         
-        self.init_demo()        
+        self.init_demo()
 
     def init_demo(self):
         d = self.land.get_size() / self.size

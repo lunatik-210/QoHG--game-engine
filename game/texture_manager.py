@@ -8,9 +8,11 @@ items = config.load_items(path+'/items.xml')
 
 class Texture:
     """
-    TODO: add documentation
+    Texture Class
+    Create texture sprite from image file or just by size (with/out alpha channel).
+    You can scale your texture object.
     """
-    def __init__(self, file_or_size, x=0, y=0, alpha=False):
+    def __init__(self, file_or_size, alpha=False):
         if isinstance(file_or_size, int):
             if alpha:
                 self.image = pygame.Surface((file_or_size, file_or_size), flags=pygame.SRCALPHA)
@@ -35,7 +37,7 @@ class Texture:
 
 class TexturesMap:
     """
-    TODO: add documentation
+    TODO: write documentation
     """
     max_in_raw, max_in_col = 8, 2
     objects = ['water', 'sand', 'grass', 'swamp', 'stone', 'tree', 'snow', 'sky']

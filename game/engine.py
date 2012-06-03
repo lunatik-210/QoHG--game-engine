@@ -1,8 +1,9 @@
-
 import pygame
 
 class State:
-    """Base State, inherit it if you want new one"""
+    """
+    Base State, inherit it if you want new one
+    """
     def __init__(self, game, debug=False):
         self.game = game
         self.screen = self.game.screen
@@ -10,7 +11,7 @@ class State:
         self.init()
 
     def init(self):
-        """Overload it ro make any initializations"""
+        """Overload it to make any initializations"""
         return
 
     def paint(self):
@@ -22,13 +23,17 @@ class State:
         return """If you want to go to another state return it here"""
 
 class Quit(State):
-    """A state to quit the state engine."""
+    """
+    A state to quit the state engine.
+    """
     
     def init(self): 
         self.game.quit = True
 
 class Game:
-    """ Game engine, use it to start the game """
+    """
+    Game engine, use it to start the game
+    """
     def __init__(self, screen_size=(1024, 768)):
         pygame.init()
         self.screen_size = screen_size

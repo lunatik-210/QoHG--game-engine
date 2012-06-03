@@ -5,7 +5,10 @@ import sys
 import math
 import random
 
-class Humidity():
+class Humidity:
+    """
+    TODO: write documentation
+    """
     def __init__(self, size, height):
         self.height = height
         self.size = int(numpy.log2(size))
@@ -30,7 +33,10 @@ class Humidity():
         print 'Error: cannt define Humidity block: ', val
         return None
 
-class MapGenerator():
+class MapGenerator:
+    """
+    TODO: write documentation
+    """
     def __init__(self, size, debug=False):      
         if not self.is_odd(size):
             size += 1
@@ -48,7 +54,7 @@ class MapGenerator():
         return self.grid
 
     def is_odd(self, dsize):
-        return (dsize % 2 == 1)
+        return (dsize & 1)
 
     def correct_size_dimension(self, dsize):
         temp_dsize = dsize
@@ -67,6 +73,9 @@ class MapGenerator():
         pass
 
 class DiamondSquare(MapGenerator):
+    """
+    TODO: write documentation
+    """
     def __init__(self, size, roughness, seed, debug=False):
         MapGenerator.__init__(self, size, debug)
 
@@ -112,7 +121,10 @@ class DiamondSquare(MapGenerator):
                                            self.calc(x, (y+blockSize))) / 4, blockSize, x, y ))
 
 class Perling(MapGenerator):
-    def __init__(self, size, octaves = 6, persistence = 0.2, debug = False):
+    """
+    TODO: write documentation
+    """
+    def __init__(self, size, octaves=6, persistence=0.2, debug=False):
         MapGenerator.__init__(self, size, debug)
         self.octaves = octaves
         self.persistence = persistence
