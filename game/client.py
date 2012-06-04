@@ -1,6 +1,5 @@
 from socket import *
 import pickle
-from array import *
 import zlib
 import sys
 from log import *
@@ -77,9 +76,6 @@ class Request:
                                self.data)
 
 if __name__ == '__main__':
-    """
-    Request class testing
-    """
     client = Client(network['addr'], True)
 
     data1 = '600,600,621,616'

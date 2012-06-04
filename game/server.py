@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
     # starting accepting requests loop
     while True:
-        # quieue -> connection, address, response (get_map, (x1, y1, x2, y2))
+        # queue -> connection, address, response (get_map, (x1, y1, x2, y2))
         conn, addr = server.accept()
         item = [conn, addr]
         queue.put(item)

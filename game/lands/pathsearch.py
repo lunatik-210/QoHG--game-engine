@@ -2,13 +2,11 @@ import numpy
 
 from Position import Position 
 
-"""
-    Here I've implemented A* search algorithm for path finding.
-    The idea is to use some heuristic function which is actually
-    the estimation distance to the goal from the current location.
-    So, every time we try to choose the shortest step to get 
-    to the goal, but it doesnt mean that the path is the best one.
-"""
+#   Here I've implemented A* search algorithm for path finding.
+#   The idea is to use some heuristic function which is actually
+#   the estimation distance to the goal from the current location.
+#   So, every time we try to choose the shortest step to get
+#   to the goal, but it doesnt mean that the path is the best one.
 
 # Quick Sort: used in A* algorithm
 
@@ -158,9 +156,8 @@ def a_star_path_search(start, goal, grid, allowed_id):
 
     return None
 
-"""
-    Some tests
-"""
+
+#  Some tests
 
 def nice_print(data):
     for i in data:

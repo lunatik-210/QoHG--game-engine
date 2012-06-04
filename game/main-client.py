@@ -153,7 +153,7 @@ class Main(engine.State):
                     #self.land.add_path_to_player(destination)
                     pass
 
-        """Process continuous events"""
+        # Process continuous events
         key = pygame.key.get_pressed()
         if key[K_RIGHT] or key[K_d]:
             self.displs.x += self.speed.x
@@ -262,11 +262,10 @@ def start(fullscreen_option=True, debug_option=False):
     game.run(Main(game, debug_option))
 
 if __name__ == "__main__":
-    """Command line flags:
-        [-f] fullscreen mode on
-        [-w] window mode on
-        [-d] debug mode on
-    """
+    # Command line flags:
+    #   [-f] fullscreen mode on
+    #   [-w] window mode on
+    #   [-d] debug mode on
 
     fullscreen_option = True
     debug_option = True # Actually False as default, but who cares

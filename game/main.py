@@ -92,7 +92,7 @@ class Main:
             # Make sure game doesn't run at more than 60 frames per second
             clock.tick(60)
             
-            """Process single events"""
+            # Process single events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
@@ -121,7 +121,7 @@ class Main:
                                                int(event.pos[1]/self.texture_size+displs.y))
                         self.land.add_path_to_player(destination)
 
-            """Process continuous events"""
+            # Process continuous events
             key = pygame.key.get_pressed()
             if key[K_RIGHT] or key[K_d]:
                 displs.x += speed.x

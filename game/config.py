@@ -66,7 +66,7 @@ def load_network(file):
     data = etree.parse(file)
     root = data.getroot()   
 
-    # parse adddr
+    # parse addr
     addr = root.find('addr')
     network['addr'] = (addr.text, int(addr.get('port')))
 
