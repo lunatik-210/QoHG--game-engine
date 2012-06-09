@@ -7,6 +7,7 @@ import sys
 from copy import deepcopy
 import os
 from log import *
+import argparse
 #################################
 
 ########## PyGame ###############
@@ -256,27 +257,13 @@ class Main(engine.State):
                 pygame.draw.rect(map, color, pygame.Rect(x*ds, y*ds, ds, ds))
         return map
 
-def start(fullscreen_option=True, debug_option=False):
-    game = engine.Game()
-    #game.set_full_screen(fullscreen_option)
-    game.run(Main(game, debug_option))
 
 if __name__ == "__main__":
-    # Command line flags:
-    #   [-f] fullscreen mode on
-    #   [-w] window mode on
-    #   [-d] debug mode on
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument("-f", "--fullscreen", action="store_true", help="turn on full screen mode")
+    parser.add_argument("-d", "--debug", action="store_true", help="turn on debug mode")
+    args = parser.parse_args()
 
-    fullscreen_option = True
-    debug_option = True # Actually False as default, but who cares
-
-    argv = sys.argv
-    for arg in argv:
-        if arg == "-d":
-            debug_option = True
-        elif arg == "-f":
-            fullscreen_option = True
-        elif arg == "-w":
-            fullscreen_option = False
-
-    start(fullscreen_option, debug_option)
+    game = engine.Game()
+    game.set_full_screen(args.fullscreen)
+    game.run(Main(game, args.debug))
